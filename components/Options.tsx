@@ -1,33 +1,17 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, View, Text } from 'react-native';
-import Colors from '../constants/Colors';
-
-function roleDie() {
-  return Math.floor(Math.random() * (4) + 1)
-}
+import roleDie from '../util/roleDie';
+import { useSelector } from 'react-redux';
+import store, { RootState } from '../redux/store';
+import { screensSlice } from '../redux/reducers/screensReducer';
 
 export default function Option() {
-  const [dieOne, setDieOne] = useState<number>(roleDie());
-  const [dieTwo, setDieTwo] = useState<number>(roleDie());
+  const gameState = useSelector((state: RootState) => state.gameState);
   return (
     <View style={{width: '100%', height: '100%', backgroundColor: 'orange'}}>
-      <View style={{flexDirection: 'row'}}>
-        <View>
-          <Text>{dieOne}</Text>
-        </View>
-        <Text>+</Text>
-        <View>
-          <Text>{dieTwo}</Text>
-        </View>
-        <Text>=</Text>
-        <View>
-          <Text>{dieOne + dieTwo}</Text>
-        </View>
-      </View>
-      <Pressable onPress={() => {
-
-      }}>
-        <Text>Role Dice</Text>
+      <Text>GameId: {gameState.gameId}</Text>
+      <Pressable onPress={() => {store.dispatch(screensSlice.actions.setPlayerScreen(true))}}>
+        <Text>Show</Text>
       </Pressable>
     </View>
   );

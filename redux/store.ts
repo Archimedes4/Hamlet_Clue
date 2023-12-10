@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
-import movableSquaresReducer from './reducers/movableSquaresReducer';
 import dimentionsReducer from './reducers/dimentionsReducer';
+import gameStateReducer from './reducers/gameStateReducer';
+import screensReducer from './reducers/screensReducer';
 
 const store = configureStore({
   reducer: {
     dimentions: dimentionsReducer,
-    movableSquare: movableSquaresReducer,
+    gameState: gameStateReducer,
+    screens: screensReducer
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
