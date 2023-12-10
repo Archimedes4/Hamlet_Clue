@@ -5,7 +5,9 @@ export enum loadingStateEnum {
   success,
 }
 
-const squares: squareType[] = [
+export const rooms: rooms[] = ["Gun_Platform", "Great_Hall", "Fencing_Room", "Court_Yard", "Royal_Bedroom", "Chapel", "Throne_Room", "Stair_Well"]
+
+const squares: positionType[] = [
   {
     id: "SquareX7Y0",
     moves: ["SquareX7Y1"]
@@ -80,7 +82,7 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX6Y5",
-    moves:["SquareX6Y4", "SquareX7Y5", "SquareX6Y6"]
+    moves:["SquareX6Y4", "SquareX7Y5", "SquareX6Y6", "Gun_Platform"]
   },
   {
     id:"SquareX7Y5",
@@ -124,7 +126,7 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX20Y6",
-    moves:["SquareX19Y6", "SquareX21Y6", "SquareX20Y7"]
+    moves:["SquareX19Y6", "SquareX21Y6", "SquareX20Y7", "Fencing_Room"]
   },
   {
     id:"SquareX21Y6",
@@ -136,7 +138,7 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX23Y6",
-    moves:["SquareX22Y6", "SquareX24Y6", "SquareX23Y7"]
+    moves:["SquareX22Y6", "SquareX24Y6", "SquareX23Y7", "Fencing_Room"]
   },
   {
     id:"SquareX24Y6",
@@ -208,7 +210,7 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX4Y8",
-    moves:["SquareX3Y8", "SquareX5Y8", "SquareX4Y9"]
+    moves:["SquareX3Y8", "SquareX5Y8", "SquareX4Y9", "Gun_Platform"]
   },
   {
     id:"SquareX5Y8",
@@ -228,7 +230,7 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX9Y8",
-    moves:["SquareX8Y8", "SquareX10Y8", "SquareX9Y9"]
+    moves:["SquareX8Y8", "SquareX10Y8", "SquareX9Y9", "Great_Hall"]
   },
   {
     id:"SquareX10Y8",
@@ -248,7 +250,7 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX14Y8",
-    moves:["SquareX13Y8", "SquareX15Y8", "SquareX14Y9"]
+    moves:["SquareX13Y8", "SquareX15Y8", "SquareX14Y9", "Great_Hall"]
   },
   {
     id:"SquareX15Y8",
@@ -328,7 +330,7 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX10Y9",
-    moves:["SquareX10Y8", "SquareX9Y9", "SquareX11Y9"]
+    moves:["SquareX10Y8", "SquareX9Y9", "SquareX11Y9", "Court_Yard"]
   },
   {
     id:"SquareX11Y9",
@@ -352,7 +354,7 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX16Y9",
-    moves:["SquareX16Y8", "SquareX15Y9", "SquareX17Y9"]
+    moves:["SquareX16Y8", "SquareX15Y9", "SquareX17Y9", "Court_Yard"]
   },
   {
     id:"SquareX17Y9",
@@ -388,15 +390,15 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX8Y11",
-    moves:["SquareX8Y10", "SquareX7Y11", "SquareX8Y12"]
+    moves:["SquareX8Y10", "SquareX7Y11", "SquareX8Y12", "Court_Yard"]
   },
   {
     id:"SquareX18Y11",
-    moves:["SquareX18Y10", "SquareX19Y11", "SquareX18Y12"]
+    moves:["SquareX18Y10", "SquareX19Y11", "SquareX18Y12", "Court_Yard"]
   },
   {
     id:"SquareX19Y11",
-    moves:["SquareX19Y10", "SquareX18Y11", "SquareX19Y12"]
+    moves:["SquareX19Y10", "SquareX18Y11", "SquareX19Y12", "Royal_Bedroom"]
   },
   {
     id:"SquareX7Y12",
@@ -452,15 +454,15 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX8Y15",
-    moves:["SquareX8Y14", "SquareX7Y15", "SquareX8Y16"]
+    moves:["SquareX8Y14", "SquareX7Y15", "SquareX8Y16", "Court_Yard"]
   },
   {
     id:"SquareX18Y15",
-    moves:["SquareX18Y14", "SquareX19Y15", "SquareX18Y16"]
+    moves:["SquareX18Y14", "SquareX19Y15", "SquareX18Y16", "Court_Yard"]
   },
   {
     id:"SquareX19Y15",
-    moves:["SquareX19Y14", "SquareX18Y15", "SquareX19Y16"]
+    moves:["SquareX19Y14", "SquareX18Y15", "SquareX19Y16", "Royal_Bedroom"]
   },
   {
     id:"SquareX7Y16",
@@ -492,7 +494,7 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX10Y17",
-    moves: ["SquareX9Y17", "SquareX11Y17", "SquareX10Y18"]
+    moves: ["SquareX9Y17", "SquareX11Y17", "SquareX10Y18", "Court_Yard"]
   },
   {
     id:"SquareX11Y17",
@@ -516,7 +518,7 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX16Y17",
-    moves: ["SquareX15Y17", "SquareX17Y17", "SquareX16Y18"]
+    moves: ["SquareX15Y17", "SquareX17Y17", "SquareX16Y18", "Court_Yard"]
   },
   {
     id:"SquareX17Y17",
@@ -596,7 +598,7 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX22Y18",
-    moves: ["SquareX21Y18", "SquareX23Y18"]
+    moves: ["SquareX21Y18", "SquareX23Y18", "SquareX22Y19"]
   },
   {
     id:"SquareX23Y18",
@@ -604,7 +606,7 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX24Y18",
-    moves: ["SquareX23Y18", "SquareX25Y18"]
+    moves: ["SquareX23Y18", "SquareX25Y18", "Stair_Well"]
   },
   {
     id:"SquareX25Y18",
@@ -624,7 +626,7 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX11Y19",
-    moves: ["SquareX11Y18", "SquareX10Y19", "SquareX12Y19"]
+    moves: ["SquareX11Y18", "SquareX10Y19", "SquareX12Y19", "Throne_Room"]
   },
   {
     id:"SquareX12Y19",
@@ -652,7 +654,7 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX18Y19",
-    moves: ["SquareX18Y18", "SquareX17Y19", "SquareX19Y19"]
+    moves: ["SquareX18Y18", "SquareX17Y19", "SquareX19Y19", "Throne_Room"]
   },
   {
     id:"SquareX19Y19",
@@ -664,11 +666,15 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX21Y19",
-    moves: ["SquareX21Y18", "SquareX20Y19", "SquareX21Y20"]
+    moves: ["SquareX21Y18", "SquareX20Y19", "SquareX22Y19", "SquareX21Y20"]
+  }, 
+  {
+    id:"SquareX22Y19",
+    moves: ["SquareX22Y18", "SquareX21Y19"]
   },
   {
     id:"SquareX8Y20",
-    moves: ["SquareX8Y19", "SquareX9Y20", "SquareX8Y21"]
+    moves: ["SquareX8Y19", "SquareX9Y20", "SquareX8Y21", "Chapel"]
   },
   {
     id:"SquareX9Y20",
@@ -696,7 +702,7 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX21Y21",
-    moves: ["SquareX21Y20", "SquareX20Y21", "SquareX21Y22"]
+    moves: ["SquareX21Y20", "SquareX20Y21", "SquareX21Y22", "Stair_Well"]
   },
   {
     id:"SquareX8Y22",
@@ -704,7 +710,7 @@ const squares: squareType[] = [
   },
   {
     id:"SquareX9Y22",
-    moves: ["SquareX9Y21", "SquareX8Y22", "SquareX9Y23"]
+    moves: ["SquareX9Y21", "SquareX8Y22", "SquareX9Y23", "Throne_Room"]
   },
   {
     id:"SquareX20Y22",

@@ -3,9 +3,8 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 const initalState: {
   playerPicker: boolean;
   detectiveSheet: boolean;
-  accuse: boolean;
-  suggest: boolean;
-} = { playerPicker: false, detectiveSheet: false, accuse: false, suggest: false };
+  room: boolean //This is for both suggesting and accuesing
+} = { playerPicker: false, detectiveSheet: false, room: false};
 
 export const screensSlice = createSlice({
   name: 'screens',
@@ -15,40 +14,28 @@ export const screensSlice = createSlice({
       return {
         playerPicker: action.payload,
         detectiveSheet: state.detectiveSheet,
-        accuse: state.accuse,
-        suggest: state.suggest
+        room: state.room
       }
     },
     setDetectiveSheetScreen: (state, action: PayloadAction<boolean>) => {
       return {
         playerPicker: state.playerPicker,
         detectiveSheet: action.payload,
-        accuse: state.accuse,
-        suggest: state.suggest
+        room: state.room
       }
     },
-    setAccuseScreen: (state, action: PayloadAction<boolean>) => {
+    setRoomScreen: (state, action: PayloadAction<boolean>) => {
       return {
         playerPicker: state.playerPicker,
         detectiveSheet: state.detectiveSheet,
-        accuse: action.payload,
-        suggest: state.suggest
-      }
-    },
-    setSuggestScreen: (state, action: PayloadAction<boolean>) => {
-      return {
-        playerPicker: state.playerPicker,
-        detectiveSheet: state.detectiveSheet,
-        accuse: state.accuse,
-        suggest: action.payload
+        room: action.payload
       }
     },
     hideAllScreens: (_state, _action: PayloadAction<undefined>) => {
       return {
         playerPicker: false,
         detectiveSheet: false,
-        accuse: false,
-        suggest: false
+        room: false
       }
     }
   },

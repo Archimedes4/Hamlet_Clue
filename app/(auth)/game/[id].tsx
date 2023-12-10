@@ -7,14 +7,21 @@ import { gameStateSlice } from '../../../redux/reducers/gameStateReducer';
 import PiecesLocations from '../../../constants/PiecesLocations';
 import PlayerScreen from '../../../components/PlayerScreen';
 import getUserGameStatus from '../../../util/getUserGameStatus';
+import { auth } from '../../_layout';
+import { checkIfPickingSpawnPosition, setSpawnPosition } from '../../../util/spawnPosition';
+import DetectiveSheet from '../../../components/DetectiveSheet';
+import isPlayersTurn from '../../../util/isPlayersTurn';
+import onMove from '../../../util/onMove';
+import RoomScreen from '../../../components/RoomScreen';
+import Colors from '../../../constants/Colors';
 
 //26 by 26 grid
 
 declare global {
-  type squarePos = "" | "SquareX7Y0" | "SquareX16Y0" | "SquareX6Y1" | "SquareX7Y1" | "SquareX16Y1" | "SquareX17Y1" | "SquareX6Y2" | "SquareX7Y2" | "SquareX16Y2" | "SquareX17Y2" | "SquareX6Y3" | "SquareX7Y3" | "SquareX16Y3" | "SquareX17Y3" | "SquareX6Y4" | "SquareX7Y4" | "SquareX16Y4" | "SquareX17Y4" | "SquareX6Y5" | "SquareX7Y5" | "SquareX16Y5" | "SquareX17Y5" | "SquareX18Y5" | "SquareX6Y6" | "SquareX7Y6" | "SquareX16Y6" | "SquareX17Y6" | "SquareX18Y6" | "SquareX19Y6" | "SquareX20Y6" | "SquareX21Y6" | "SquareX22Y6" | "SquareX23Y6" | "SquareX24Y6" | "SquareX6Y7" | "SquareX7Y7" | "SquareX16Y7" | "SquareX17Y7" | "SquareX18Y7" | "SquareX19Y7" | "SquareX20Y7" | "SquareX21Y7" | "SquareX22Y7" | "SquareX23Y7" | "SquareX24Y7" | "SquareX25Y7" | "SquareX0Y8" | "SquareX1Y8" | "SquareX2Y8" | "SquareX3Y8" | "SquareX4Y8" | "SquareX5Y8" | "SquareX6Y8" | "SquareX7Y8" | "SquareX8Y8" | "SquareX9Y8" | "SquareX10Y8" | "SquareX11Y8" | "SquareX12Y8" | "SquareX13Y8" | "SquareX14Y8" | "SquareX15Y8" | "SquareX16Y8" | "SquareX17Y8" | "SquareX18Y8" | "SquareX19Y8" | "SquareX20Y8" | "SquareX21Y8" | "SquareX22Y8" | "SquareX23Y8" | "SquareX24Y8" | "SquareX1Y9" | "SquareX2Y9" | "SquareX3Y9" | "SquareX4Y9" | "SquareX5Y9" | "SquareX6Y9" | "SquareX7Y9" | "SquareX8Y9" | "SquareX9Y9" | "SquareX10Y9" | "SquareX11Y9" | "SquareX12Y9" | "SquareX13Y9" | "SquareX14Y9" | "SquareX15Y9" | "SquareX16Y9" | "SquareX17Y9" | "SquareX18Y9" | "SquareX19Y9" | "SquareX7Y10" | "SquareX8Y10" | "SquareX18Y10" | "SquareX19Y10" | "SquareX7Y11" | "SquareX8Y11" | "SquareX18Y11" | "SquareX19Y11" | "SquareX7Y12" | "SquareX8Y12" | "SquareX18Y12" | "SquareX19Y12" | "SquareX7Y13" | "SquareX8Y13" | "SquareX18Y13" | "SquareX19Y13" | "SquareX7Y14" | "SquareX8Y14" | "SquareX18Y14" | "SquareX19Y14" | "SquareX7Y15" | "SquareX8Y15" | "SquareX18Y15" | "SquareX19Y15" | "SquareX7Y16" | "SquareX8Y16" | "SquareX18Y16" | "SquareX19Y16" | "SquareX7Y17" | "SquareX8Y17" | "SquareX9Y17" | "SquareX10Y17" | "SquareX11Y17" | "SquareX12Y17" | "SquareX13Y17" | "SquareX14Y17" | "SquareX15Y17" | "SquareX16Y17" | "SquareX17Y17" | "SquareX18Y17" | "SquareX19Y17" | "SquareX20Y17" | "SquareX7Y18" | "SquareX8Y18" | "SquareX9Y18" | "SquareX10Y18" | "SquareX11Y18" | "SquareX12Y18" | "SquareX13Y18" | "SquareX14Y18" | "SquareX15Y18" | "SquareX16Y18" | "SquareX17Y18" | "SquareX18Y18" | "SquareX19Y18" | "SquareX20Y18" | "SquareX21Y18" | "SquareX22Y18" | "SquareX23Y18" | "SquareX24Y18" | "SquareX25Y18" | "SquareX8Y19" | "SquareX9Y19" | "SquareX10Y19" | "SquareX11Y19" | "SquareX12Y19" | "SquareX13Y19" | "SquareX14Y19" | "SquareX15Y19" | "SquareX16Y19" | "SquareX17Y19" | "SquareX18Y19" | "SquareX19Y19" | "SquareX20Y19" | "SquareX21Y19" | "SquareX8Y20" | "SquareX9Y20" | "SquareX20Y20" | "SquareX21Y20" | "SquareX8Y21" | "SquareX9Y21" | "SquareX20Y21" | "SquareX21Y21" | "SquareX8Y22" | "SquareX9Y22" | "SquareX20Y22" | "SquareX21Y22" | "SquareX8Y23" | "SquareX9Y23" | "SquareX20Y23" | "SquareX21Y23" | "SquareX8Y24" | "SquareX9Y24" | "SquareX20Y24" | "SquareX21Y24" | "SquareX9Y25" | "SquareX20Y25"
-  type squareType = {
-    id: squarePos,
-    moves: squarePos[]
+  type squarePos = "" | "SquareX7Y0" | "SquareX16Y0" | "SquareX6Y1" | "SquareX7Y1" | "SquareX16Y1" | "SquareX17Y1" | "SquareX6Y2" | "SquareX7Y2" | "SquareX16Y2" | "SquareX17Y2" | "SquareX6Y3" | "SquareX7Y3" | "SquareX16Y3" | "SquareX17Y3" | "SquareX6Y4" | "SquareX7Y4" | "SquareX16Y4" | "SquareX17Y4" | "SquareX6Y5" | "SquareX7Y5" | "SquareX16Y5" | "SquareX17Y5" | "SquareX18Y5" | "SquareX6Y6" | "SquareX7Y6" | "SquareX16Y6" | "SquareX17Y6" | "SquareX18Y6" | "SquareX19Y6" | "SquareX20Y6" | "SquareX21Y6" | "SquareX22Y6" | "SquareX23Y6" | "SquareX24Y6" | "SquareX6Y7" | "SquareX7Y7" | "SquareX16Y7" | "SquareX17Y7" | "SquareX18Y7" | "SquareX19Y7" | "SquareX20Y7" | "SquareX21Y7" | "SquareX22Y7" | "SquareX23Y7" | "SquareX24Y7" | "SquareX25Y7" | "SquareX0Y8" | "SquareX1Y8" | "SquareX2Y8" | "SquareX3Y8" | "SquareX4Y8" | "SquareX5Y8" | "SquareX6Y8" | "SquareX7Y8" | "SquareX8Y8" | "SquareX9Y8" | "SquareX10Y8" | "SquareX11Y8" | "SquareX12Y8" | "SquareX13Y8" | "SquareX14Y8" | "SquareX15Y8" | "SquareX16Y8" | "SquareX17Y8" | "SquareX18Y8" | "SquareX19Y8" | "SquareX20Y8" | "SquareX21Y8" | "SquareX22Y8" | "SquareX23Y8" | "SquareX24Y8" | "SquareX1Y9" | "SquareX2Y9" | "SquareX3Y9" | "SquareX4Y9" | "SquareX5Y9" | "SquareX6Y9" | "SquareX7Y9" | "SquareX8Y9" | "SquareX9Y9" | "SquareX10Y9" | "SquareX11Y9" | "SquareX12Y9" | "SquareX13Y9" | "SquareX14Y9" | "SquareX15Y9" | "SquareX16Y9" | "SquareX17Y9" | "SquareX18Y9" | "SquareX19Y9" | "SquareX7Y10" | "SquareX8Y10" | "SquareX18Y10" | "SquareX19Y10" | "SquareX7Y11" | "SquareX8Y11" | "SquareX18Y11" | "SquareX19Y11" | "SquareX7Y12" | "SquareX8Y12" | "SquareX18Y12" | "SquareX19Y12" | "SquareX7Y13" | "SquareX8Y13" | "SquareX18Y13" | "SquareX19Y13" | "SquareX7Y14" | "SquareX8Y14" | "SquareX18Y14" | "SquareX19Y14" | "SquareX7Y15" | "SquareX8Y15" | "SquareX18Y15" | "SquareX19Y15" | "SquareX7Y16" | "SquareX8Y16" | "SquareX18Y16" | "SquareX19Y16" | "SquareX7Y17" | "SquareX8Y17" | "SquareX9Y17" | "SquareX10Y17" | "SquareX11Y17" | "SquareX12Y17" | "SquareX13Y17" | "SquareX14Y17" | "SquareX15Y17" | "SquareX16Y17" | "SquareX17Y17" | "SquareX18Y17" | "SquareX19Y17" | "SquareX20Y17" | "SquareX7Y18" | "SquareX8Y18" | "SquareX9Y18" | "SquareX10Y18" | "SquareX11Y18" | "SquareX12Y18" | "SquareX13Y18" | "SquareX14Y18" | "SquareX15Y18" | "SquareX16Y18" | "SquareX17Y18" | "SquareX18Y18" | "SquareX19Y18" | "SquareX20Y18" | "SquareX21Y18" | "SquareX22Y18" | "SquareX23Y18" | "SquareX24Y18" | "SquareX25Y18" | "SquareX8Y19" | "SquareX9Y19" | "SquareX10Y19" | "SquareX11Y19" | "SquareX12Y19" | "SquareX13Y19" | "SquareX14Y19" | "SquareX15Y19" | "SquareX16Y19" | "SquareX17Y19" | "SquareX18Y19" | "SquareX19Y19" | "SquareX20Y19" | "SquareX21Y19" | "SquareX22Y19" | "SquareX8Y20" | "SquareX9Y20" | "SquareX20Y20" | "SquareX21Y20" | "SquareX8Y21" | "SquareX9Y21" | "SquareX20Y21" | "SquareX21Y21" | "SquareX8Y22" | "SquareX9Y22" | "SquareX20Y22" | "SquareX21Y22" | "SquareX8Y23" | "SquareX9Y23" | "SquareX20Y23" | "SquareX21Y23" | "SquareX8Y24" | "SquareX9Y24" | "SquareX20Y24" | "SquareX21Y24" | "SquareX9Y25" | "SquareX20Y25"
+  type positionType = {
+    id: position,
+    moves: position[]
   }
 
   type murderWeapons = "Hemlock_Poison" | "Sharpened_Rapier" | "Axe" |'Dagger'
@@ -22,6 +29,7 @@ declare global {
   type players = "Hamlet" | "Claudius" | "Polonius" | "Gertrude"
   type cardType = murderWeapons | rooms | players
   type position = squarePos | rooms
+  type turnType = players | "HamletRoom" | "ClaudiusRoom" | "PoloniusRoom" | "GertrudeRoom"
 
   type guessType = {
     level: "known" | "likely" | "guess"
@@ -49,7 +57,7 @@ declare global {
     claudius: playerInfo;
     polonius: playerInfo;
     gertrude: playerInfo;
-    turn: players;
+    turn: turnType;
     dieOne: number;
     dieTwo: number;
     history: position[]; //The history of the person with the turn
@@ -57,15 +65,14 @@ declare global {
     orderOfPlay: players[];
     answer: answerType;
   };
-
   interface squarePieceProps {
     id: position;
     moveIds?: string[];
-    imageUrl?: string | undefined;
+    imageUrl?: undefined;
     color?: string | undefined;
     xPos: number;
     yPos: number;
-    role: "square"
+    role: "square" | "spawnSquare"
     roomWidth?: undefined;
     roomHeight?: undefined;
   }
@@ -103,37 +110,38 @@ function getSize(width: number, height: number) {
 
 function GamePiece({id, color, role, roomWidth, roomHeight, xPos, yPos}:(roomPieceProps | squarePieceProps | optionsPieceProps)) {
   const { width, height } = useSelector((state: RootState) => state.dimentions);
-  const hamletPos = useSelector((state: RootState) => state.gameState.hamlet.pos);
-  const cladiusPos = useSelector((state: RootState) => state.gameState.claudius.pos);
-  const poloniusPos = useSelector((state: RootState) => state.gameState.polonius.pos);
-  const gertrudePos = useSelector((state: RootState) => state.gameState.gertrude.pos);
+  const hamlet = useSelector((state: RootState) => state.gameState.hamlet);
+  const claudius = useSelector((state: RootState) => state.gameState.claudius);
+  const polonius = useSelector((state: RootState) => state.gameState.polonius);
+  const gertrude = useSelector((state: RootState) => state.gameState.gertrude);
   const turn = useSelector((state: RootState) => state.gameState.turn);
+  const history = useSelector((state: RootState) => state.gameState.history);
   const [movableSquares, setMoveableSquares] = useState<position[]>([]);
 
   useEffect(() => {
     switch (turn) {
       case "Hamlet":
-        const hamletPiece = PiecesLocations.find((e) => {return e.id === hamletPos})
+        const hamletPiece = PiecesLocations.find((e) => {return e.id === hamlet.pos})
         if (hamletPiece !== undefined) {
           setMoveableSquares(hamletPiece.moves);
         }
       case "Claudius":
-        const cladiusPiece = PiecesLocations.find((e) => {return e.id === cladiusPos})
+        const cladiusPiece = PiecesLocations.find((e) => {return e.id === claudius.pos})
         if (cladiusPiece !== undefined) {
           setMoveableSquares(cladiusPiece.moves);
         }
       case "Polonius":
-        const poloniusPiece = PiecesLocations.find((e) => {return e.id === poloniusPos})
+        const poloniusPiece = PiecesLocations.find((e) => {return e.id === polonius.pos})
         if (poloniusPiece !== undefined) {
           setMoveableSquares(poloniusPiece.moves);
         }
       case "Gertrude":
-        const gertrudePiece = PiecesLocations.find((e) => {return e.id === gertrudePos})
+        const gertrudePiece = PiecesLocations.find((e) => {return e.id === gertrude.pos})
         if (gertrudePiece !== undefined) {
           setMoveableSquares(gertrudePiece.moves);
         }
     }
-  }, [])
+  }, [hamlet.pos, claudius.pos, polonius.pos, gertrude.pos])
 
   if (role === "options") {
     return (
@@ -143,38 +151,57 @@ function GamePiece({id, color, role, roomWidth, roomHeight, xPos, yPos}:(roomPie
     )
   }
 
-  if (role === "room") {
+  if (role === "room" && movableSquares.includes(id) && isPlayersTurn(hamlet, claudius, polonius, gertrude, turn)) {
     return (
-      <Pressable id={id} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, backgroundColor: color, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
+      <Pressable onPress={() => {
+        onMove(id)
+      }} id={id} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, backgroundColor: color, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
         <Text>{id}</Text>
       </Pressable>
     )
   }
 
+  if (role === "room") {
+    return (
+      <View id={id} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, backgroundColor: color, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
+        <Text>{id}</Text>
+      </View>
+    )
+  }
 
-
-  if (movableSquares.includes(id) && id !== hamletPos && id !== cladiusPos && id !== poloniusPos && id !== gertrudePos) {
+  //A pickable spawn sqaure
+  if (checkIfPickingSpawnPosition(hamlet, claudius, polonius, gertrude) && role === "spawnSquare") {
     return (
       <Pressable onPress={() => {
-        store.dispatch(gameStateSlice.actions.movePosition(id))
+        setSpawnPosition(hamlet, claudius, polonius, gertrude, id)
+      }} id={id} style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: color, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}} />
+    )
+  }
+
+  //A moveable square
+  if (movableSquares.includes(id) && id !== hamlet.pos && id !== claudius.pos && id !== polonius.pos && id !== gertrude.pos && isPlayersTurn(hamlet, claudius, polonius, gertrude, turn) && !history.includes(id)) {
+    return (
+      <Pressable onPress={() => {
+        onMove(id)
       }} id={id} style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: movableSquares.includes(id) ? "red":color, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
       </Pressable>
     )
   }
 
+  //General square
   return (
     <View id={id} style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: color, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
-      { (id === hamletPos) ?
-        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: 'red', borderRadius: 2.5}}/>:null
+      { (id === hamlet.pos) ?
+        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: 'red', borderRadius: getSize(width, height)/2}}/>:null
       }
-      { (id === cladiusPos) ?
-        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: 'yellow', borderRadius: 2.5}}/>:null
+      { (id === claudius.pos) ?
+        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: 'yellow', borderRadius: getSize(width, height)/2}}/>:null
       }
-      { (id === poloniusPos) ?
-        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: 'green', borderRadius: 2.5}}/>:null
+      { (id === polonius.pos) ?
+        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: 'green', borderRadius: getSize(width, height)/2}}/>:null
       }
-      { (id === gertrudePos) ?
-        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: 'blue', borderRadius: 2.5}}/>:null
+      { (id === gertrude.pos) ?
+        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: 'blue', borderRadius: getSize(width, height)/2}}/>:null
       }
     </View>
   )
@@ -187,8 +214,8 @@ export default function index() {
     getUserGameStatus()
   }, [])
   return (
-    <View style={{width: width, height: height, overflow: 'hidden'}}>
-      <View style={{width: getSize(width, height) * 26, height: getSize(width, height) * 26, margin: 'auto', backgroundColor: 'green'}}>
+    <View style={{width: width, height: height, overflow: 'hidden', backgroundColor: Colors.main}}>
+      <View style={{width: getSize(width, height) * 26, height: getSize(width, height) * 26, margin: 'auto', backgroundColor: Colors.main}}>
         {/* Options */}
         <GamePiece id='' xPos={0} yPos={10} roomWidth={10} roomHeight={10} role='options'/>
 
@@ -208,8 +235,8 @@ export default function index() {
 
         <GamePiece id="SquareX6Y1" color='black' xPos={6} yPos={1} role='square'/>
         <GamePiece id="SquareX7Y1" color='white' xPos={7} yPos={1} role='square'/>
-        <GamePiece id="SquareX16Y1" color='white' xPos={16} yPos={1} role='square'/>
-        <GamePiece id="SquareX17Y1" color='black' xPos={17} yPos={1} role='square'/>    
+        <GamePiece id="SquareX16Y1" color='black' xPos={16} yPos={1} role='square'/>
+        <GamePiece id="SquareX17Y1" color='white' xPos={17} yPos={1} role='square'/>    
 
         <GamePiece id="SquareX6Y2" color='white' xPos={6} yPos={2} role='square'/>
         <GamePiece id="SquareX7Y2" color='black' xPos={7} yPos={2} role='square'/>
@@ -257,9 +284,9 @@ export default function index() {
         <GamePiece id="SquareX24Y7" moveIds={["SquareX24Y6", "SquareX23Y7", "SquareX25Y7", "SquareX24Y8"]} color='black' xPos={24} yPos={7} role='square'/>
         <GamePiece id="SquareX25Y7" moveIds={["SquareX25Y6", "SquareX24Y7", "SquareX25Y8"]} color='white' xPos={25} yPos={7} role='square'/>
 
-        <GamePiece id="SquareX0Y8" moveIds={["SquareX1Y8"]} color='pink' xPos={0} yPos={8} role='square'/>
+        <GamePiece id="SquareX0Y8" color='pink' xPos={0} yPos={8} role='spawnSquare'/>
         <GamePiece id="SquareX1Y8" moveIds={["SquareX2Y8", "SquareX1Y9"]} color='black' xPos={1} yPos={8} role='square'/>
-        <GamePiece id="SquareX2Y8" moveIds={["SquareX1Y8", "SquareX3Y8", "SquareX2Y9"]} color='white' xPos={2} yPos={8} role='square'/>
+        <GamePiece id="SquareX2Y8" color='white' xPos={2} yPos={8} role='square'/>
         <GamePiece id="SquareX3Y8" moveIds={["SquareX2Y8", "SquareX4Y8", "SquareX3Y9"]} color='black' xPos={3} yPos={8} role='square'/>
         <GamePiece id="SquareX4Y8" moveIds={["SquareX3Y8", "SquareX5Y8", "SquareX4Y9"]} color='white' xPos={4} yPos={8} role='square'/>
         <GamePiece id="SquareX5Y8" moveIds={["SquareX4Y8", "SquareX6Y8", "SquareX5Y9"]} color='black' xPos={5} yPos={8} role='square'/>
@@ -387,6 +414,7 @@ export default function index() {
         <GamePiece id="SquareX19Y19" moveIds={["SquareX19Y18", "SquareX18Y19", "SquareX20Y19"]} color='white' xPos={19} yPos={19} role='square'/>
         <GamePiece id="SquareX20Y19" moveIds={["SquareX20Y18", "SquareX19Y19", "SquareX21Y19", "SquareX20Y20"]} color='black' xPos={20} yPos={19} role='square'/>
         <GamePiece id="SquareX21Y19" moveIds={["SquareX21Y18", "SquareX20Y19", "SquareX21Y20"]} color='white' xPos={21} yPos={19} role='square'/>
+        <GamePiece id="SquareX22Y19" color='black' xPos={22} yPos={19} role='square'/>
 
         <GamePiece id="SquareX8Y20" moveIds={["SquareX8Y19", "SquareX9Y20", "SquareX8Y21"]} color='white' xPos={8} yPos={20} role='square'/>
         <GamePiece id="SquareX9Y20" moveIds={["SquareX9Y19", "SquareX8Y20", "SquareX9Y21"]} color='black' xPos={9} yPos={20} role='square'/>
@@ -421,6 +449,18 @@ export default function index() {
         transparent={true}
         visible={screens.playerPicker}>
         <PlayerScreen />
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={screens.detectiveSheet}>
+          <DetectiveSheet />
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={screens.room}>
+          <RoomScreen />
       </Modal>
     </View>
   )

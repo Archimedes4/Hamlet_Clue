@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import roleDie from '../../util/roleDie';
+import { rooms } from '../../constants/PiecesLocations';
 
 const initalState: gameState = {
   gameId: '',
@@ -52,8 +53,9 @@ export const gameStateSlice = createSlice({
     setGameState: (_state, action: PayloadAction<gameState>) => {
       return action.payload
     },
-    movePosition: (state, action: PayloadAction<position>) => {
-      if (state.dieCount + 1 === state.dieOne + state.dieTwo) {
+    movePosition: (state, action: PayloadAction<{pos: position, room: boolean}>) => {
+      //Check if room
+      if (action.payload.room) {
         //Made all moves next player
         let newGameState: gameState = {
           gameId: state.gameId,
@@ -66,7 +68,39 @@ export const gameStateSlice = createSlice({
           dieOne: roleDie(),
           dieTwo: roleDie(),
           dieCount: 0,
-          history: [...state.history, action.payload],
+          history: [...state.history, action.payload.pos],
+          orderOfPlay: state.orderOfPlay,
+          answer: state.answer
+        }
+        switch (state.turn) {
+          case "Hamlet":
+            newGameState.turn = "HamletRoom"
+            newGameState.hamlet.pos = action.payload.pos
+          case "Claudius":
+            newGameState.turn = "ClaudiusRoom"
+            newGameState.claudius.pos = action.payload.pos
+          case "Polonius":
+            newGameState.turn = "PoloniusRoom"
+            newGameState.polonius.pos = action.payload.pos
+          case "Gertrude":
+            newGameState.turn = "GertrudeRoom"
+            newGameState.gertrude.pos = action.payload.pos
+        }
+        return newGameState
+      } else if (state.dieCount + 1 === state.dieOne + state.dieTwo) {
+        //Made all moves next player
+        let newGameState: gameState = {
+          gameId: state.gameId,
+          master: state.master,
+          hamlet: state.hamlet,
+          claudius: state.claudius,
+          polonius: state.polonius,
+          gertrude: state.gertrude,
+          turn: state.turn,
+          dieOne: roleDie(),
+          dieTwo: roleDie(),
+          dieCount: 0,
+          history: [],
           orderOfPlay: state.orderOfPlay,
           answer: state.answer
         }
@@ -78,6 +112,7 @@ export const gameStateSlice = createSlice({
             } else {
               newGameState.turn = state.orderOfPlay[hamletIndex + 1]
             }
+            newGameState.hamlet.pos = action.payload.pos
           case "Claudius":
             state.orderOfPlay.indexOf("Claudius")
             const claudiusIndex = state.orderOfPlay.indexOf("Hamlet") 
@@ -86,6 +121,7 @@ export const gameStateSlice = createSlice({
             } else {
               newGameState.turn = state.orderOfPlay[claudiusIndex + 1]
             }
+            newGameState.claudius.pos = action.payload.pos
           case "Polonius":
             const poloniusIndex = state.orderOfPlay.indexOf("Polonius")
             if (poloniusIndex >= 3) {
@@ -93,6 +129,7 @@ export const gameStateSlice = createSlice({
             } else {
               newGameState.turn = state.orderOfPlay[poloniusIndex + 1]
             }
+            newGameState.polonius.pos = action.payload.pos
           case "Gertrude":
             const gertrudeIndex = state.orderOfPlay.indexOf("Gertrude") 
             if (gertrudeIndex >= 3) {
@@ -100,6 +137,7 @@ export const gameStateSlice = createSlice({
             } else {
               newGameState.turn = state.orderOfPlay[gertrudeIndex + 1]
             }
+            newGameState.gertrude.pos = action.payload.pos
         }
         return newGameState
       } else {
@@ -114,7 +152,7 @@ export const gameStateSlice = createSlice({
           dieOne: state.dieOne,
           dieTwo: state.dieTwo,
           dieCount: state.dieCount + 1,
-          history: [...state.history, action.payload],
+          history: [...state.history, action.payload.pos],
           orderOfPlay: state.orderOfPlay,
           answer: state.answer
         }
@@ -122,7 +160,7 @@ export const gameStateSlice = createSlice({
           case "Hamlet":
             newGameState.hamlet = {
               id: state.hamlet.id,
-              pos: action.payload,
+              pos: action.payload.pos,
               cards: state.hamlet.cards,
               guesses: state.hamlet.guesses,
               accused: false
@@ -130,7 +168,7 @@ export const gameStateSlice = createSlice({
           case "Claudius":
             newGameState.claudius = {
               id: state.claudius.id,
-              pos: action.payload,
+              pos: action.payload.pos,
               cards: state.claudius.cards,
               guesses: state.claudius.guesses,
               accused: false
@@ -138,7 +176,7 @@ export const gameStateSlice = createSlice({
           case "Polonius":
             newGameState.polonius = {
               id: state.polonius.id,
-              pos: action.payload,
+              pos: action.payload.pos,
               cards: state.polonius.cards,
               guesses: state.polonius.guesses,
               accused: false
@@ -146,7 +184,7 @@ export const gameStateSlice = createSlice({
           case "Gertrude":
             newGameState.gertrude = {
               id: state.gertrude.id,
-              pos: action.payload,
+              pos: action.payload.pos,
               cards: state.gertrude.cards,
               guesses: state.gertrude.guesses,
               accused: false
@@ -218,6 +256,24 @@ export const gameStateSlice = createSlice({
         polonius: state.polonius,
         gertrude: action.payload,
         turn: state.turn,
+        dieOne: state.dieOne,
+        dieTwo: state.dieTwo,
+        dieCount: state.dieCount,
+        history: state.history,
+        orderOfPlay: state.orderOfPlay,
+        answer: state.answer
+      }
+      return newGameState
+    },
+    setTurn: (state, action: PayloadAction<turnType>) => {
+      let newGameState: gameState = {
+        gameId: state.gameId,
+        master: state.master,
+        hamlet: state.hamlet,
+        claudius: state.claudius,
+        polonius: state.polonius,
+        gertrude: state.gertrude,
+        turn: action.payload,
         dieOne: state.dieOne,
         dieTwo: state.dieTwo,
         dieCount: state.dieCount,

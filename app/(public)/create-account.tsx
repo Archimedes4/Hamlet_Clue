@@ -19,7 +19,7 @@ export default function createAccount() {
       <Pressable onPress={() => {router.push('/login')}}>
         <Text>Back</Text>
       </Pressable>
-      <Text>create-account</Text>
+      <Text>Create Account</Text>
       <Text>Email</Text>
       <TextInput value={email} onChangeText={setEmail}/>
       <Text>Password</Text>

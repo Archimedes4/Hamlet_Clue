@@ -1,5 +1,5 @@
 import { auth } from "../app/_layout"
-import createUUID from "../components/createUUID"
+import createUUID from "./createUUID"
 import roleDie from "./roleDie"
 import shuffle from "./shuffle"
 

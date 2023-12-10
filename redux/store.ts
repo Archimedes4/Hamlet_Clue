@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import dimentionsReducer from './reducers/dimentionsReducer';
 import gameStateReducer from './reducers/gameStateReducer';
 import screensReducer from './reducers/screensReducer';
+import suggestionSelectionReducer from './reducers/suggestionSelectionReducer';
 
 const store = configureStore({
   reducer: {
     dimentions: dimentionsReducer,
     gameState: gameStateReducer,
-    screens: screensReducer
+    screens: screensReducer,
+    suggestionsSelection: suggestionSelectionReducer
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
