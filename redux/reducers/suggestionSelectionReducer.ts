@@ -14,7 +14,19 @@ export const suggestionsSlice = createSlice({
       weapon: murderWeapons
     }>) => {
       return action.payload
-    }
+    },
+    setPlayerSuggestion: (state, action: PayloadAction<players>) => {
+      return {
+        player: action.payload,
+        weapon: state.weapon
+      }
+    },
+    setWeaponSuggestion: (state, action: PayloadAction<murderWeapons>) => {
+      return {
+        player: state.player,
+        weapon: action.payload
+      }
+    },
   },
 });
 

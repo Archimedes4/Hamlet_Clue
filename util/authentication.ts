@@ -31,18 +31,6 @@ export function signInWithGoogle() {
   signInWithRedirect(auth, provider);
 }
 
-export async function handleGoogleRedirect() {
-  try {
-    const result = await getRedirectResult(auth)
-    if (result !== null) {
-      console.log("push")
-      router.push("/")
-    }
-  } catch {
-    //TO DO alert the user of failure
-  }
-}
-
 export async function logOut(): Promise<loadingStateEnum> {
   try {
     await signOut(auth);

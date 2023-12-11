@@ -2,7 +2,7 @@ import { rooms } from "../constants/PiecesLocations";
 import { gameStateSlice } from "../redux/reducers/gameStateReducer";
 import { screensSlice } from "../redux/reducers/screensReducer";
 import store from "../redux/store";
-import roleDie from "./roleDie";
+import { roleDie } from "./util";
 
 export default function onMove(id: position) {
   const room = rooms.some((e) => {return e === id})
@@ -14,6 +14,7 @@ export default function onMove(id: position) {
   let newGameState: gameState = {
     gameId: state.gameId,
     master: state.master,
+    players: state.players,
     hamlet: state.hamlet,
     claudius: state.claudius,
     polonius: state.polonius,
@@ -24,7 +25,10 @@ export default function onMove(id: position) {
     dieCount: state.dieCount,
     history: state.history,
     orderOfPlay: state.orderOfPlay,
-    answer: state.answer
+    answer: state.answer,
+    promt: state.promt,
+    gameOver: state.gameOver,
+    winner: state.winner
   }
   if (room) {
     newGameState.dieOne = roleDie()
@@ -35,38 +39,42 @@ export default function onMove(id: position) {
     if (state.turn === "Hamlet") {
       newGameState.turn = "HamletRoom"
       newGameState.hamlet  = {
-        id: state.hamlet.id,
+        user: state.hamlet.user,
         pos: id,
         cards: state.hamlet.cards,
         guesses: state.hamlet.guesses,
-        accused: state.hamlet.accused
+        accused: state.hamlet.accused,
+        notes: state.hamlet.notes
       }
     } else if (state.turn === "Claudius") {
       newGameState.turn = "ClaudiusRoom"
       newGameState.claudius = {
-        id: state.claudius.id,
+        user: state.claudius.user,
         pos: id,
         cards: state.claudius.cards,
         guesses: state.claudius.guesses,
-        accused: state.claudius.accused
+        accused: state.claudius.accused,
+        notes: state.claudius.notes
       }
     } else if (state.turn === "Polonius") {
       newGameState.turn = "PoloniusRoom"
       newGameState.polonius = {
-        id: state.polonius.id,
+        user: state.polonius.user,
         pos: id,
         cards: state.polonius.cards,
         guesses: state.polonius.guesses,
-        accused: state.polonius.accused
+        accused: state.polonius.accused,
+        notes: state.polonius.notes
       }
     } else if ( state.turn === "Gertrude") {
       newGameState.turn = "GertrudeRoom"
       newGameState.gertrude = {
-        id: state.gertrude.id,
+        user: state.gertrude.user,
         pos: id,
         cards: state.gertrude.cards,
         guesses: state.gertrude.guesses,
-        accused: state.gertrude.accused
+        accused: state.gertrude.accused,
+        notes: state.gertrude.notes
       }
     }
   } else if (state.dieCount + 1 === state.dieOne + state.dieTwo) {
@@ -83,11 +91,12 @@ export default function onMove(id: position) {
         newGameState.turn = state.orderOfPlay[hamletIndex + 1]
       }
       newGameState.hamlet  = {
-        id: state.hamlet.id,
+        user: state.hamlet.user,
         pos: id,
         cards: state.hamlet.cards,
         guesses: state.hamlet.guesses,
-        accused: state.hamlet.accused
+        accused: state.hamlet.accused,
+        notes: state.hamlet.notes
       }
     } else if (state.turn === "Claudius") {
       state.orderOfPlay.indexOf("Claudius")
@@ -98,11 +107,12 @@ export default function onMove(id: position) {
         newGameState.turn = state.orderOfPlay[claudiusIndex + 1]
       }
       newGameState.claudius = {
-        id: state.claudius.id,
+        user: state.claudius.user,
         pos: id,
         cards: state.claudius.cards,
         guesses: state.claudius.guesses,
-        accused: state.claudius.accused
+        accused: state.claudius.accused,
+        notes: state.claudius.notes
       }
     } else if (state.turn === "Polonius") {
       const poloniusIndex = state.orderOfPlay.indexOf("Polonius")
@@ -112,11 +122,12 @@ export default function onMove(id: position) {
         newGameState.turn = state.orderOfPlay[poloniusIndex + 1]
       }
       newGameState.polonius = {
-        id: state.polonius.id,
+        user: state.polonius.user,
         pos: id,
         cards: state.polonius.cards,
         guesses: state.polonius.guesses,
-        accused: state.polonius.accused
+        accused: state.polonius.accused,
+        notes: state.polonius.notes
       }
     } else if (state.turn === "Gertrude") {
       const gertrudeIndex = state.orderOfPlay.indexOf("Gertrude") 
@@ -126,11 +137,12 @@ export default function onMove(id: position) {
         newGameState.turn = state.orderOfPlay[gertrudeIndex + 1]
       }
       newGameState.gertrude = {
-        id: state.gertrude.id,
+        user: state.gertrude.user,
         pos: id,
         cards: state.gertrude.cards,
         guesses: state.gertrude.guesses,
-        accused: state.gertrude.accused
+        accused: state.gertrude.accused,
+        notes: state.gertrude.notes
       }
     }
   } else {
@@ -138,35 +150,39 @@ export default function onMove(id: position) {
     newGameState.history = [...state.history, id]
     if (state.turn === "Hamlet") { 
       newGameState.hamlet = {
-        id: state.hamlet.id,
+        user: state.hamlet.user,
         pos: id,
         cards: state.hamlet.cards,
         guesses: state.hamlet.guesses,
-        accused: state.hamlet.accused
+        accused: state.hamlet.accused,
+        notes: state.hamlet.notes
       }
     } else if (state.turn === "Claudius") {
       newGameState.claudius = {
-        id: state.claudius.id,
+        user: state.claudius.user,
         pos: id,
         cards: state.claudius.cards,
         guesses: state.claudius.guesses,
-        accused: state.claudius.accused
+        accused: state.claudius.accused,
+        notes: state.claudius.notes
       }
     } else if (state.turn === "Polonius") {
       newGameState.polonius = {
-        id: state.polonius.id,
+        user: state.polonius.user,
         pos: id,
         cards: state.polonius.cards,
         guesses: state.polonius.guesses,
-        accused: state.polonius.accused
+        accused: state.polonius.accused,
+        notes: state.polonius.notes
       }
     } else if (state.turn === "Gertrude") {
       newGameState.gertrude = {
-        id: state.gertrude.id,
+        user: state.gertrude.user,
         pos: id,
         cards: state.gertrude.cards,
         guesses: state.gertrude.guesses,
-        accused: state.gertrude.accused
+        accused: state.gertrude.accused,
+        notes: state.gertrude.notes
       }
     }
   }

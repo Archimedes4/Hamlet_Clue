@@ -1,15 +1,19 @@
+import accusationSelectionReducer from './reducers/accusationSelectionReducer';
 import { configureStore } from '@reduxjs/toolkit';
 import dimentionsReducer from './reducers/dimentionsReducer';
 import gameStateReducer from './reducers/gameStateReducer';
 import screensReducer from './reducers/screensReducer';
 import suggestionSelectionReducer from './reducers/suggestionSelectionReducer';
+import usernameReducer from './reducers/usernameReducer';
 
 const store = configureStore({
   reducer: {
     dimentions: dimentionsReducer,
     gameState: gameStateReducer,
     screens: screensReducer,
-    suggestionsSelection: suggestionSelectionReducer
+    suggestionsSelection: suggestionSelectionReducer,
+    accusationsSelection: accusationSelectionReducer,
+    username: usernameReducer
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

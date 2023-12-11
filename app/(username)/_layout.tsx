@@ -1,8 +1,8 @@
-import { View, ActivityIndicator } from 'react-native'
+import { View, Text, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { Redirect, Slot } from 'expo-router'
 import useIsAuthenticated from '../../hooks/useIsAuthenticated';
-import { authState } from '../../constants/PiecesLocations';
+import { authState, loadingStateEnum } from '../../constants/PiecesLocations';
 import Colors from '../../constants/Colors';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
@@ -11,7 +11,7 @@ export default function AuthHolder() {
   const { width, height } = useSelector((state: RootState) => state.dimentions);
   const isAuth = useIsAuthenticated()
   if (isAuth === authState.authenticatedWithAccount) {
-    return <Slot />
+    return <Redirect href={"/"}/>
   }
 
   if (isAuth === authState.loading) {
@@ -23,7 +23,9 @@ export default function AuthHolder() {
   }
 
   if (isAuth === authState.authenticatedNoAccount) {
-    return <Redirect href={"/account-info"}/>
+    return (
+      <Slot />
+    )
   }
 
 

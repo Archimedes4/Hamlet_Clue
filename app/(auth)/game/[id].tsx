@@ -14,6 +14,9 @@ import isPlayersTurn from '../../../util/isPlayersTurn';
 import onMove from '../../../util/onMove';
 import RoomScreen from '../../../components/RoomScreen';
 import Colors from '../../../constants/Colors';
+import { useGlobalSearchParams } from 'expo-router';
+import useGameSubscribe from '../../../hooks/useGameSubscribe';
+import useGameReady from '../../../hooks/useGameReady';
 
 //26 by 26 grid
 
@@ -29,19 +32,27 @@ declare global {
   type players = "Hamlet" | "Claudius" | "Polonius" | "Gertrude"
   type cardType = murderWeapons | rooms | players
   type position = squarePos | rooms
-  type turnType = players | "HamletRoom" | "ClaudiusRoom" | "PoloniusRoom" | "GertrudeRoom"
+  type turnType = players | "HamletRoom" | "ClaudiusRoom" | "PoloniusRoom" | "GertrudeRoom" | "HamletSugget" | "ClaudiusSuggest" | "PoloniusSuggest" | "GertrudeSuggest"
 
+  type levelType = "known" | "likely" | "guess"
   type guessType = {
-    level: "known" | "likely" | "guess"
+    level: levelType
     card: cardType
+    player: players //Used to show which player has which cards
+  }
+
+  type userType = {
+    id: string,
+    username: string
   }
 
   type playerInfo = {
-    id: string;
+    user: userType;
     pos: position;
     cards: cardType[];
     guesses: guessType[];
     accused: boolean;
+    notes: string;
   }
 
   type answerType = {
@@ -49,10 +60,24 @@ declare global {
     room: rooms,
     player: players
   }
+  type informationPromt = {
+    //Room player and weapn are the information
+    room: rooms;
+    player: players;
+    weapon: murderWeapons;
+    //Who made the suggestion/acusation
+    intiator: players;
+    accusation: boolean;
+    //At what time did they make suggest/accusatiom.
+    time: string
+    //At what time did the person responding to the turn respond.
+    timeHandled: string | "";
+    handledCard: cardType | ""
+  }
 
   type gameState = {
     gameId: string;
-    master: string;
+    master: string; //just the id of the master
     hamlet: playerInfo;
     claudius: playerInfo;
     polonius: playerInfo;
@@ -60,10 +85,14 @@ declare global {
     turn: turnType;
     dieOne: number;
     dieTwo: number;
+    players: userType[]
     history: position[]; //The history of the person with the turn
     dieCount: number //Number of moves the person with the turn has used
     orderOfPlay: players[];
     answer: answerType;
+    promt: informationPromt;
+    gameOver: boolean;
+    winner: players | ""
   };
   interface squarePieceProps {
     id: position;
@@ -119,34 +148,37 @@ function GamePiece({id, color, role, roomWidth, roomHeight, xPos, yPos}:(roomPie
   const [movableSquares, setMoveableSquares] = useState<position[]>([]);
 
   useEffect(() => {
-    switch (turn) {
-      case "Hamlet":
-        const hamletPiece = PiecesLocations.find((e) => {return e.id === hamlet.pos})
-        if (hamletPiece !== undefined) {
-          setMoveableSquares(hamletPiece.moves);
-        }
-      case "Claudius":
-        const cladiusPiece = PiecesLocations.find((e) => {return e.id === claudius.pos})
-        if (cladiusPiece !== undefined) {
-          setMoveableSquares(cladiusPiece.moves);
-        }
-      case "Polonius":
-        const poloniusPiece = PiecesLocations.find((e) => {return e.id === polonius.pos})
-        if (poloniusPiece !== undefined) {
-          setMoveableSquares(poloniusPiece.moves);
-        }
-      case "Gertrude":
-        const gertrudePiece = PiecesLocations.find((e) => {return e.id === gertrude.pos})
-        if (gertrudePiece !== undefined) {
-          setMoveableSquares(gertrudePiece.moves);
-        }
+    if (turn === 'Hamlet') {
+      const hamletPiece = PiecesLocations.find((e) => {return e.id === hamlet.pos})
+      if (hamletPiece !== undefined) {
+        setMoveableSquares(hamletPiece.moves);
+      }
+    } else if (turn == "Claudius") {
+      const cladiusPiece = PiecesLocations.find((e) => {return e.id === claudius.pos})
+      if (cladiusPiece !== undefined) {
+        setMoveableSquares(cladiusPiece.moves);
+      }
+    } else if (turn === "Polonius") {
+      const poloniusPiece = PiecesLocations.find((e) => {return e.id === polonius.pos})
+      if (poloniusPiece !== undefined) {
+        setMoveableSquares(poloniusPiece.moves);
+      }
+    } else if (turn === "Gertrude") {
+      const gertrudePiece = PiecesLocations.find((e) => {return e.id === gertrude.pos})
+      if (gertrudePiece !== undefined) {
+        setMoveableSquares(gertrudePiece.moves);
+      }
     }
   }, [hamlet.pos, claudius.pos, polonius.pos, gertrude.pos])
 
+  useEffect(() => {
+    console.log(movableSquares)
+  }, [movableSquares])
+
   if (role === "options") {
     return (
-      <View id={id} style={{width: getSize(width, height) * 10, height: getSize(width, height) * 10, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
-        <Options />
+      <View id={id} style={{width: getSize(width, height) * 7, height: getSize(width, height) * 9, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
+        <Options width={getSize(width, height) * 7} height={getSize(width, height) * 9}/>
       </View>
     )
   }
@@ -170,7 +202,7 @@ function GamePiece({id, color, role, roomWidth, roomHeight, xPos, yPos}:(roomPie
   }
 
   //A pickable spawn sqaure
-  if (checkIfPickingSpawnPosition(hamlet, claudius, polonius, gertrude) && role === "spawnSquare") {
+  if (checkIfPickingSpawnPosition(hamlet, claudius, polonius, gertrude) && role === "spawnSquare"  && id !== hamlet.pos && id !== claudius.pos && id !== polonius.pos && id !== gertrude.pos) {
     return (
       <Pressable onPress={() => {
         setSpawnPosition(hamlet, claudius, polonius, gertrude, id)
@@ -210,9 +242,18 @@ function GamePiece({id, color, role, roomWidth, roomHeight, xPos, yPos}:(roomPie
 export default function index() {
   const { width, height } = useSelector((state: RootState) => state.dimentions);
   const screens = useSelector((state: RootState) => state.screens);
+  const id = useGlobalSearchParams();
+  const [gameId, setGameId] = useState<string>("");
   useEffect(() => {
     getUserGameStatus()
   }, [])
+  useEffect(() => {
+    if (typeof id.id === 'string') {
+      setGameId(id.id)
+    }
+  }, [id])
+  useGameSubscribe(gameId)
+  useGameReady();
   return (
     <View style={{width: width, height: height, overflow: 'hidden', backgroundColor: Colors.main}}>
       <View style={{width: getSize(width, height) * 26, height: getSize(width, height) * 26, margin: 'auto', backgroundColor: Colors.main}}>
@@ -230,8 +271,8 @@ export default function index() {
         <GamePiece id="Stair_Well" color='orange' xPos={22} yPos={19} roomWidth={4} roomHeight={7} role='room'/>
 
         {/* Squares */}
-        <GamePiece id="SquareX7Y0" color='black' xPos={7} yPos={0} role='square'/>
-        <GamePiece id="SquareX16Y0" color='white' xPos={16} yPos={0} role='square'/>
+        <GamePiece id="SquareX7Y0" color='blue' xPos={7} yPos={0} role='spawnSquare'/>
+        <GamePiece id="SquareX16Y0" color='blue' xPos={16} yPos={0} role='spawnSquare'/>
 
         <GamePiece id="SquareX6Y1" color='black' xPos={6} yPos={1} role='square'/>
         <GamePiece id="SquareX7Y1" color='white' xPos={7} yPos={1} role='square'/>
@@ -271,25 +312,25 @@ export default function index() {
         <GamePiece id="SquareX23Y6" moveIds={["SquareX22Y6", "SquareX24Y6", "SquareX23Y7"]} color='black' xPos={23} yPos={6} role='square'/>
         <GamePiece id="SquareX24Y6" moveIds={["SquareX23Y6", "SquareX25Y6", "SquareX24Y7"]} color='white' xPos={24} yPos={6} role='square'/>
 
-        <GamePiece id="SquareX6Y7" moveIds={["SquareX6Y6", "SquareX7Y7", "SquareX6Y8"]} color='black' xPos={6} yPos={7} role='square'/>
-        <GamePiece id="SquareX7Y7" moveIds={["SquareX7Y6", "SquareX6Y7", "SquareX7Y8"]} color='white' xPos={7} yPos={7} role='square'/>
-        <GamePiece id="SquareX16Y7" moveIds={["SquareX16Y6", "SquareX17Y7", "SquareX16Y8"]} color='black' xPos={16} yPos={7} role='square'/>
-        <GamePiece id="SquareX17Y7" moveIds={["SquareX17Y6", "SquareX16Y7", "SquareX18Y7", "SquareX17Y8"]} color='white' xPos={17} yPos={7} role='square'/>
-        <GamePiece id="SquareX18Y7" moveIds={["SquareX18Y6", "SquareX17Y7", "SquareX19Y7", "SquareX18Y8"]} color='black' xPos={18} yPos={7} role='square'/>
-        <GamePiece id="SquareX19Y7" moveIds={["SquareX19Y6", "SquareX18Y7", "SquareX20Y7", "SquareX19Y8"]} color='white' xPos={19} yPos={7} role='square'/>
-        <GamePiece id="SquareX20Y7" moveIds={["SquareX20Y6", "SquareX19Y7", "SquareX21Y7", "SquareX20Y8"]} color='black' xPos={20} yPos={7} role='square'/>
-        <GamePiece id="SquareX21Y7" moveIds={["SquareX21Y6", "SquareX20Y7", "SquareX22Y7", "SquareX21Y8"]} color='white' xPos={21} yPos={7} role='square'/>
-        <GamePiece id="SquareX22Y7" moveIds={["SquareX22Y6", "SquareX21Y7", "SquareX23Y7", "SquareX22Y8"]} color='black' xPos={22} yPos={7} role='square'/>
-        <GamePiece id="SquareX23Y7" moveIds={["SquareX23Y6", "SquareX22Y7", "SquareX24Y7", "SquareX23Y8"]} color='white' xPos={23} yPos={7} role='square'/>
-        <GamePiece id="SquareX24Y7" moveIds={["SquareX24Y6", "SquareX23Y7", "SquareX25Y7", "SquareX24Y8"]} color='black' xPos={24} yPos={7} role='square'/>
-        <GamePiece id="SquareX25Y7" moveIds={["SquareX25Y6", "SquareX24Y7", "SquareX25Y8"]} color='white' xPos={25} yPos={7} role='square'/>
+        <GamePiece id="SquareX6Y7" color='black' xPos={6} yPos={7} role='square'/>
+        <GamePiece id="SquareX7Y7" color='white' xPos={7} yPos={7} role='square'/>
+        <GamePiece id="SquareX16Y7" color='black' xPos={16} yPos={7} role='square'/>
+        <GamePiece id="SquareX17Y7" color='white' xPos={17} yPos={7} role='square'/>
+        <GamePiece id="SquareX18Y7" color='black' xPos={18} yPos={7} role='square'/>
+        <GamePiece id="SquareX19Y7" color='white' xPos={19} yPos={7} role='square'/>
+        <GamePiece id="SquareX20Y7" color='black' xPos={20} yPos={7} role='square'/>
+        <GamePiece id="SquareX21Y7" color='white' xPos={21} yPos={7} role='square'/>
+        <GamePiece id="SquareX22Y7" color='black' xPos={22} yPos={7} role='square'/>
+        <GamePiece id="SquareX23Y7" color='white' xPos={23} yPos={7} role='square'/>
+        <GamePiece id="SquareX24Y7" color='black' xPos={24} yPos={7} role='square'/>
+        <GamePiece id="SquareX25Y7" color='red' xPos={25} yPos={7} role='spawnSquare'/>
 
         <GamePiece id="SquareX0Y8" color='pink' xPos={0} yPos={8} role='spawnSquare'/>
         <GamePiece id="SquareX1Y8" moveIds={["SquareX2Y8", "SquareX1Y9"]} color='black' xPos={1} yPos={8} role='square'/>
         <GamePiece id="SquareX2Y8" color='white' xPos={2} yPos={8} role='square'/>
-        <GamePiece id="SquareX3Y8" moveIds={["SquareX2Y8", "SquareX4Y8", "SquareX3Y9"]} color='black' xPos={3} yPos={8} role='square'/>
-        <GamePiece id="SquareX4Y8" moveIds={["SquareX3Y8", "SquareX5Y8", "SquareX4Y9"]} color='white' xPos={4} yPos={8} role='square'/>
-        <GamePiece id="SquareX5Y8" moveIds={["SquareX4Y8", "SquareX6Y8", "SquareX5Y9"]} color='black' xPos={5} yPos={8} role='square'/>
+        <GamePiece id="SquareX3Y8" color='black' xPos={3} yPos={8} role='square'/>
+        <GamePiece id="SquareX4Y8" color='white' xPos={4} yPos={8} role='square'/>
+        <GamePiece id="SquareX5Y8" color='black' xPos={5} yPos={8} role='square'/>
         <GamePiece id="SquareX6Y8" moveIds={["SquareX6Y7", "SquareX5Y8", "SquareX7Y8", "SquareX6Y9"]} color='white' xPos={6} yPos={8} role='square'/>
         <GamePiece id="SquareX7Y8" moveIds={["SquareX7Y7", "SquareX6Y8", "SquareX8Y8", "SquareX7Y9"]} color='black' xPos={7} yPos={8} role='square'/>
         <GamePiece id="SquareX8Y8" moveIds={["SquareX7Y8", "SquareX9Y8", "SquareX8Y9"]} color='white' xPos={8} yPos={8} role='square'/>
@@ -441,8 +482,8 @@ export default function index() {
         <GamePiece id="SquareX20Y24" color='white' xPos={20} yPos={24} role='square'/>
         <GamePiece id="SquareX21Y24" color='black' xPos={21} yPos={24} role='square'/>
 
-        <GamePiece id="SquareX9Y25" color='blue' xPos={9} yPos={25} role='square'/>
-        <GamePiece id="SquareX20Y25" color='red' xPos={20} yPos={25} role='square'/>
+        <GamePiece id="SquareX9Y25" color='blue' xPos={9} yPos={25} role='spawnSquare'/>
+        <GamePiece id="SquareX20Y25" color='red' xPos={20} yPos={25} role='spawnSquare'/>
       </View>
       <Modal
         animationType="slide"

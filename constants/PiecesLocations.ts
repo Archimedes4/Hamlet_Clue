@@ -1,3 +1,10 @@
+export enum authState {
+  notAuthenticated,
+  authenticatedNoAccount,
+  authenticatedWithAccount,
+  loading,
+}
+
 export enum loadingStateEnum {
   notStarted,
   loading,

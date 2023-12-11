@@ -1,9 +1,11 @@
-import { auth } from "../app/_layout"
-import createUUID from "./createUUID"
-import roleDie from "./roleDie"
-import shuffle from "./shuffle"
+import { doc, setDoc } from "firebase/firestore"
+import { db } from "../app/_layout"
+import { loadingStateEnum } from "../constants/PiecesLocations"
+import {roleDie, shuffle} from "./util"
+import store from "../redux/store"
 
-export default function createGame(uid: string): gameState {
+export default async function createGame(uid: string): Promise<{ result: loadingStateEnum.success; game: gameState } | { result: loadingStateEnum.failed }> {
+  const username = store.getState().username
   let murderWeapons: murderWeapons[] = ["Hemlock_Poison", "Sharpened_Rapier", "Axe",'Dagger']
   let rooms: rooms[] = ["Gun_Platform", "Great_Hall", "Fencing_Room", "Court_Yard", "Royal_Bedroom", "Chapel", "Throne_Room", "Stair_Well"]
   let players: players[] = ["Hamlet", "Claudius", "Polonius", "Gertrude"]
@@ -74,43 +76,82 @@ export default function createGame(uid: string): gameState {
     }
   }
 
-  return {
-    gameId: Math.floor(100000 + Math.random() * 900000).toString(),
+  const gameId = Math.floor(100000 + Math.random() * 900000).toString()
+  const game: gameState = {
+    gameId: gameId,
     hamlet: {
-      id: "",
+      user: {
+        id: '',
+        username: ''
+      },
       pos: "",
       cards: hamletCards,
       guesses: [],
-      accused: false
+      accused: false,
+      notes: ''
     },
     claudius: {
-      id: "",
+      user: {
+        id: '',
+        username: ''
+      },
       pos: "",
       cards: claudiusCards,
       guesses: [],
-      accused: false
+      accused: false,
+      notes: ''
     },
     polonius: {
-      id: "",
+      user: {
+        id: '',
+        username: ''
+      },
       pos: "",
       cards: poloniusCards,
       guesses: [],
-      accused: false
+      accused: false,
+      notes: ''
     },
     gertrude: {
-      id: "",
+      user: {
+        id: '',
+        username: ''
+      },
       pos: "",
       cards: gertrudeCards,
       guesses: [],
-      accused: false
+      accused: false,
+      notes: ''
     },
     master: uid,
+    players: [{
+      id: uid,
+      username: username
+    }],
     turn: orderOfPlay[0],
     dieOne: roleDie(),
     dieTwo: roleDie(),
     history: [],
     dieCount: 0,
     orderOfPlay: orderOfPlay,
-    answer: answer
+    answer: answer,
+    promt: {
+      room: "Gun_Platform",
+      player: "Hamlet",
+      weapon: "Hemlock_Poison",
+      intiator: "Hamlet",
+      accusation: false,
+      time: "",
+      timeHandled: "",
+      handledCard: ""
+    },
+    gameOver: false,
+    winner: ""
+  }
+  try {
+    await setDoc(doc(db, "Games", gameId), game);
+    return {result: loadingStateEnum.success, game: game}
+  } catch {
+    return {result: loadingStateEnum.failed}
   }
 }

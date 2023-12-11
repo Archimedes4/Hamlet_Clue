@@ -1,36 +1,52 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import roleDie from '../../util/roleDie';
-import { rooms } from '../../constants/PiecesLocations';
+import { roleDie } from '../../util/util';
 
 const initalState: gameState = {
   gameId: '',
+  players: [],
   hamlet: {
-    id: '',
+    user: {
+      id: '',
+      username: ''
+    },
     pos: '',
     cards: [],
     guesses: [],
-    accused: false
+    accused: false,
+    notes: ''
   },
   claudius: {
-    id: '',
+    user: {
+      id: '',
+      username: ''
+    },
     pos: '',
     cards: [],
     guesses: [],
-    accused: false
+    accused: false,
+    notes: ''
   },
   polonius: {
-    id: '',
+    user: {
+      id: '',
+      username: ''
+    },
     pos: '',
     cards: [],
     guesses: [],
-    accused: false
+    accused: false,
+    notes: ''
   },
   gertrude: {
-    id: '',
+    user: {
+      id: '',
+      username: ''
+    },
     pos: '',
     cards: [],
     guesses: [],
-    accused: false
+    accused: false,
+    notes: ''
   },
   turn: 'Hamlet',
   dieOne: 0,
@@ -43,7 +59,19 @@ const initalState: gameState = {
     room: 'Gun_Platform',
     player: 'Hamlet'
   },
-  master: ''
+  master: '',
+  promt: {
+    room: 'Gun_Platform',
+    player: 'Hamlet',
+    weapon: 'Hemlock_Poison',
+    intiator: 'Hamlet',
+    accusation: false,
+    time: '',
+    timeHandled: "",
+    handledCard: ""
+  },
+  gameOver: false,
+  winner: ""
 }
 
 export const gameStateSlice = createSlice({
@@ -60,6 +88,7 @@ export const gameStateSlice = createSlice({
         let newGameState: gameState = {
           gameId: state.gameId,
           master: state.master,
+          players: state.players,
           hamlet: state.hamlet,
           claudius: state.claudius,
           polonius: state.polonius,
@@ -70,7 +99,10 @@ export const gameStateSlice = createSlice({
           dieCount: 0,
           history: [...state.history, action.payload.pos],
           orderOfPlay: state.orderOfPlay,
-          answer: state.answer
+          answer: state.answer,
+          promt: state.promt,
+          gameOver: state.gameOver,
+          winner: state.winner
         }
         switch (state.turn) {
           case "Hamlet":
@@ -92,6 +124,7 @@ export const gameStateSlice = createSlice({
         let newGameState: gameState = {
           gameId: state.gameId,
           master: state.master,
+          players: state.players,
           hamlet: state.hamlet,
           claudius: state.claudius,
           polonius: state.polonius,
@@ -102,7 +135,10 @@ export const gameStateSlice = createSlice({
           dieCount: 0,
           history: [],
           orderOfPlay: state.orderOfPlay,
-          answer: state.answer
+          answer: state.answer,
+          promt: state.promt,
+          gameOver: state.gameOver,
+          winner: state.winner
         }
         switch (state.turn) {
           case "Hamlet":
@@ -144,6 +180,7 @@ export const gameStateSlice = createSlice({
         let newGameState: gameState = {
           gameId: state.gameId,
           master: state.master,
+          players: state.players,
           hamlet: state.hamlet,
           claudius: state.claudius,
           polonius: state.polonius,
@@ -154,40 +191,47 @@ export const gameStateSlice = createSlice({
           dieCount: state.dieCount + 1,
           history: [...state.history, action.payload.pos],
           orderOfPlay: state.orderOfPlay,
-          answer: state.answer
+          answer: state.answer,
+          promt: state.promt,
+          gameOver: state.gameOver,
+          winner: state.winner
         }
         switch (state.turn) {
           case "Hamlet":
             newGameState.hamlet = {
-              id: state.hamlet.id,
+              user: state.hamlet.user,
               pos: action.payload.pos,
               cards: state.hamlet.cards,
               guesses: state.hamlet.guesses,
-              accused: false
+              accused: false,
+              notes: state.hamlet.notes
             }
           case "Claudius":
             newGameState.claudius = {
-              id: state.claudius.id,
+              user: state.claudius.user,
               pos: action.payload.pos,
               cards: state.claudius.cards,
               guesses: state.claudius.guesses,
-              accused: false
+              accused: false,
+              notes: state.claudius.notes
             }
           case "Polonius":
             newGameState.polonius = {
-              id: state.polonius.id,
+              user: state.polonius.user,
               pos: action.payload.pos,
               cards: state.polonius.cards,
               guesses: state.polonius.guesses,
-              accused: false
+              accused: false,
+              notes: state.polonius.notes
             }
           case "Gertrude":
             newGameState.gertrude = {
-              id: state.gertrude.id,
+              user: state.gertrude.user,
               pos: action.payload.pos,
               cards: state.gertrude.cards,
               guesses: state.gertrude.guesses,
-              accused: false
+              accused: false,
+              notes: state.gertrude.notes
             }
         }
         return newGameState
@@ -197,6 +241,7 @@ export const gameStateSlice = createSlice({
       let newGameState: gameState = {
         gameId: state.gameId,
         master: state.master,
+        players: state.players,
         hamlet: action.payload,
         claudius: state.claudius,
         polonius: state.polonius,
@@ -207,7 +252,10 @@ export const gameStateSlice = createSlice({
         dieCount: state.dieCount,
         history: state.history,
         orderOfPlay: state.orderOfPlay,
-        answer: state.answer
+        answer: state.answer,
+        promt: state.promt,
+        gameOver: state.gameOver,
+        winner: state.winner
       }
       return newGameState
     },
@@ -215,6 +263,7 @@ export const gameStateSlice = createSlice({
       let newGameState: gameState = {
         gameId: state.gameId,
         master: state.master,
+        players: state.players,
         hamlet: state.hamlet,
         claudius: action.payload,
         polonius: state.polonius,
@@ -225,7 +274,10 @@ export const gameStateSlice = createSlice({
         dieCount: state.dieCount,
         history: state.history,
         orderOfPlay: state.orderOfPlay,
-        answer: state.answer
+        answer: state.answer,
+        promt: state.promt,
+        gameOver: state.gameOver,
+        winner: state.winner
       }
       return newGameState
     },
@@ -233,6 +285,7 @@ export const gameStateSlice = createSlice({
       let newGameState: gameState = {
         gameId: state.gameId,
         master: state.master,
+        players: state.players,
         hamlet: state.hamlet,
         claudius: state.claudius,
         polonius: action.payload,
@@ -243,7 +296,10 @@ export const gameStateSlice = createSlice({
         dieCount: state.dieCount,
         history: state.history,
         orderOfPlay: state.orderOfPlay,
-        answer: state.answer
+        answer: state.answer,
+        promt: state.promt,
+        gameOver: state.gameOver,
+        winner: state.winner
       }
       return newGameState
     },
@@ -251,6 +307,7 @@ export const gameStateSlice = createSlice({
       let newGameState: gameState = {
         gameId: state.gameId,
         master: state.master,
+        players: state.players,
         hamlet: state.hamlet,
         claudius: state.claudius,
         polonius: state.polonius,
@@ -261,7 +318,10 @@ export const gameStateSlice = createSlice({
         dieCount: state.dieCount,
         history: state.history,
         orderOfPlay: state.orderOfPlay,
-        answer: state.answer
+        answer: state.answer,
+        promt: state.promt,
+        gameOver: state.gameOver,
+        winner: state.winner
       }
       return newGameState
     },
@@ -269,6 +329,7 @@ export const gameStateSlice = createSlice({
       let newGameState: gameState = {
         gameId: state.gameId,
         master: state.master,
+        players: state.players,
         hamlet: state.hamlet,
         claudius: state.claudius,
         polonius: state.polonius,
@@ -279,7 +340,32 @@ export const gameStateSlice = createSlice({
         dieCount: state.dieCount,
         history: state.history,
         orderOfPlay: state.orderOfPlay,
-        answer: state.answer
+        answer: state.answer,
+        promt: state.promt,
+        gameOver: state.gameOver,
+        winner: state.winner
+      }
+      return newGameState
+    },
+    setPromtAndTurn: (state, action: PayloadAction<{turn: turnType, prompt: informationPromt}>) => {
+      let newGameState: gameState = {
+        gameId: state.gameId,
+        master: state.master,
+        players: state.players,
+        hamlet: state.hamlet,
+        claudius: state.claudius,
+        polonius: state.polonius,
+        gertrude: state.gertrude,
+        turn: action.payload.turn,
+        dieOne: state.dieOne,
+        dieTwo: state.dieTwo,
+        dieCount: state.dieCount,
+        history: state.history,
+        orderOfPlay: state.orderOfPlay,
+        answer: state.answer,
+        promt: action.payload.prompt,
+        gameOver: state.gameOver,
+        winner: state.winner
       }
       return newGameState
     }

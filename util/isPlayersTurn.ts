@@ -3,19 +3,19 @@ import { auth } from "../app/_layout";
 export default function isPlayersTurn(hamlet: playerInfo, claudius: playerInfo, polonius: playerInfo, gertrude: playerInfo, turn: turnType): boolean {
   const uid = auth.currentUser?.uid;
   if (uid) {
-    if (uid === hamlet.id && turn === "Hamlet") {
+    if (uid === hamlet.user.id && turn === "Hamlet") {
       //hamlet
       return true
     }
-    if (uid === claudius.id && turn === "Claudius") {
+    if (uid === claudius.user.id && turn === "Claudius") {
       //Claudius
       return true
     }
-    if (uid === polonius.id && turn === "Polonius") {
+    if (uid === polonius.user.id && turn === "Polonius") {
       //Polonius 
       return true
     }
-    if (uid === gertrude.id && turn === "Gertrude") {
+    if (uid === gertrude.user.id && turn === "Gertrude") {
       //Gertrude
       return true
     }
