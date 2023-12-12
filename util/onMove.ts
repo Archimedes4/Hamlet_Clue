@@ -34,17 +34,18 @@ export default function onMove(id: position) {
     newGameState.dieOne = roleDie()
     newGameState.dieTwo = roleDie()
     newGameState.dieCount = 0
-    newGameState.history = [...state.history, id]
+    newGameState.history = []
     //Made all moves next player
     if (state.turn === "Hamlet") {
       newGameState.turn = "HamletRoom"
-      newGameState.hamlet  = {
+      newGameState.hamlet = {
         user: state.hamlet.user,
         pos: id,
         cards: state.hamlet.cards,
         guesses: state.hamlet.guesses,
         accused: state.hamlet.accused,
-        notes: state.hamlet.notes
+        notes: state.hamlet.notes,
+        lastDismissed: state.hamlet.lastDismissed
       }
     } else if (state.turn === "Claudius") {
       newGameState.turn = "ClaudiusRoom"
@@ -54,7 +55,8 @@ export default function onMove(id: position) {
         cards: state.claudius.cards,
         guesses: state.claudius.guesses,
         accused: state.claudius.accused,
-        notes: state.claudius.notes
+        notes: state.claudius.notes,
+        lastDismissed: state.claudius.lastDismissed
       }
     } else if (state.turn === "Polonius") {
       newGameState.turn = "PoloniusRoom"
@@ -64,7 +66,8 @@ export default function onMove(id: position) {
         cards: state.polonius.cards,
         guesses: state.polonius.guesses,
         accused: state.polonius.accused,
-        notes: state.polonius.notes
+        notes: state.polonius.notes,
+        lastDismissed: state.polonius.lastDismissed
       }
     } else if ( state.turn === "Gertrude") {
       newGameState.turn = "GertrudeRoom"
@@ -74,7 +77,8 @@ export default function onMove(id: position) {
         cards: state.gertrude.cards,
         guesses: state.gertrude.guesses,
         accused: state.gertrude.accused,
-        notes: state.gertrude.notes
+        notes: state.gertrude.notes,
+        lastDismissed: state.gertrude.lastDismissed
       }
     }
   } else if (state.dieCount + 1 === state.dieOne + state.dieTwo) {
@@ -83,12 +87,29 @@ export default function onMove(id: position) {
     newGameState.dieTwo = roleDie()
     newGameState.dieCount = 0
     newGameState.history = []
-    if (state.turn === "Hamlet") {
-      const hamletIndex = state.orderOfPlay.indexOf("Hamlet") 
-      if (hamletIndex >= 3) {
-        newGameState.turn = state.orderOfPlay[0]
+    let orderOfPlay = [...state.orderOfPlay].filter((e) => {
+      if (e === "Hamlet" && !state.hamlet.accused) {
+        return e
+      }
+      if (e === "Claudius" && !state.claudius.accused) {
+        return e
+      }
+      if (e === "Polonius" && !state.polonius.accused) {
+        return e
+      }
+      if (e === "Gertrude" && !state.gertrude.accused) {
+        return e
+      }
+    })
+    if (orderOfPlay.length <= 0) {
+      //Game Tie
+      newGameState.gameOver = true
+    } else if (state.turn === "Hamlet") { 
+      const hamletIndex = orderOfPlay.indexOf("Hamlet") 
+      if ((hamletIndex + 1) > orderOfPlay.length) {
+        newGameState.turn = orderOfPlay[0]
       } else {
-        newGameState.turn = state.orderOfPlay[hamletIndex + 1]
+        newGameState.turn = orderOfPlay[hamletIndex + 1]
       }
       newGameState.hamlet  = {
         user: state.hamlet.user,
@@ -96,15 +117,15 @@ export default function onMove(id: position) {
         cards: state.hamlet.cards,
         guesses: state.hamlet.guesses,
         accused: state.hamlet.accused,
-        notes: state.hamlet.notes
+        notes: state.hamlet.notes,
+        lastDismissed: state.hamlet.lastDismissed
       }
     } else if (state.turn === "Claudius") {
-      state.orderOfPlay.indexOf("Claudius")
-      const claudiusIndex = state.orderOfPlay.indexOf("Hamlet") 
-      if (claudiusIndex >= 3) {
-        newGameState.turn = state.orderOfPlay[0]
+      const claudiusIndex = orderOfPlay.indexOf("Claudius") 
+      if ((claudiusIndex + 1) > orderOfPlay.length) {
+        newGameState.turn = orderOfPlay[0]
       } else {
-        newGameState.turn = state.orderOfPlay[claudiusIndex + 1]
+        newGameState.turn = orderOfPlay[claudiusIndex + 1]
       }
       newGameState.claudius = {
         user: state.claudius.user,
@@ -112,14 +133,15 @@ export default function onMove(id: position) {
         cards: state.claudius.cards,
         guesses: state.claudius.guesses,
         accused: state.claudius.accused,
-        notes: state.claudius.notes
+        notes: state.claudius.notes,
+        lastDismissed: state.claudius.lastDismissed
       }
     } else if (state.turn === "Polonius") {
       const poloniusIndex = state.orderOfPlay.indexOf("Polonius")
-      if (poloniusIndex >= 3) {
-        newGameState.turn = state.orderOfPlay[0]
+      if ((poloniusIndex + 1) > orderOfPlay.length) {
+        newGameState.turn = orderOfPlay[0]
       } else {
-        newGameState.turn = state.orderOfPlay[poloniusIndex + 1]
+        newGameState.turn = orderOfPlay[poloniusIndex + 1]
       }
       newGameState.polonius = {
         user: state.polonius.user,
@@ -127,14 +149,15 @@ export default function onMove(id: position) {
         cards: state.polonius.cards,
         guesses: state.polonius.guesses,
         accused: state.polonius.accused,
-        notes: state.polonius.notes
+        notes: state.polonius.notes,
+        lastDismissed: state.polonius.lastDismissed
       }
     } else if (state.turn === "Gertrude") {
       const gertrudeIndex = state.orderOfPlay.indexOf("Gertrude") 
-      if (gertrudeIndex >= 3) {
-        newGameState.turn = state.orderOfPlay[0]
+      if ((gertrudeIndex + 1) > orderOfPlay.length) {
+        newGameState.turn = orderOfPlay[0]
       } else {
-        newGameState.turn = state.orderOfPlay[gertrudeIndex + 1]
+        newGameState.turn = orderOfPlay[gertrudeIndex + 1]
       }
       newGameState.gertrude = {
         user: state.gertrude.user,
@@ -142,7 +165,8 @@ export default function onMove(id: position) {
         cards: state.gertrude.cards,
         guesses: state.gertrude.guesses,
         accused: state.gertrude.accused,
-        notes: state.gertrude.notes
+        notes: state.gertrude.notes,
+        lastDismissed: state.gertrude.lastDismissed
       }
     }
   } else {
@@ -155,7 +179,8 @@ export default function onMove(id: position) {
         cards: state.hamlet.cards,
         guesses: state.hamlet.guesses,
         accused: state.hamlet.accused,
-        notes: state.hamlet.notes
+        notes: state.hamlet.notes,
+        lastDismissed: state.hamlet.lastDismissed
       }
     } else if (state.turn === "Claudius") {
       newGameState.claudius = {
@@ -164,7 +189,8 @@ export default function onMove(id: position) {
         cards: state.claudius.cards,
         guesses: state.claudius.guesses,
         accused: state.claudius.accused,
-        notes: state.claudius.notes
+        notes: state.claudius.notes,
+        lastDismissed: state.claudius.lastDismissed
       }
     } else if (state.turn === "Polonius") {
       newGameState.polonius = {
@@ -173,7 +199,8 @@ export default function onMove(id: position) {
         cards: state.polonius.cards,
         guesses: state.polonius.guesses,
         accused: state.polonius.accused,
-        notes: state.polonius.notes
+        notes: state.polonius.notes,
+        lastDismissed: state.polonius.lastDismissed
       }
     } else if (state.turn === "Gertrude") {
       newGameState.gertrude = {
@@ -182,10 +209,10 @@ export default function onMove(id: position) {
         cards: state.gertrude.cards,
         guesses: state.gertrude.guesses,
         accused: state.gertrude.accused,
-        notes: state.gertrude.notes
+        notes: state.gertrude.notes,
+        lastDismissed: state.gertrude.lastDismissed
       }
     }
   }
-  console.log(newGameState)
   store.dispatch(gameStateSlice.actions.setGameState(newGameState))
 }

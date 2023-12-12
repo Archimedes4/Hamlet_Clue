@@ -36,7 +36,8 @@ export default function setPlayerSelection(selection: players) {
         cards: state.hamlet.cards,
         guesses: state.hamlet.guesses,
         accused: state.hamlet.accused,
-        notes: state.hamlet.notes
+        notes: state.hamlet.notes,
+        lastDismissed: state.hamlet.lastDismissed 
       }
       if (newGameState.claudius.user.id === uid) {
         newGameState.claudius = {
@@ -48,7 +49,8 @@ export default function setPlayerSelection(selection: players) {
           cards: state.claudius.cards,
           guesses: state.claudius.guesses,
           accused: state.claudius.accused,
-          notes: state.claudius.notes
+          notes: state.claudius.notes,
+          lastDismissed: state.claudius.lastDismissed
         }
       }
       if (newGameState.polonius.user.id === uid) {
@@ -61,7 +63,8 @@ export default function setPlayerSelection(selection: players) {
           cards: state.polonius.cards,
           guesses: state.polonius.guesses,
           accused: state.polonius.accused,
-          notes: state.polonius.notes
+          notes: state.polonius.notes,
+          lastDismissed: state.polonius.lastDismissed
         }
       }
       if (newGameState.gertrude.user.id === uid) {
@@ -74,7 +77,8 @@ export default function setPlayerSelection(selection: players) {
           cards: state.gertrude.cards,
           guesses: state.gertrude.guesses,
           accused: state.gertrude.accused,
-          notes: state.gertrude.notes
+          notes: state.gertrude.notes,
+          lastDismissed: state.gertrude.lastDismissed
         }
       }
     } else if (selection === "Claudius" && (state.claudius.user.id === "" || state.claudius.user.id === uid)) {
@@ -88,7 +92,8 @@ export default function setPlayerSelection(selection: players) {
           cards: state.hamlet.cards,
           guesses: state.hamlet.guesses,
           accused: state.hamlet.accused,
-          notes: state.hamlet.notes
+          notes: state.hamlet.notes,
+          lastDismissed: state.hamlet.lastDismissed
         }
       }
       newGameState.claudius = {
@@ -100,7 +105,8 @@ export default function setPlayerSelection(selection: players) {
         cards: state.claudius.cards,
         guesses: state.claudius.guesses,
         accused: state.claudius.accused,
-        notes: state.claudius.notes
+        notes: state.claudius.notes,
+        lastDismissed: state.claudius.lastDismissed
       }
       if (newGameState.polonius.user.id === uid) {
         newGameState.polonius = {
@@ -112,7 +118,8 @@ export default function setPlayerSelection(selection: players) {
           cards: state.polonius.cards,
           guesses: state.polonius.guesses,
           accused: state.polonius.accused,
-          notes: state.polonius.notes
+          notes: state.polonius.notes,
+          lastDismissed: state.polonius.lastDismissed
         }
       }
       if (newGameState.gertrude.user.id === uid) {
@@ -125,7 +132,8 @@ export default function setPlayerSelection(selection: players) {
           cards: state.gertrude.cards,
           guesses: state.gertrude.guesses,
           accused: state.gertrude.accused,
-          notes: state.gertrude.notes
+          notes: state.gertrude.notes,
+          lastDismissed: state.gertrude.lastDismissed
         }
       }
     } else if (selection === "Polonius" && (state.polonius.user.id === "" || state.polonius.user.id === uid)) {
@@ -139,7 +147,8 @@ export default function setPlayerSelection(selection: players) {
           cards: state.hamlet.cards,
           guesses: state.hamlet.guesses,
           accused: state.hamlet.accused,
-          notes: state.hamlet.notes
+          notes: state.hamlet.notes,
+          lastDismissed: state.hamlet.lastDismissed
         }
       }
       if (newGameState.claudius.user.id === uid) {
@@ -152,7 +161,8 @@ export default function setPlayerSelection(selection: players) {
           cards: state.claudius.cards,
           guesses: state.claudius.guesses,
           accused: state.claudius.accused,
-          notes: state.claudius.notes
+          notes: state.claudius.notes,
+          lastDismissed: state.claudius.lastDismissed
         }
       }
       newGameState.polonius = {
@@ -164,7 +174,8 @@ export default function setPlayerSelection(selection: players) {
         cards: state.polonius.cards,
         guesses: state.polonius.guesses,
         accused: state.polonius.accused,
-        notes: state.polonius.notes
+        notes: state.polonius.notes,
+        lastDismissed: state.polonius.lastDismissed
       }
       if (newGameState.gertrude.user.id === uid) {
         newGameState.gertrude = {
@@ -176,7 +187,8 @@ export default function setPlayerSelection(selection: players) {
           cards: state.gertrude.cards,
           guesses: state.gertrude.guesses,
           accused: state.gertrude.accused,
-          notes: state.gertrude.notes
+          notes: state.gertrude.notes,
+          lastDismissed: state.gertrude.lastDismissed
         }
       }
     } else if (selection === "Gertrude" && (state.gertrude.user.id === "" || state.gertrude.user.id === uid)) {
@@ -190,7 +202,8 @@ export default function setPlayerSelection(selection: players) {
           cards: state.hamlet.cards,
           guesses: state.hamlet.guesses,
           accused: state.hamlet.accused,
-          notes: state.hamlet.notes
+          notes: state.hamlet.notes,
+          lastDismissed: state.hamlet.lastDismissed
         }
       }
       if (newGameState.claudius.user.id === uid) {
@@ -203,7 +216,8 @@ export default function setPlayerSelection(selection: players) {
           cards: state.claudius.cards,
           guesses: state.claudius.guesses,
           accused: state.claudius.accused,
-          notes: state.claudius.notes
+          notes: state.claudius.notes,
+          lastDismissed: state.claudius.lastDismissed
         }
       }
       if (newGameState.polonius.user.id === uid) {
@@ -216,7 +230,8 @@ export default function setPlayerSelection(selection: players) {
           cards: state.polonius.cards,
           guesses: state.polonius.guesses,
           accused: state.polonius.accused,
-          notes: state.polonius.notes
+          notes: state.polonius.notes,
+          lastDismissed: state.polonius.lastDismissed
         }
       }
       newGameState.gertrude = {
@@ -228,7 +243,8 @@ export default function setPlayerSelection(selection: players) {
         cards: state.gertrude.cards,
         guesses: state.gertrude.guesses,
         accused: state.gertrude.accused,
-        notes: state.gertrude.notes
+        notes: state.gertrude.notes,
+        lastDismissed: state.gertrude.lastDismissed
       }
     }
     store.dispatch(gameStateSlice.actions.setGameState(newGameState))

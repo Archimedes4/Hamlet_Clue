@@ -3,11 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import store, { RootState } from '../../../redux/store';
 import Options from '../../../components/Options';
-import { gameStateSlice } from '../../../redux/reducers/gameStateReducer';
 import PiecesLocations from '../../../constants/PiecesLocations';
 import PlayerScreen from '../../../components/PlayerScreen';
-import getUserGameStatus from '../../../util/getUserGameStatus';
-import { auth } from '../../_layout';
 import { checkIfPickingSpawnPosition, setSpawnPosition } from '../../../util/spawnPosition';
 import DetectiveSheet from '../../../components/DetectiveSheet';
 import isPlayersTurn from '../../../util/isPlayersTurn';
@@ -17,6 +14,8 @@ import Colors from '../../../constants/Colors';
 import { useGlobalSearchParams } from 'expo-router';
 import useGameSubscribe from '../../../hooks/useGameSubscribe';
 import useGameReady from '../../../hooks/useGameReady';
+import InformationScreen from '../../../components/InformationScreen';
+import { Claudius, Gertrude, Hamlet, Polonius } from '../../../components/Icons';
 
 //26 by 26 grid
 
@@ -32,7 +31,7 @@ declare global {
   type players = "Hamlet" | "Claudius" | "Polonius" | "Gertrude"
   type cardType = murderWeapons | rooms | players
   type position = squarePos | rooms
-  type turnType = players | "HamletRoom" | "ClaudiusRoom" | "PoloniusRoom" | "GertrudeRoom" | "HamletSugget" | "ClaudiusSuggest" | "PoloniusSuggest" | "GertrudeSuggest"
+  type turnType = players | "HamletRoom" | "ClaudiusRoom" | "PoloniusRoom" | "GertrudeRoom" | "HamletSugget" | "ClaudiusSuggest" | "PoloniusSuggest" | "GertrudeSuggest" | "Selecting"
 
   type levelType = "known" | "likely" | "guess"
   type guessType = {
@@ -53,6 +52,7 @@ declare global {
     guesses: guessType[];
     accused: boolean;
     notes: string;
+    lastDismissed: string;
   }
 
   type answerType = {
@@ -72,7 +72,8 @@ declare global {
     time: string
     //At what time did the person responding to the turn respond.
     timeHandled: string | "";
-    handledCard: cardType | ""
+    handledCard: cardType | "";
+    suggester: players | "";
   }
 
   type gameState = {
@@ -169,11 +170,7 @@ function GamePiece({id, color, role, roomWidth, roomHeight, xPos, yPos}:(roomPie
         setMoveableSquares(gertrudePiece.moves);
       }
     }
-  }, [hamlet.pos, claudius.pos, polonius.pos, gertrude.pos])
-
-  useEffect(() => {
-    console.log(movableSquares)
-  }, [movableSquares])
+  }, [hamlet.pos, claudius.pos, polonius.pos, gertrude.pos, turn])
 
   if (role === "options") {
     return (
@@ -224,16 +221,24 @@ function GamePiece({id, color, role, roomWidth, roomHeight, xPos, yPos}:(roomPie
   return (
     <View id={id} style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: color, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
       { (id === hamlet.pos) ?
-        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: 'red', borderRadius: getSize(width, height)/2}}/>:null
+        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+          <Hamlet width={getSize(width, height)} height={getSize(width, height)}/>
+        </View>:null
       }
       { (id === claudius.pos) ?
-        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: 'yellow', borderRadius: getSize(width, height)/2}}/>:null
+        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+          <Claudius width={getSize(width, height)} height={getSize(width, height)}/>
+        </View>:null
       }
       { (id === polonius.pos) ?
-        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: 'green', borderRadius: getSize(width, height)/2}}/>:null
+        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+          <Polonius width={getSize(width, height)} height={getSize(width, height)}/>
+        </View>:null
       }
       { (id === gertrude.pos) ?
-        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: 'blue', borderRadius: getSize(width, height)/2}}/>:null
+        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+          <Gertrude width={getSize(width, height)} height={getSize(width, height)}/>
+        </View>:null
       }
     </View>
   )
@@ -244,9 +249,6 @@ export default function index() {
   const screens = useSelector((state: RootState) => state.screens);
   const id = useGlobalSearchParams();
   const [gameId, setGameId] = useState<string>("");
-  useEffect(() => {
-    getUserGameStatus()
-  }, [])
   useEffect(() => {
     if (typeof id.id === 'string') {
       setGameId(id.id)
@@ -495,13 +497,19 @@ export default function index() {
         animationType="slide"
         transparent={true}
         visible={screens.detectiveSheet}>
-          <DetectiveSheet />
+          <DetectiveSheet role='main'/>
       </Modal>
       <Modal
         animationType="slide"
         transparent={true}
         visible={screens.room}>
           <RoomScreen />
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={screens.information}>
+          <InformationScreen />
       </Modal>
     </View>
   )

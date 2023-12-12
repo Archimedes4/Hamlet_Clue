@@ -9,6 +9,7 @@ import { TextInput } from 'react-native-gesture-handler';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import Colors from '../constants/Colors';
+import { auth } from '../app/_layout';
 
 function RowItem({item, index}:{item: cardType, index: number}) {
   const gameState = useSelector((state: RootState) => state.gameState);
@@ -42,8 +43,30 @@ function Row({item, name}:{item: cardType, name?: string}) {
   )
 }
 
-export default function DetectiveSheet() {
+//Main only part. Window part of room or info sheet
+export default function DetectiveSheet({role, onClose}:{role: "main", onClose?: undefined} | {role: "window", onClose: () => void}) {
   const { width, height } = useSelector((state: RootState) => state.dimentions);
+  const [notes, setNotes] = useState<string>("");
+
+  function getNotes() {
+    const state = store.getState().gameState
+    const uid = auth.currentUser?.uid
+    if (uid) {
+      if (state.hamlet.user.id === uid) {
+        setNotes(state.hamlet.notes)
+      } else if (state.claudius.user.id === uid) {
+        setNotes(state.hamlet.notes)
+      } else if (state.polonius.user.id === uid) {
+        setNotes(state.hamlet.notes)
+      } else if (state.gertrude.user.id === uid) {
+        setNotes(state.hamlet.notes)
+      }
+    }
+  }
+
+  useEffect(() => {
+    getNotes();
+  }, [])
 
   const [fontsLoaded, fontError] = useFonts({
     'RubikBubbles-Regular': require("../assets/fonts/RubikBubbles-Regular.ttf"),
@@ -67,7 +90,13 @@ export default function DetectiveSheet() {
         <ScrollView>
           <View style={{marginLeft: 15, marginRight: 15, marginTop: 15, flexDirection: 'row'}}>
             <Text style={{marginLeft: 15, fontFamily: 'RubikBubbles-Regular', color: Colors.royalRed, fontSize: 25}}>Detective Notes</Text>
-            <Pressable onPress={() => {store.dispatch(screensSlice.actions.hideAllScreens())}} style={{marginLeft: 'auto', marginTop: 'auto', marginBottom: 'auto'}}>
+            <Pressable onPress={() => {
+              if (role === "window") {
+                onClose()
+              } else {
+                store.dispatch(screensSlice.actions.hideAllScreens())
+              }
+            }} style={{marginLeft: 'auto', marginTop: 'auto', marginBottom: 'auto'}}>
               <CloseIcon width={20} height={20}/>
             </Pressable>
           </View>
@@ -90,8 +119,8 @@ export default function DetectiveSheet() {
           <Row item={'Chapel'}/>
           <Row item={'Throne_Room'} name='Throne Room'/>
           <Row item={'Stair_Well'} name='Stair Well'/>
-          <Text>Notes</Text>
-          <TextInput />
+          <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: 15, marginTop: 15, marginBottom: 15}}>Notes</Text>
+          <TextInput value={notes} onChangeText={setNotes} />
           <Pressable>
             <Text>Update Notes</Text>
           </Pressable>

@@ -13,7 +13,8 @@ const initalState: gameState = {
     cards: [],
     guesses: [],
     accused: false,
-    notes: ''
+    notes: '',
+    lastDismissed: ''
   },
   claudius: {
     user: {
@@ -24,7 +25,8 @@ const initalState: gameState = {
     cards: [],
     guesses: [],
     accused: false,
-    notes: ''
+    notes: '',
+    lastDismissed: ''
   },
   polonius: {
     user: {
@@ -35,7 +37,8 @@ const initalState: gameState = {
     cards: [],
     guesses: [],
     accused: false,
-    notes: ''
+    notes: '',
+    lastDismissed: ''
   },
   gertrude: {
     user: {
@@ -46,7 +49,8 @@ const initalState: gameState = {
     cards: [],
     guesses: [],
     accused: false,
-    notes: ''
+    notes: '',
+    lastDismissed: ''
   },
   turn: 'Hamlet',
   dieOne: 0,
@@ -68,7 +72,8 @@ const initalState: gameState = {
     accusation: false,
     time: '',
     timeHandled: "",
-    handledCard: ""
+    handledCard: "",
+    suggester: ''
   },
   gameOver: false,
   winner: ""
@@ -204,7 +209,8 @@ export const gameStateSlice = createSlice({
               cards: state.hamlet.cards,
               guesses: state.hamlet.guesses,
               accused: false,
-              notes: state.hamlet.notes
+              notes: state.hamlet.notes,
+              lastDismissed: state.hamlet.lastDismissed
             }
           case "Claudius":
             newGameState.claudius = {
@@ -213,7 +219,8 @@ export const gameStateSlice = createSlice({
               cards: state.claudius.cards,
               guesses: state.claudius.guesses,
               accused: false,
-              notes: state.claudius.notes
+              notes: state.claudius.notes,
+              lastDismissed: state.claudius.lastDismissed
             }
           case "Polonius":
             newGameState.polonius = {
@@ -222,7 +229,8 @@ export const gameStateSlice = createSlice({
               cards: state.polonius.cards,
               guesses: state.polonius.guesses,
               accused: false,
-              notes: state.polonius.notes
+              notes: state.polonius.notes,
+              lastDismissed: state.polonius.lastDismissed
             }
           case "Gertrude":
             newGameState.gertrude = {
@@ -231,7 +239,8 @@ export const gameStateSlice = createSlice({
               cards: state.gertrude.cards,
               guesses: state.gertrude.guesses,
               accused: false,
-              notes: state.gertrude.notes
+              notes: state.gertrude.notes,
+              lastDismissed: state.gertrude.lastDismissed
             }
         }
         return newGameState
@@ -368,7 +377,7 @@ export const gameStateSlice = createSlice({
         winner: state.winner
       }
       return newGameState
-    }
+    },
   },
 });
 

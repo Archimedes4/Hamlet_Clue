@@ -21,7 +21,7 @@ const squares: positionType[] = [
   },
   {
     id: "SquareX16Y0",
-    moves: []
+    moves: ["SquareX16Y1"]
   },
   {
     id: "SquareX6Y1",
@@ -758,6 +758,14 @@ const squares: positionType[] = [
   {
     id:"SquareX21Y24",
     moves: ["SquareX21Y23", "SquareX20Y24"]
+  },
+  {
+    id:"SquareX9Y25",
+    moves: ["SquareX9Y24"]
+  },
+  {
+    id:"SquareX20Y25",
+    moves: ["SquareX20Y24"]
   },
 ]
 

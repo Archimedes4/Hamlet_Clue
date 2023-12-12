@@ -17,7 +17,7 @@ export default async function createGame(uid: string): Promise<{ result: loading
     room: rooms[0],
     player: players[0]
   }
-  const orderOfPlay: players[] = shuffle(players)
+  const orderOfPlay: players[] = shuffle([...players]);
   murderWeapons.shift();
   rooms.shift();
   players.shift();
@@ -28,51 +28,27 @@ export default async function createGame(uid: string): Promise<{ result: loading
   let poloniusCards: cardType[] = [];
   let gertrudeCards: cardType[] = [];
   
+  function addCard(player: players, index: number) {
+    if (player === "Hamlet") {
+      hamletCards.push(cards[index]);
+    } else if (player === "Claudius") {
+      claudiusCards.push(cards[index]);
+    } else if (player === "Polonius") {
+      poloniusCards.push(cards[index]);
+    } else if (player === "Gertrude") {
+      gertrudeCards.push(cards[index]);
+    }
+  }
+  const searchOrder = [...orderOfPlay]
   for (let index = 0; index < cards.length; index += 1) {
-    if (index % 4) {
-      switch (orderOfPlay[3]) {
-        case "Hamlet":
-          hamletCards.push(cards[index]);
-        case "Claudius":
-          claudiusCards.push(cards[index]);
-        case "Polonius":
-          poloniusCards.push(cards[index]);
-        case "Gertrude":
-          gertrudeCards.push(cards[index]);
-      }
-    } else if ((index + 1) % 4) {
-      switch (orderOfPlay[2]) {
-        case "Hamlet":
-          hamletCards.push(cards[index]);
-        case "Claudius":
-          claudiusCards.push(cards[index]);
-        case "Polonius":
-          poloniusCards.push(cards[index]);
-        case "Gertrude":
-          gertrudeCards.push(cards[index]);
-      }
-    } else if ((index + 2) % 4) {
-      switch (orderOfPlay[1]) {
-        case "Hamlet":
-          hamletCards.push(cards[index]);
-        case "Claudius":
-          claudiusCards.push(cards[index]);
-        case "Polonius":
-          poloniusCards.push(cards[index]);
-        case "Gertrude":
-          gertrudeCards.push(cards[index]);
-      }
-    } else if ((index + 3) % 4) {
-      switch (orderOfPlay[0]) {
-        case "Hamlet":
-          hamletCards.push(cards[index]);
-        case "Claudius":
-          claudiusCards.push(cards[index]);
-        case "Polonius":
-          poloniusCards.push(cards[index]);
-        case "Gertrude":
-          gertrudeCards.push(cards[index]);
-      }
+    if ((index % 4) === 0) {
+      addCard(searchOrder[3], index)
+    } else if ((index + 1) % 4 === 0) {
+      addCard(searchOrder[2], index)
+    } else if ((index + 2) % 4 === 0) {
+      addCard(searchOrder[1], index)
+    } else if ((index + 3) % 4 === 0) {
+      addCard(searchOrder[0], index)
     }
   }
 
@@ -88,7 +64,8 @@ export default async function createGame(uid: string): Promise<{ result: loading
       cards: hamletCards,
       guesses: [],
       accused: false,
-      notes: ''
+      notes: '',
+      lastDismissed: ''
     },
     claudius: {
       user: {
@@ -99,7 +76,8 @@ export default async function createGame(uid: string): Promise<{ result: loading
       cards: claudiusCards,
       guesses: [],
       accused: false,
-      notes: ''
+      notes: '',
+      lastDismissed: ''
     },
     polonius: {
       user: {
@@ -110,7 +88,8 @@ export default async function createGame(uid: string): Promise<{ result: loading
       cards: poloniusCards,
       guesses: [],
       accused: false,
-      notes: ''
+      notes: '',
+      lastDismissed: ''
     },
     gertrude: {
       user: {
@@ -121,14 +100,15 @@ export default async function createGame(uid: string): Promise<{ result: loading
       cards: gertrudeCards,
       guesses: [],
       accused: false,
-      notes: ''
+      notes: '',
+      lastDismissed: ''
     },
     master: uid,
     players: [{
       id: uid,
       username: username
     }],
-    turn: orderOfPlay[0],
+    turn: "Selecting",
     dieOne: roleDie(),
     dieTwo: roleDie(),
     history: [],
@@ -143,7 +123,8 @@ export default async function createGame(uid: string): Promise<{ result: loading
       accusation: false,
       time: "",
       timeHandled: "",
-      handledCard: ""
+      handledCard: "",
+      suggester: ""
     },
     gameOver: false,
     winner: ""

@@ -121,6 +121,7 @@ export function setGuess(card: cardType, index: number) {
           player: player
         })
       }
+      console.log(userGuesses)
       if (gameState.hamlet.user.id === uid) {
         store.dispatch(gameStateSlice.actions.setHamlet({
           user: gameState.hamlet.user,
@@ -128,7 +129,8 @@ export function setGuess(card: cardType, index: number) {
           cards: gameState.hamlet.cards,
           guesses: userGuesses,
           accused: gameState.hamlet.accused,
-          notes: gameState.hamlet.notes
+          notes: gameState.hamlet.notes,
+          lastDismissed: gameState.hamlet.lastDismissed
         }))
       } else if (gameState.claudius.user.id === uid) {
         store.dispatch(gameStateSlice.actions.setHamlet({
@@ -137,7 +139,8 @@ export function setGuess(card: cardType, index: number) {
           cards: gameState.claudius.cards,
           guesses: userGuesses,
           accused: gameState.claudius.accused,
-          notes: gameState.claudius.notes
+          notes: gameState.claudius.notes,
+          lastDismissed: gameState.claudius.lastDismissed
         }))
       } else if (gameState.polonius.user.id === uid) {
         store.dispatch(gameStateSlice.actions.setHamlet({
@@ -146,7 +149,8 @@ export function setGuess(card: cardType, index: number) {
           cards: gameState.polonius.cards,
           guesses: userGuesses,
           accused: gameState.polonius.accused,
-          notes: gameState.polonius.notes
+          notes: gameState.polonius.notes,
+          lastDismissed: gameState.polonius.lastDismissed
         }))
       } else if (gameState.gertrude.user.id === uid) {
         store.dispatch(gameStateSlice.actions.setHamlet({
@@ -155,7 +159,8 @@ export function setGuess(card: cardType, index: number) {
           cards: gameState.gertrude.cards,
           guesses: userGuesses,
           accused: gameState.gertrude.accused,
-          notes: gameState.gertrude.notes
+          notes: gameState.gertrude.notes,
+          lastDismissed: gameState.gertrude.lastDismissed
         }))
       }
     }
@@ -165,5 +170,8 @@ export function setGuess(card: cardType, index: number) {
 export function getGuess(card: cardType, index: number): guessType | undefined {
   const userGuesses = getUsersGuesses()
   const player = getPlayer(index)
-  return userGuesses?.find((e) => {e.card === card && e.player === player})
+  console.log(card, player, userGuesses)
+  const find = userGuesses?.find((e) => {e.card === card && e.player === player})
+  console.log(find)
+  return find
 }

@@ -21,7 +21,8 @@ export default async function leaveGame(gameId: string): Promise<loadingStateEnu
           cards: gameState.hamlet.cards,
           guesses:gameState.hamlet.guesses,
           accused: gameState.hamlet.accused,
-          notes: gameState.hamlet.notes
+          notes: gameState.hamlet.notes,
+          lastDismissed: gameState.hamlet.lastDismissed
         }
         await updateDoc(gameRef, {
           players: newPlayers,
@@ -38,7 +39,8 @@ export default async function leaveGame(gameId: string): Promise<loadingStateEnu
           cards: gameState.claudius.cards,
           guesses:gameState.claudius.guesses,
           accused: gameState.claudius.accused,
-          notes: gameState.claudius.notes
+          notes: gameState.claudius.notes,
+          lastDismissed: gameState.claudius.lastDismissed
         }
         await updateDoc(gameRef, {
           players: newPlayers,
@@ -55,7 +57,8 @@ export default async function leaveGame(gameId: string): Promise<loadingStateEnu
           cards: gameState.polonius.cards,
           guesses:gameState.polonius.guesses,
           accused: gameState.polonius.accused,
-          notes: gameState.polonius.notes
+          notes: gameState.polonius.notes,
+          lastDismissed: gameState.polonius.lastDismissed
         }
         await updateDoc(gameRef, {
           players: newPlayers,
@@ -72,7 +75,8 @@ export default async function leaveGame(gameId: string): Promise<loadingStateEnu
           cards: gameState.gertrude.cards,
           guesses:gameState.gertrude.guesses,
           accused: gameState.gertrude.accused,
-          notes: gameState.gertrude.notes
+          notes: gameState.gertrude.notes,
+          lastDismissed: gameState.gertrude.lastDismissed
         }
         await updateDoc(gameRef, {
           players: newPlayers,

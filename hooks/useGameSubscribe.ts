@@ -1,6 +1,6 @@
 import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { db } from "../app/_layout";
+import { auth, db } from "../app/_layout";
 import store, { RootState } from "../redux/store";
 import { gameStateSlice } from "../redux/reducers/gameStateReducer";
 import getGame, { updateGame } from "../util/getGame";
@@ -41,7 +41,14 @@ export default function useGameSubscribe(id: string) {
     }
   }, [id])
   useEffect(() => {
+    console.log(gameState)
     if (mounted) {
+      const uid = auth.currentUser?.uid
+      if (uid === gameState.master && gameState.turn === "Selecting") {
+        if (gameState.hamlet.pos !== "" && gameState.claudius.pos !== "" && gameState.polonius.pos !== "" && gameState.gertrude.pos !== "") {
+          store.dispatch(gameStateSlice.actions.setTurn(gameState.orderOfPlay[0]))
+        }
+      }
       updateGame()
     } else {
       setMounted(true)

@@ -1,4 +1,4 @@
-import { View, Text, TextInput, ActivityIndicator } from 'react-native'
+import { View, Text, TextInput, ActivityIndicator, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
@@ -88,6 +88,7 @@ export default function Account() {
           <ActivityIndicator  style={{margin: 20}}/>:null
         }
       </DefaultButton>
+      {/* <FlatList /> */}
       <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => signOut()} text='Sign Out'/>
       <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => router.push('/')} text='Back'/>
     </View>

@@ -68,6 +68,16 @@ function SuggestScreen({onBack}:{onBack: () => void}) {
   const { width, height } = useSelector((state: RootState) => state.dimentions);
   const gameState = useSelector((state: RootState) => state.gameState);
   const [leftMargin, setLeftMargin] = useState<number>(0);
+  const [makingSuggestion, setMakingSuggestion] = useState<boolean>(false);
+
+  function suggestion() {
+    makeSuggestion()
+    setMakingSuggestion(true);
+  }
+
+  function checkSuggestionResult() {
+    
+  }
 
   const [fontsLoaded, fontError] = useFonts({
     'RubikBubbles-Regular': require("../assets/fonts/RubikBubbles-Regular.ttf"),
@@ -88,42 +98,49 @@ function SuggestScreen({onBack}:{onBack: () => void}) {
     <>
       <View style={{width, height, position: 'absolute', backgroundColor: '#a2a3a2', opacity: 0.3}} />
       <View style={{width: width * 0.8, height: height * 0.8, margin: 'auto', backgroundColor: 'white', borderRadius: 30, borderWidth: 2, borderColor: 'black'}} onLayout={onLayoutRootView}>
-        <Text style={{marginTop: 15, fontFamily: 'RubikBubbles-Regular', marginLeft: leftMargin, color: Colors.royalRed, fontSize: 25}}>Suggestion</Text>
-        <Text style={{fontFamily: 'Rubik-SemiBold', position: 'absolute', right: leftMargin, top: 15, color: 'black', fontSize: 20}}>Room: {getCurrentRoom(gameState)}</Text>
-        <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: leftMargin, fontSize: 15}}>Players</Text>
-        <View onLayout={(e) => {
-          setLeftMargin((e.nativeEvent.layout.width - width * 0.6)/8)
-        }} style={{flexDirection: 'row', marginTop: 10, marginBottom: 10}}>
-          <SuggestBlock name='Hamlet' item='Hamlet' role='players'>
-            <Hamlet width={75} height={75}/>
-          </SuggestBlock>
-          <SuggestBlock name='Claudius' item='Claudius' role='players'>
-            <Claudius width={75} height={75}/>
-          </SuggestBlock>
-          <SuggestBlock name='Polonius' item='Polonius' role='players'>
-            <Polonius width={75} height={75}/>
-          </SuggestBlock>
-          <SuggestBlock name='Gertrude' item='Gertrude' role='players'>
-            <Gertrude width={75} height={75}/>
-          </SuggestBlock>
-        </View>
-        <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: leftMargin, fontSize: 15, paddingBottom: 10}}>Weapons</Text>
-        <View style={{flexDirection: 'row'}}>
-          <SuggestBlock name='Hemlock Poison' item='Hemlock_Poison' role='weapons'>
-            <HemlockPoison width={75} height={75}/>
-          </SuggestBlock>
-          <SuggestBlock name='Sharpened Rapier' item='Sharpened_Rapier' role='weapons'>
-            <SharpenedRapier width={75} height={75}/>
-          </SuggestBlock>
-          <SuggestBlock name='Axe' item='Axe' role='weapons'>
-            <Axe width={75} height={75}/>
-          </SuggestBlock>
-          <SuggestBlock name='Dagger' item='Dagger' role='weapons'>
-            <Dagger width={75} height={75}/>
-          </SuggestBlock>
-        </View>
-        <DefaultButton style={{marginLeft: leftMargin, marginRight: leftMargin, marginTop: 10}} onPress={() => {makeSuggestion()}} text='Suggest'/>
-        <DefaultButton style={{marginLeft: leftMargin, marginRight: leftMargin, marginTop: 10}} onPress={() => onBack()} text='Back'/>
+        { makingSuggestion ?
+          <View>
+            <Text style={{fontFamily: 'RubikBubbles-Regular', color: Colors.royalRed, marginLeft: 'auto', marginRight: 'auto'}}>Waiting for suggestion</Text>
+          </View>:
+          <ScrollView>
+            <Text style={{marginTop: 15, fontFamily: 'RubikBubbles-Regular', marginLeft: leftMargin, color: Colors.royalRed, fontSize: 25}}>Suggestion</Text>
+            <Text style={{fontFamily: 'Rubik-SemiBold', position: 'absolute', right: leftMargin, top: 15, color: 'black', fontSize: 20}}>Room: {getCurrentRoom(gameState)}</Text>
+            <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: leftMargin, fontSize: 15}}>Players</Text>
+            <View onLayout={(e) => {
+              setLeftMargin((e.nativeEvent.layout.width - width * 0.6)/8)
+            }} style={{flexDirection: 'row', marginTop: 10, marginBottom: 10}}>
+              <SuggestBlock name='Hamlet' item='Hamlet' role='players'>
+                <Hamlet width={75} height={75}/>
+              </SuggestBlock>
+              <SuggestBlock name='Claudius' item='Claudius' role='players'>
+                <Claudius width={75} height={75}/>
+              </SuggestBlock>
+              <SuggestBlock name='Polonius' item='Polonius' role='players'>
+                <Polonius width={75} height={75}/>
+              </SuggestBlock>
+              <SuggestBlock name='Gertrude' item='Gertrude' role='players'>
+                <Gertrude width={75} height={75}/>
+              </SuggestBlock>
+            </View>
+            <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: leftMargin, fontSize: 15, paddingBottom: 10}}>Weapons</Text>
+            <View style={{flexDirection: 'row'}}>
+              <SuggestBlock name='Hemlock Poison' item='Hemlock_Poison' role='weapons'>
+                <HemlockPoison width={75} height={75}/>
+              </SuggestBlock>
+              <SuggestBlock name='Sharpened Rapier' item='Sharpened_Rapier' role='weapons'>
+                <SharpenedRapier width={75} height={75}/>
+              </SuggestBlock>
+              <SuggestBlock name='Axe' item='Axe' role='weapons'>
+                <Axe width={75} height={75}/>
+              </SuggestBlock>
+              <SuggestBlock name='Dagger' item='Dagger' role='weapons'>
+                <Dagger width={75} height={75}/>
+              </SuggestBlock>
+            </View>
+            <DefaultButton style={{marginLeft: leftMargin, marginRight: leftMargin, marginTop: 10}} onPress={() => {suggestion()}} text='Suggest'/>
+            <DefaultButton style={{marginLeft: leftMargin, marginRight: leftMargin, marginTop: 10, marginBottom: 10}} onPress={() => onBack()} text='Back'/>
+          </ScrollView>
+        }
       </View>
     </>
   )
@@ -167,6 +184,7 @@ function AccuseScreen({onBack}:{onBack: () => void}) {
   const { width, height } = useSelector((state: RootState) => state.dimentions);
   const gameState = useSelector((state: RootState) => state.gameState);
   const [leftMargin, setLeftMargin] = useState<number>(0);
+  const [accusationMade, setAccusationMade] = useState<boolean>(false);
 
   const [fontsLoaded, fontError] = useFonts({
     'RubikBubbles-Regular': require("../assets/fonts/RubikBubbles-Regular.ttf"),
@@ -181,6 +199,24 @@ function AccuseScreen({onBack}:{onBack: () => void}) {
 
   if (!fontsLoaded && !fontError) {
     return null;
+  }
+
+  if (accusationMade) {
+    return (
+      <>
+        <View style={{width, height, position: 'absolute', backgroundColor: '#a2a3a2', opacity: 0.3}} />
+        <View style={{width: width * 0.8, height: height * 0.8, margin: 'auto', backgroundColor: 'white', borderRadius: 30, borderWidth: 2, borderColor: 'black', overflow: 'hidden'}} onLayout={onLayoutRootView}>
+          {(gameState.winner === "") ?
+            <View>
+              <Text>You LOST the game. You are now a spectator.</Text>
+            </View>:
+            <View>
+              <Text>You WON the game congrats</Text>
+            </View>
+          }
+        </View>
+      </>
+    )
   }
 
   return (
@@ -250,7 +286,7 @@ function AccuseScreen({onBack}:{onBack: () => void}) {
               <Dagger width={75} height={75}/>
             </AccuseBlock>
           </View>
-          <DefaultButton style={{marginLeft: leftMargin, marginRight: leftMargin, marginTop: 10}} onPress={() => {makeAccusation()}} text='Accuse'/>
+          <DefaultButton style={{marginLeft: leftMargin, marginRight: leftMargin, marginTop: 10}} onPress={() => {makeAccusation(); setAccusationMade(true)}} text='Accuse'/>
           <DefaultButton style={{marginLeft: leftMargin, marginRight: leftMargin, marginTop: 10, marginBottom: 10}} onPress={() => onBack()} text='Back'/>
         </ScrollView>
       </View>
@@ -290,16 +326,16 @@ export default function RoomScreen() {
     return <AccuseScreen onBack={() => setSelectedRoomMode(roomMode.home)}/>
   }
   if (selectedRoomMode === roomMode.detective) {
-    return <DetectiveSheet />
+    return <DetectiveSheet role="window" onClose={() => setSelectedRoomMode(roomMode.home)}/>
   }
   return (
     <>
       <View style={{width, height, position: 'absolute', backgroundColor: '#a2a3a2', opacity: 0.3}} />
       <View onLayout={onLayoutRootView} style={{width: width * 0.8, height: height * 0.8, margin: 'auto', backgroundColor: 'white', borderRadius: 30, borderWidth: 2, borderColor: 'black'}}>
-        <Text style={{fontFamily: 'RubikBubbles-Regular', color: Colors.royalRed}}>You Entered The {getCurrentRoom(gameState)}!</Text>
-        <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto'}} onPress={() => {setSelectedRoomMode(roomMode.suggest)}} text='Suggest'/>
-        <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto'}} onPress={() => {setSelectedRoomMode(roomMode.accuse)}} text='Accuse'/>
-        <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto'}} onPress={() => {setSelectedRoomMode(roomMode.detective)}} text='Detective'/>
+        <Text style={{fontFamily: 'RubikBubbles-Regular', color: Colors.royalRed, marginLeft: 'auto', marginRight: 'auto', marginTop: 20, fontSize: 35}}>You Entered The {getCurrentRoom(gameState)}!</Text>
+        <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto', marginTop: 10}} onPress={() => {setSelectedRoomMode(roomMode.suggest)}} text='Suggest'/>
+        <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto', marginTop: 10}} onPress={() => {setSelectedRoomMode(roomMode.accuse)}} text='Accuse'/>
+        <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto', marginTop: 10}} onPress={() => {setSelectedRoomMode(roomMode.detective)}} text='Detective Sheet'/>
       </View>
     </>
   )

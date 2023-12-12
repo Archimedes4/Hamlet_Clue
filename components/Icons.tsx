@@ -82,7 +82,7 @@ export function ChevronLeft({ width, height, style, color }: colorIconProps) {
 
 export function HemlockPoison({ width, height, style }: iconProps) {
   return (
-    <Svg width={width} height={height} style={style} viewBox="0 0 512 512" enable-background="new 0 0 512 512" id="flat" fill="#000000">
+    <Svg width={width} height={height} style={style} viewBox="0 0 512 512" id="flat" fill="#000000">
       <G id="SVGRepo_iconCarrier">
         <Path d="M349.24,504H162.76c-20.631,0-38.82-13.533-44.748-33.294L73.241,321.47 c-9.652-32.175,7.662-66.259,39.339-77.439l45.072-15.908c20.826-7.35,35.243-26.435,36.62-48.477L200,88h112l5.728,91.646 c1.378,22.042,15.795,41.127,36.62,48.477l45.072,15.908c31.676,11.18,48.991,45.264,39.339,77.439l-44.771,149.236 C388.06,490.467,369.871,504,349.24,504z" fill="#BAC4F7"/>
         <Path d="M438.76,321.47l-44.77,149.24c-5.93,19.76-24.12,33.29-44.75,33.29H162.76c-20.63,0-38.82-13.53-44.75-33.29 L73.24,321.47c-4.17-13.91-3.3-28.18,1.58-40.8c33.92-8.81,98.08-17.34,181.18,9.11c86.5,27.53,152.46,17.16,185.18,8.03 C441.87,305.57,441.13,313.58,438.76,321.47z" fill="#5ce66c"/>

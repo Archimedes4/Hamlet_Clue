@@ -7,6 +7,9 @@ export function convertRoomIdToText(room: position): string {
   if (room === "Great_Hall") {
     return "Great Hall"
   }
+  if (room === "Fencing_Room") {
+    return "Fencing Room"
+  }
   if (room === "Court_Yard") {
     return "Court Yard"
   }
@@ -34,15 +37,15 @@ export default function getCurrentRoom(gameState: gameState): string {
     }
     if (gameState.claudius.user.id == uid) {
       //Claudius
-      return convertRoomIdToText(gameState.hamlet.pos)
+      return convertRoomIdToText(gameState.claudius.pos)
     }
     if (gameState.polonius.user.id == uid) {
       //Polonius
-      return convertRoomIdToText(gameState.hamlet.pos)
+      return convertRoomIdToText(gameState.polonius.pos)
     }
     if (gameState.gertrude.user.id == uid) {
       //Gertrude
-      return convertRoomIdToText(gameState.hamlet.pos)
+      return convertRoomIdToText(gameState.gertrude.pos)
     }
   }
   return ""
