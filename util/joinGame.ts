@@ -3,6 +3,7 @@ import { auth, db } from "../app/_layout"
 import store from "../redux/store"
 import { joinStateType } from "../app/(auth)"
 import { router } from "expo-router"
+import { createUUID } from "./util"
 
 export default async function joinGame(gameId: string) {
   const uid = auth.currentUser?.uid
@@ -27,7 +28,8 @@ export default async function joinGame(gameId: string) {
               username: username
             })
             await updateDoc(doc(db, "Games", gameId), {
-              players: players
+              players: players,
+              changeKey: createUUID()
             })
             await updateDoc(doc(db, "Users", uid), {
               games: userGames

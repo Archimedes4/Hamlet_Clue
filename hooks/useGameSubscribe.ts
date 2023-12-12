@@ -5,14 +5,12 @@ import store, { RootState } from "../redux/store";
 import { gameStateSlice } from "../redux/reducers/gameStateReducer";
 import getGame, { updateGame } from "../util/getGame";
 import { useSelector } from "react-redux";
-import { useGlobalSearchParams } from "expo-router";
 
 export default function useGameSubscribe(id: string) {
   const gameState = useSelector((state: RootState) => state.gameState);
   const [mounted, setMounted] = useState<boolean>(false)
-  const [changeKey, setChangeKey] = useState<string>("");
   async function loadGetGame(id: string) {
-    setChangeKey(await getGame(id));
+    await getGame(id)
   }
   useEffect(() => {
     if (id !== "") {
@@ -37,12 +35,11 @@ export default function useGameSubscribe(id: string) {
             promt: doc.data().promt,
             gameOver: doc.data().gameOver,
             winner: doc.data().winner,
-            changeKey: doc.data().changeKey,
+            changeKey: '',
             bannedPlayers: doc.data().bannedPlayers
           }
-          if (store.getState().gameState.changeKey !== doc.data().changeKey) {
-            store.dispatch(gameStateSlice.actions.setGameState(gameState)) 
-          }
+          store.dispatch(gameStateSlice.actions.updateGameState(gameState)) 
+      
         }
       });
       return unsub
@@ -56,10 +53,7 @@ export default function useGameSubscribe(id: string) {
           store.dispatch(gameStateSlice.actions.setTurn(gameState.orderOfPlay[0]))
         }
       }
-      if (changeKey !== store.getState().gameState.changeKey) {
-        updateGame()
-        setChangeKey(store.getState().gameState.changeKey)
-      }
+      updateGame() 
     } else {
       setMounted(true)
     }

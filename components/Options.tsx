@@ -40,7 +40,7 @@ export default function Option({width, height}:{width: number, height: number}) 
     <View style={{width: width, height: height, backgroundColor: 'orange'}}>
       <ScrollView>
         <View style={{flexDirection: 'row'}}>
-          <Text>{gameState.gameId}</Text>
+          <Text  style={{marginLeft: 'auto'}}>{gameState.gameId}</Text>
           <Pressable onPress={() => {copyToClipboard()}} style={{marginRight: 'auto', marginLeft: 5}}>
             { copied ?
               <CopiedIcon width={20} height={20}/>:<CopyIcon width={20} height={20}/>

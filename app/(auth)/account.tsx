@@ -7,7 +7,7 @@ import DefaultButton from '../../components/DefaultButton';
 import { router } from 'expo-router';
 import { loadingStateEnum } from '../../constants/PiecesLocations';
 import { logOut } from '../../util/authentication';
-import { checkIfUsernameAvaliable, updateUserInfo } from '../../util/userInformation';
+import { checkIfUsernameAvaliable, getPlayerGames, updateUserInfo } from '../../util/userInformation';
 import { MagnifyingGlass } from '../../components/Icons';
 import { auth } from '../_layout';
 enum usernameValidation {
@@ -41,7 +41,8 @@ export default function Account() {
   const [username, setUsername] = useState<string>("");
   const [usernameStatus, setUsernameStatus] = useState<usernameValidation>(usernameValidation.toShort);
   const [signOutState, setSignOutState] = useState<loadingStateEnum>(loadingStateEnum.notStarted);
-  
+  const [data, setData] = useState<string[]>([]);
+
   async function signOut() {
     setSignOutState(loadingStateEnum.loading)
     const result = await logOut()
@@ -72,9 +73,20 @@ export default function Account() {
       }
     }
   }
+
+  async function getPlayerData() {
+    const result = await getPlayerGames()
+    setData(result)
+  }
+
+  useEffect(() => {
+    getPlayerData();
+  }, [])
+
   useEffect(() => {
     checkUsername(username)
   }, [username])
+
   return (
     <View style={{width: width, height: height, backgroundColor: Colors.main}}>
       <View style={{flexDirection: 'row', marginTop: 20, marginLeft: 20}}>
@@ -88,7 +100,11 @@ export default function Account() {
           <ActivityIndicator  style={{margin: 20}}/>:null
         }
       </DefaultButton>
-      {/* <FlatList /> */}
+      <FlatList data={data} renderItem={(e) => (
+        <View style={{borderWidth: 2, borderColor: 'black', borderRadius: 25}}>
+          <Text style={{margin: 10}}>{e.item}</Text>
+        </View>
+      )}/>
       <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => signOut()} text='Sign Out'/>
       <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => router.push('/')} text='Back'/>
     </View>

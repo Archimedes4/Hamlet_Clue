@@ -13,6 +13,8 @@ import DefaultButton from './DefaultButton';
 import { router } from 'expo-router';
 import { auth } from '../app/_layout';
 import * as Clipboard from 'expo-clipboard';
+import leaveGame from '../util/leaveGame';
+import { loadingStateEnum } from '../constants/PiecesLocations';
 
 //Get with and height for icon
 function getPlayerDimensions(width: number, height: number): number {
@@ -62,7 +64,7 @@ function PlayerBlock({player, text, onSelect, children}:{player: playerInfo, tex
 
   if (player.user.id === "") {
     return (
-      <Pressable onLayout={onLayoutRootView} style={{width: width * 0.3, height: height * 0.25, margin: 'auto', borderWidth: 2, borderRadius: 15, borderColor: 'black', overflow: 'hidden'}} onPress={() => {
+      <Pressable onLayout={onLayoutRootView} style={{width: width * 0.3, height: height * 0.25 - 2, margin: 'auto', borderWidth: 2, borderRadius: 15, borderColor: 'black', overflow: 'hidden'}} onPress={() => {
         onSelect()
       }}>
         <View style={{marginTop: 2, marginLeft: 'auto', marginRight: 'auto'}}>
@@ -75,7 +77,7 @@ function PlayerBlock({player, text, onSelect, children}:{player: playerInfo, tex
     )
   }
   return (
-    <View onLayout={onLayoutRootView} style={{width: width * 0.3, height: height * 0.25, margin: 'auto', borderWidth: 2, borderRadius: 15, borderColor: 'black', backgroundColor: checkIfUsers(gameState.hamlet, gameState.claudius, gameState.polonius, gameState.gertrude) ? '#fcba03':'#dce0dd', overflow: 'hidden'}}>
+    <View onLayout={onLayoutRootView} style={{width: width * 0.3, height: height * 0.25 - 2, margin: 'auto', borderWidth: 2, borderRadius: 15, borderColor: 'black', backgroundColor: checkIfUsers(gameState.hamlet, gameState.claudius, gameState.polonius, gameState.gertrude) ? '#fcba03':'#dce0dd', overflow: 'hidden'}}>
       <View style={{marginTop: 2, marginLeft: 'auto', marginRight: 'auto'}}>
         {children}
       </View>
@@ -126,6 +128,13 @@ export default function PlayerScreen() {
   const { width, height } = useSelector((state: RootState) => state.dimentions);
   const gameState = useSelector((state: RootState) => state.gameState);
   const [copied, setCopied] = useState<boolean>(false);
+  const [leaveState, setLeaveState] = useState<loadingStateEnum>(loadingStateEnum.notStarted);
+
+  async function loadLeaveGame() {
+    setLeaveState(loadingStateEnum.loading)
+    const result = await leaveGame(gameState.gameId)
+    setLeaveState(result)
+  }
 
   const copyToClipboard = async () => {
     await Clipboard.setStringAsync(gameState.gameId);
@@ -192,7 +201,7 @@ export default function PlayerScreen() {
             <UserBlock index={2}/>
             <UserBlock index={3}/>
           </View>
-          <DefaultButton style={{width: (width * 0.8) - ((((width * 0.8) - (getPlayerDimensions(width, height) * 2))/8) * 2), marginLeft: 'auto', marginRight: 'auto', marginBottom: 10}} onPress={() => {}} text='Leave Game'/>
+          <DefaultButton style={{width: (width * 0.8) - ((((width * 0.8) - (getPlayerDimensions(width, height) * 2))/8) * 2), marginLeft: 'auto', marginRight: 'auto', marginBottom: 10}} onPress={() => {loadLeaveGame()}} text='Leave Game'/>
           <DefaultButton style={{width: (width * 0.8) - ((((width * 0.8) - (getPlayerDimensions(width, height) * 2))/8) * 2), marginLeft: 'auto', marginRight: 'auto', marginBottom: 10}}onPress={() => {router.push('/')}} text='Back'/>
         </ScrollView>
       </View>

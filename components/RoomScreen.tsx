@@ -408,10 +408,10 @@ export default function RoomScreen() {
     <>
       <View style={{width, height, position: 'absolute', backgroundColor: '#a2a3a2', opacity: 0.3}} />
       <View onLayout={onLayoutRootView} style={{width: width * 0.8, height: height * 0.8, margin: 'auto', backgroundColor: 'white', borderRadius: 30, borderWidth: 2, borderColor: 'black'}}>
-        <Text style={{fontFamily: 'RubikBubbles-Regular', color: Colors.royalRed, marginLeft: 'auto', marginRight: 'auto', marginTop: 20, fontSize: 35}}>You Entered The {getCurrentRoom(gameState)}!</Text>
-        <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto', marginTop: 10}} onPress={() => {setSelectedRoomMode(roomMode.suggest)}} text='Suggest'/>
-        <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto', marginTop: 10}} onPress={() => {setSelectedRoomMode(roomMode.accuse)}} text='Accuse'/>
-        <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto', marginTop: 10}} onPress={() => {setSelectedRoomMode(roomMode.detective)}} text='Detective Sheet'/>
+        <Text adjustsFontSizeToFit numberOfLines={1} style={{fontFamily: 'RubikBubbles-Regular', color: Colors.royalRed, marginLeft: 'auto', marginRight: 'auto', marginTop: 20, fontSize: 35}}>You Entered The {getCurrentRoom(gameState)}!</Text>
+        <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto', marginTop: 10, height: (height * 0.8 < 270) ? height * 0.1:56.4}} onPress={() => {setSelectedRoomMode(roomMode.suggest)}} text='Suggest'/>
+        <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto', marginTop: 10, height: (height * 0.8 < 270) ? height * 0.1:56.4}} onPress={() => {setSelectedRoomMode(roomMode.accuse)}} text='Accuse'/>
+        <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto', marginTop: 10, height: (height * 0.8 < 270) ? height * 0.1:56.4}} onPress={() => {setSelectedRoomMode(roomMode.detective)}} text='Detective Sheet'/>
       </View>
     </>
   )

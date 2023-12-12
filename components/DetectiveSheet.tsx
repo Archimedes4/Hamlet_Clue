@@ -173,9 +173,7 @@ export default function DetectiveSheet({role, onClose}:{role: "main", onClose?: 
             updateNotes(notes)
           }} style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto', marginBottom: 15}} text='Update Notes'/>
           <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: 15, marginTop: 15, marginBottom: 15}}>Players</Text>
-          <View>
-            <Text></Text>
-          </View>
+          <Players />
         </ScrollView>
       </View>
     </>

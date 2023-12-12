@@ -1,3 +1,7 @@
+/*
+  Andrew Mainella
+  Hamlet Clue
+*/
 import { getRedirectResult } from "firebase/auth"
 import { useEffect, useState } from "react"
 import { auth } from "../app/_layout"

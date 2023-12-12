@@ -70,3 +70,14 @@ export function getPlayer(): players | undefined {
     }
   }
 }
+
+export async function getPlayerGames() {
+  const uid = auth.currentUser?.uid
+  if (uid) {
+    const data = await getDoc(doc(db, "Users", uid));
+    if (data.exists()) {
+      return data.data().games
+    }
+  }
+  return []
+}

@@ -6,7 +6,7 @@ import { loadingStateEnum } from "../constants/PiecesLocations";
 export default async function leaveGame(gameId: string): Promise<loadingStateEnum> {
   const uid = auth.currentUser?.uid
   const gameState = store.getState().gameState
-  if (uid !== undefined) {
+  if (uid) {
     try {
       const gameRef = doc(db, "Games", gameId)
       let newPlayers = [...gameState.players]

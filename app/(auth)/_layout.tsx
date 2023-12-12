@@ -11,7 +11,7 @@ export default function AuthHolder() {
   const { width, height } = useSelector((state: RootState) => state.dimentions);
   const isAuth = useIsAuthenticated()
   if (isAuth === authState.authenticatedWithAccount) {
-    return <Slot />
+    return <Slot screenOptions={{ title: 'My home' }}/>
   }
 
   if (isAuth === authState.loading) {

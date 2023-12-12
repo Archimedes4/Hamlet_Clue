@@ -85,8 +85,53 @@ export const gameStateSlice = createSlice({
   name: 'gameState',
   initialState: initalState,
   reducers: {
+    updateGameState: (_state, action: PayloadAction<gameState>) => {
+      let newGameState: gameState = {
+        gameId: action.payload.gameId,
+        master: action.payload.master,
+        hamlet: action.payload.hamlet,
+        claudius: action.payload.claudius,
+        polonius: action.payload.polonius,
+        gertrude: action.payload.gertrude,
+        turn: action.payload.turn,
+        dieOne: action.payload.dieCount,
+        dieTwo: action.payload.dieTwo,
+        players: action.payload.players,
+        history: action.payload.history,
+        dieCount: action.payload.dieCount,
+        orderOfPlay: action.payload.orderOfPlay,
+        answer: action.payload.answer,
+        promt: action.payload.promt,
+        gameOver: action.payload.gameOver,
+        winner: action.payload.winner,
+        bannedPlayers: action.payload.bannedPlayers,
+        changeKey: ''
+      }
+      return newGameState
+    },
     setGameState: (_state, action: PayloadAction<gameState>) => {
-      return action.payload
+      let newGameState: gameState = {
+        gameId: action.payload.gameId,
+        master: action.payload.master,
+        hamlet: action.payload.hamlet,
+        claudius: action.payload.claudius,
+        polonius: action.payload.polonius,
+        gertrude: action.payload.gertrude,
+        turn: action.payload.turn,
+        dieOne: action.payload.dieCount,
+        dieTwo: action.payload.dieTwo,
+        players: action.payload.players,
+        history: action.payload.history,
+        dieCount: action.payload.dieCount,
+        orderOfPlay: action.payload.orderOfPlay,
+        answer: action.payload.answer,
+        promt: action.payload.promt,
+        gameOver: action.payload.gameOver,
+        winner: action.payload.winner,
+        bannedPlayers: action.payload.bannedPlayers,
+        changeKey: createUUID()
+      }
+      return newGameState
     },
     movePosition: (state, action: PayloadAction<{pos: position, room: boolean}>) => {
       //Check if room

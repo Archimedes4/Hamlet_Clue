@@ -1,3 +1,7 @@
+/*
+  Andrew Mainella
+  Hamlet Clue
+*/
 import { auth } from "../app/_layout";
 
 export function convertRoomIdToText(room: position): string {

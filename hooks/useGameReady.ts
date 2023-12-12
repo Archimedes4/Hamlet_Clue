@@ -1,3 +1,7 @@
+/*
+  Andrew Mainella
+  Hamlet Clue
+*/
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import store, { RootState } from "../redux/store";
