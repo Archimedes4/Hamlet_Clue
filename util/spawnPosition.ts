@@ -13,7 +13,8 @@ export function setSpawnPosition(hamlet: playerInfo, claudius: playerInfo, polon
         cards: hamlet.cards,
         guesses: hamlet.guesses,
         accused: hamlet.accused,
-        notes: hamlet.notes
+        notes: hamlet.notes,
+        lastDismissed: hamlet.lastDismissed
       }))
     } else if (uid === claudius.user.id && "" === claudius.pos) {
       store.dispatch(gameStateSlice.actions.setClaudius({
@@ -22,7 +23,8 @@ export function setSpawnPosition(hamlet: playerInfo, claudius: playerInfo, polon
         cards: claudius.cards,
         guesses: claudius.guesses,
         accused: claudius.accused,
-        notes: claudius.notes
+        notes: claudius.notes,
+        lastDismissed: claudius.lastDismissed
       }))
     } else if (uid === polonius.user.id && "" === polonius.pos) {
       store.dispatch(gameStateSlice.actions.setPolonius({
@@ -31,7 +33,8 @@ export function setSpawnPosition(hamlet: playerInfo, claudius: playerInfo, polon
         cards: polonius.cards,
         guesses: polonius.guesses,
         accused: polonius.accused,
-        notes: polonius.notes
+        notes: polonius.notes,
+        lastDismissed: polonius.lastDismissed
       }))
     } else if (uid === gertrude.user.id && "" === gertrude.pos) {
       store.dispatch(gameStateSlice.actions.setGertude({
@@ -40,7 +43,8 @@ export function setSpawnPosition(hamlet: playerInfo, claudius: playerInfo, polon
         cards: gertrude.cards,
         guesses: gertrude.guesses,
         accused: gertrude.accused,
-        notes: gertrude.notes
+        notes: gertrude.notes,
+        lastDismissed: gertrude.lastDismissed
       }))
     } 
   }

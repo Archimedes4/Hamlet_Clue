@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from 'react-native'
-import React, { ReactNode, useCallback, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import store, { RootState } from '../redux/store';
 import { Axe, Claudius, Dagger, Gertrude, Hamlet, HemlockPoison, Polonius, SharpenedRapier } from './Icons';
@@ -13,6 +13,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { accusationsSlice } from '../redux/reducers/accusationSelectionReducer';
 import DetectiveSheet from './DetectiveSheet';
 import { makeAccusation, makeSuggestion } from '../util/onRoom';
+import { screensSlice } from '../redux/reducers/screensReducer';
 
 declare global {
   type weaponBlockProps = {
@@ -33,6 +34,65 @@ declare global {
     role: "rooms";
     children: ReactNode;
   }
+}
+
+function MadeSuggestion() {
+  const { width, height } = useSelector((state: RootState) => state.dimentions);
+  const gameState = useSelector((state: RootState) => state.gameState);
+  const [handled, setHandled] = useState<boolean>(false);
+  const [seconds, setSeconds] = useState<number>(10)
+  const [isShowingDetective, setIsShowingDetective] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (gameState.promt.timeHandled !== "") {
+      setHandled(true)
+    }
+  }, [gameState])
+
+  useEffect(() => {
+    // Exit early if countdown is finished
+    if (!handled) {
+      return
+    }
+
+    if (seconds <= 0) {
+      if (!isShowingDetective) {
+        store.dispatch(screensSlice.actions.setInformationScreen(false))
+      }
+      return;
+    }
+    
+    // Set up the timer
+    const timer = setInterval(() => {
+      seconds > 0 && setTimeout(() => setSeconds(seconds - 1), 1000);
+    }, 1000);
+    
+    // Clean up the timer
+    return () => clearInterval(timer);
+  }, [seconds, handled]);
+
+  if (handled) {
+    <>
+      <View style={{width, height, position: 'absolute', backgroundColor: '#a2a3a2', opacity: 0.3}} />
+      <View style={{width: width * 0.8, height: height * 0.8, margin: 'auto', backgroundColor: 'white', borderRadius: 30, borderWidth: 2, borderColor: 'black'}}>
+        <Text style={{fontFamily: 'RubikBubbles-Regular', color: Colors.royalRed, marginLeft: 'auto', marginRight: 'auto'}}>{gameState.promt.suggester} showed you,</Text>
+        <View>
+          
+        </View>
+        <DefaultButton onPress={() => {setIsShowingDetective(true)}} text='Show Detective Sheet'/>
+        <DefaultButton onPress={() => {store.dispatch(screensSlice.actions.setInformationScreen(false))}} text='Dismiss'/>
+      </View>
+    </>
+  }
+
+  return (
+    <>
+      <View style={{width, height, position: 'absolute', backgroundColor: '#a2a3a2', opacity: 0.3}} />
+      <View style={{width: width * 0.8, height: height * 0.8, margin: 'auto', backgroundColor: 'white', borderRadius: 30, borderWidth: 2, borderColor: 'black'}}>
+        <Text style={{fontFamily: 'RubikBubbles-Regular', color: Colors.royalRed, marginLeft: 'auto', marginRight: 'auto'}}>Waiting for suggestion</Text>
+      </View>
+    </>
+  )
 }
 
 function SuggestBlock({name, item, children, role}:weaponBlockProps | playersBlockProps) {
@@ -68,11 +128,11 @@ function SuggestScreen({onBack}:{onBack: () => void}) {
   const { width, height } = useSelector((state: RootState) => state.dimentions);
   const gameState = useSelector((state: RootState) => state.gameState);
   const [leftMargin, setLeftMargin] = useState<number>(0);
-  const [makingSuggestion, setMakingSuggestion] = useState<boolean>(false);
+  const [madeSuggestion, setMadeSuggestion] = useState<boolean>(false);
 
   function suggestion() {
     makeSuggestion()
-    setMakingSuggestion(true);
+    setMadeSuggestion(true);
   }
 
   function checkSuggestionResult() {
@@ -94,53 +154,52 @@ function SuggestScreen({onBack}:{onBack: () => void}) {
     return null;
   }
 
+  if (madeSuggestion) {
+    <MadeSuggestion />
+  }
+
   return (
     <>
       <View style={{width, height, position: 'absolute', backgroundColor: '#a2a3a2', opacity: 0.3}} />
       <View style={{width: width * 0.8, height: height * 0.8, margin: 'auto', backgroundColor: 'white', borderRadius: 30, borderWidth: 2, borderColor: 'black'}} onLayout={onLayoutRootView}>
-        { makingSuggestion ?
-          <View>
-            <Text style={{fontFamily: 'RubikBubbles-Regular', color: Colors.royalRed, marginLeft: 'auto', marginRight: 'auto'}}>Waiting for suggestion</Text>
-          </View>:
-          <ScrollView>
-            <Text style={{marginTop: 15, fontFamily: 'RubikBubbles-Regular', marginLeft: leftMargin, color: Colors.royalRed, fontSize: 25}}>Suggestion</Text>
-            <Text style={{fontFamily: 'Rubik-SemiBold', position: 'absolute', right: leftMargin, top: 15, color: 'black', fontSize: 20}}>Room: {getCurrentRoom(gameState)}</Text>
-            <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: leftMargin, fontSize: 15}}>Players</Text>
-            <View onLayout={(e) => {
-              setLeftMargin((e.nativeEvent.layout.width - width * 0.6)/8)
-            }} style={{flexDirection: 'row', marginTop: 10, marginBottom: 10}}>
-              <SuggestBlock name='Hamlet' item='Hamlet' role='players'>
-                <Hamlet width={75} height={75}/>
-              </SuggestBlock>
-              <SuggestBlock name='Claudius' item='Claudius' role='players'>
-                <Claudius width={75} height={75}/>
-              </SuggestBlock>
-              <SuggestBlock name='Polonius' item='Polonius' role='players'>
-                <Polonius width={75} height={75}/>
-              </SuggestBlock>
-              <SuggestBlock name='Gertrude' item='Gertrude' role='players'>
-                <Gertrude width={75} height={75}/>
-              </SuggestBlock>
-            </View>
-            <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: leftMargin, fontSize: 15, paddingBottom: 10}}>Weapons</Text>
-            <View style={{flexDirection: 'row'}}>
-              <SuggestBlock name='Hemlock Poison' item='Hemlock_Poison' role='weapons'>
-                <HemlockPoison width={75} height={75}/>
-              </SuggestBlock>
-              <SuggestBlock name='Sharpened Rapier' item='Sharpened_Rapier' role='weapons'>
-                <SharpenedRapier width={75} height={75}/>
-              </SuggestBlock>
-              <SuggestBlock name='Axe' item='Axe' role='weapons'>
-                <Axe width={75} height={75}/>
-              </SuggestBlock>
-              <SuggestBlock name='Dagger' item='Dagger' role='weapons'>
-                <Dagger width={75} height={75}/>
-              </SuggestBlock>
-            </View>
-            <DefaultButton style={{marginLeft: leftMargin, marginRight: leftMargin, marginTop: 10}} onPress={() => {suggestion()}} text='Suggest'/>
-            <DefaultButton style={{marginLeft: leftMargin, marginRight: leftMargin, marginTop: 10, marginBottom: 10}} onPress={() => onBack()} text='Back'/>
-          </ScrollView>
-        }
+        <ScrollView>
+          <Text style={{marginTop: 15, fontFamily: 'RubikBubbles-Regular', marginLeft: leftMargin, color: Colors.royalRed, fontSize: 25}}>Suggestion</Text>
+          <Text style={{fontFamily: 'Rubik-SemiBold', position: 'absolute', right: leftMargin, top: 15, color: 'black', fontSize: 20}}>Room: {getCurrentRoom(gameState)}</Text>
+          <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: leftMargin, fontSize: 15}}>Players</Text>
+          <View onLayout={(e) => {
+            setLeftMargin((e.nativeEvent.layout.width - width * 0.6)/8)
+          }} style={{flexDirection: 'row', marginTop: 10, marginBottom: 10}}>
+            <SuggestBlock name='Hamlet' item='Hamlet' role='players'>
+              <Hamlet width={75} height={75}/>
+            </SuggestBlock>
+            <SuggestBlock name='Claudius' item='Claudius' role='players'>
+              <Claudius width={75} height={75}/>
+            </SuggestBlock>
+            <SuggestBlock name='Polonius' item='Polonius' role='players'>
+              <Polonius width={75} height={75}/>
+            </SuggestBlock>
+            <SuggestBlock name='Gertrude' item='Gertrude' role='players'>
+              <Gertrude width={75} height={75}/>
+            </SuggestBlock>
+          </View>
+          <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: leftMargin, fontSize: 15, paddingBottom: 10}}>Weapons</Text>
+          <View style={{flexDirection: 'row'}}>
+            <SuggestBlock name='Hemlock Poison' item='Hemlock_Poison' role='weapons'>
+              <HemlockPoison width={75} height={75}/>
+            </SuggestBlock>
+            <SuggestBlock name='Sharpened Rapier' item='Sharpened_Rapier' role='weapons'>
+              <SharpenedRapier width={75} height={75}/>
+            </SuggestBlock>
+            <SuggestBlock name='Axe' item='Axe' role='weapons'>
+              <Axe width={75} height={75}/>
+            </SuggestBlock>
+            <SuggestBlock name='Dagger' item='Dagger' role='weapons'>
+              <Dagger width={75} height={75}/>
+            </SuggestBlock>
+          </View>
+          <DefaultButton style={{marginLeft: leftMargin, marginRight: leftMargin, marginTop: 10}} onPress={() => {suggestion()}} text='Suggest'/>
+          <DefaultButton style={{marginLeft: leftMargin, marginRight: leftMargin, marginTop: 10, marginBottom: 10}} onPress={() => onBack()} text='Back'/>
+        </ScrollView>
       </View>
     </>
   )

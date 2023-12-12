@@ -186,6 +186,26 @@ function GamePiece({id, color, role, roomWidth, roomHeight, xPos, yPos}:(roomPie
         onMove(id)
       }} id={id} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, backgroundColor: color, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
         <Text>{id}</Text>
+        { (id === hamlet.pos) ?
+        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+          <Hamlet width={getSize(width, height)} height={getSize(width, height)}/>
+        </View>:null
+      }
+      { (id === claudius.pos) ?
+        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+          <Claudius width={getSize(width, height)} height={getSize(width, height)}/>
+        </View>:null
+      }
+      { (id === polonius.pos) ?
+        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+          <Polonius width={getSize(width, height)} height={getSize(width, height)}/>
+        </View>:null
+      }
+      { (id === gertrude.pos) ?
+        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+          <Gertrude width={getSize(width, height)} height={getSize(width, height)}/>
+        </View>:null
+      }
       </Pressable>
     )
   }

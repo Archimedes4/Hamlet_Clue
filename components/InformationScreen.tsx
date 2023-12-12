@@ -177,7 +177,6 @@ export default function InformationScreen() {
         { state.promt.accusation ?
           <Text>{state.promt.intiator}, made an accusation. Unfortunatly for {state.promt.intiator}, {state.promt.intiator === "Gertrude" ? "she":"he"} was wrong. They accusestion they chose are as follows.</Text>:
           <Text>{state.promt.intiator}, made a {(state.promt.accusation ? "accusation":"suggestion")}</Text>
-
         }
         <View>
           <View>
