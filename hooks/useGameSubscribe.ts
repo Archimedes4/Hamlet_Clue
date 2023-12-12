@@ -10,9 +10,13 @@ import { useGlobalSearchParams } from "expo-router";
 export default function useGameSubscribe(id: string) {
   const gameState = useSelector((state: RootState) => state.gameState);
   const [mounted, setMounted] = useState<boolean>(false)
+  const [changeKey, setChangeKey] = useState<string>("");
+  async function loadGetGame(id: string) {
+    setChangeKey(await getGame(id));
+  }
   useEffect(() => {
     if (id !== "") {
-      getGame(id)
+      loadGetGame(id)
       const unsub = onSnapshot(doc(db, "Games", id), (doc) => {
         if (doc.exists()) {
           const gameState: gameState = {
@@ -32,16 +36,19 @@ export default function useGameSubscribe(id: string) {
             answer: doc.data().answer,
             promt: doc.data().promt,
             gameOver: doc.data().gameOver,
-            winner: doc.data().winner
+            winner: doc.data().winner,
+            changeKey: doc.data().changeKey,
+            bannedPlayers: doc.data().bannedPlayers
           }
-          store.dispatch(gameStateSlice.actions.setGameState(gameState))
+          if (store.getState().gameState.changeKey !== doc.data().changeKey) {
+            store.dispatch(gameStateSlice.actions.setGameState(gameState)) 
+          }
         }
       });
       return unsub
     }
   }, [id])
   useEffect(() => {
-    console.log(gameState)
     if (mounted) {
       const uid = auth.currentUser?.uid
       if (uid === gameState.master && gameState.turn === "Selecting") {
@@ -49,7 +56,10 @@ export default function useGameSubscribe(id: string) {
           store.dispatch(gameStateSlice.actions.setTurn(gameState.orderOfPlay[0]))
         }
       }
-      updateGame()
+      if (changeKey !== store.getState().gameState.changeKey) {
+        updateGame()
+        setChangeKey(store.getState().gameState.changeKey)
+      }
     } else {
       setMounted(true)
     }

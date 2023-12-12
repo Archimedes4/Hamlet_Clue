@@ -1,9 +1,27 @@
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { Axe, Claudius, Dagger, Gertrude, Hamlet, HemlockPoison, Polonius, SharpenedRapier } from "./Icons";
+import Colors from "../constants/Colors";
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import { useCallback } from "react";
 
 export default function CardView({card, width, height}:{card: cardType, width: number, height: number}) {
+  const [fontsLoaded, fontError] = useFonts({
+    'RubikBubbles-Regular': require("../assets/fonts/RubikBubbles-Regular.ttf"),
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded || fontError) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
+
   return (
-    <View style={{width: width, height: height}}>
+    <View style={{width: width, height: height, paddingTop: 2}} onLayout={onLayoutRootView}>
       { (card === "Hamlet") ?
         <Hamlet width={width} height={height * 0.8}/>:null
       }
@@ -52,6 +70,9 @@ export default function CardView({card, width, height}:{card: cardType, width: n
       { (card === "Stair_Well") ?
         <Hamlet width={width} height={height * 0.8}/>:null
       }
+      <View style={{width: width, height: height * 0.2 - 2, backgroundColor: Colors.main}}>
+        <Text style={{margin: 'auto', color: 'white', fontFamily: 'RubikBubbles-Regular'}}>{card.replace("_", " ")}</Text>
+      </View>
     </View>
   )
 }

@@ -163,7 +163,7 @@ export default function index() {
       <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => loadCreateGame()} text='Create Game'/>
       <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => router.push('/account')} text='View Account and Game History'/>
       <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => signOut()} text='Sign Out'/>
-      <Text style={{color: 'white', position: 'absolute', bottom: 0, fontSize: 11}}>2023 Andrew Mainella Deigo Bueti</Text>
+      <Text style={{color: 'white', position: 'absolute', bottom: 0, fontSize: 11}}>2023 Andrew Mainella Diego Bueti</Text>
     </View>
   )
 }

@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { roleDie } from '../../util/util';
+import { createUUID, roleDie } from '../../util/util';
 
 const initalState: gameState = {
   gameId: '',
@@ -76,7 +76,9 @@ const initalState: gameState = {
     suggester: ''
   },
   gameOver: false,
-  winner: ""
+  winner: "",
+  bannedPlayers: [],
+  changeKey: createUUID()
 }
 
 export const gameStateSlice = createSlice({
@@ -107,7 +109,9 @@ export const gameStateSlice = createSlice({
           answer: state.answer,
           promt: state.promt,
           gameOver: state.gameOver,
-          winner: state.winner
+          winner: state.winner,
+          bannedPlayers: state.bannedPlayers,
+          changeKey: createUUID()
         }
         switch (state.turn) {
           case "Hamlet":
@@ -143,7 +147,9 @@ export const gameStateSlice = createSlice({
           answer: state.answer,
           promt: state.promt,
           gameOver: state.gameOver,
-          winner: state.winner
+          winner: state.winner,
+          bannedPlayers: state.bannedPlayers,
+          changeKey: createUUID()
         }
         switch (state.turn) {
           case "Hamlet":
@@ -199,7 +205,9 @@ export const gameStateSlice = createSlice({
           answer: state.answer,
           promt: state.promt,
           gameOver: state.gameOver,
-          winner: state.winner
+          winner: state.winner,
+          bannedPlayers: state.bannedPlayers,
+          changeKey: createUUID()
         }
         switch (state.turn) {
           case "Hamlet":
@@ -264,7 +272,9 @@ export const gameStateSlice = createSlice({
         answer: state.answer,
         promt: state.promt,
         gameOver: state.gameOver,
-        winner: state.winner
+        winner: state.winner,
+        bannedPlayers: state.bannedPlayers,
+        changeKey: createUUID()
       }
       return newGameState
     },
@@ -286,7 +296,9 @@ export const gameStateSlice = createSlice({
         answer: state.answer,
         promt: state.promt,
         gameOver: state.gameOver,
-        winner: state.winner
+        winner: state.winner,
+        bannedPlayers: state.bannedPlayers,
+        changeKey: createUUID()
       }
       return newGameState
     },
@@ -308,7 +320,9 @@ export const gameStateSlice = createSlice({
         answer: state.answer,
         promt: state.promt,
         gameOver: state.gameOver,
-        winner: state.winner
+        winner: state.winner,
+        bannedPlayers: state.bannedPlayers,
+        changeKey: createUUID()
       }
       return newGameState
     },
@@ -330,7 +344,9 @@ export const gameStateSlice = createSlice({
         answer: state.answer,
         promt: state.promt,
         gameOver: state.gameOver,
-        winner: state.winner
+        winner: state.winner,
+        bannedPlayers: state.bannedPlayers,
+        changeKey: createUUID()
       }
       return newGameState
     },
@@ -352,7 +368,9 @@ export const gameStateSlice = createSlice({
         answer: state.answer,
         promt: state.promt,
         gameOver: state.gameOver,
-        winner: state.winner
+        winner: state.winner,
+        bannedPlayers: state.bannedPlayers,
+        changeKey: createUUID()
       }
       return newGameState
     },
@@ -374,10 +392,36 @@ export const gameStateSlice = createSlice({
         answer: state.answer,
         promt: action.payload.prompt,
         gameOver: state.gameOver,
-        winner: state.winner
+        winner: state.winner,
+        bannedPlayers: state.bannedPlayers,
+        changeKey: createUUID()
       }
       return newGameState
     },
+    setBannedPlayers: (state, action: PayloadAction<{ban: string[], key: string}>) => {
+      let newGameState: gameState = {
+        gameId: state.gameId,
+        master: state.master,
+        players: state.players,
+        hamlet: state.hamlet,
+        claudius: state.claudius,
+        polonius: state.polonius,
+        gertrude: state.gertrude,
+        turn: state.turn,
+        dieOne: state.dieOne,
+        dieTwo: state.dieTwo,
+        dieCount: state.dieCount,
+        history: state.history,
+        orderOfPlay: state.orderOfPlay,
+        answer: state.answer,
+        promt: state.promt,
+        gameOver: state.gameOver,
+        winner: state.winner,
+        bannedPlayers: action.payload.ban,
+        changeKey: action.payload.key
+      }
+      return newGameState
+    }
   },
 });
 

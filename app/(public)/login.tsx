@@ -75,7 +75,7 @@ export default function login() {
         <Text style={{fontFamily: 'RubikBubbles-Regular', color: Colors.royalRed, fontSize: height * 0.1}}>Hamlet Clue</Text>
         <MagnifyingGlass width={height * 0.1} height={height * 0.1} style={{marginLeft: 20, marginTop: 10}}/>
       </View>
-      <Text style={{fontFamily: 'Rubik-Regular', color: 'white', marginLeft: 25, fontSize: height * 0.025}}>By Andrew Mainella & Deigo Bueti</Text>
+      <Text style={{fontFamily: 'Rubik-Regular', color: 'white', marginLeft: 25, fontSize: height * 0.025}}>By Andrew Mainella & Diego Bueti</Text>
       <Text style={{color: 'white', fontFamily: 'Rubik-SemiBold', marginLeft: width * 0.11, fontSize: height * 0.035, marginTop: height * 0.04}}>Email</Text>
       <TextInput style={{marginLeft: 'auto', marginRight: 'auto', width: width * 0.8, marginTop: 10, backgroundColor: 'white', borderRadius: 5, padding: 20, borderWidth: 2, borderColor: 'black'}} value={email} onChangeText={setEmail}/>
       <Text style={{color: 'white', fontFamily: 'Rubik-SemiBold', marginLeft: width * 0.11, fontSize: height * 0.035, marginTop: height * 0.04}}>Password</Text>

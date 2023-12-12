@@ -22,7 +22,9 @@ export function makeAccusation() {
     answer: state.answer,
     promt: state.promt,
     gameOver: state.gameOver,
-    winner: state.winner
+    winner: state.winner,
+    bannedPlayers: state.bannedPlayers,
+    changeKey: state.changeKey
   }
   const uid = auth.currentUser?.uid
   if (uid) {

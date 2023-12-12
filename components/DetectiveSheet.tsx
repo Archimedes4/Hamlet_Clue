@@ -4,25 +4,39 @@ import { useSelector } from 'react-redux';
 import store, { RootState } from '../redux/store';
 import { CloseIcon } from './Icons';
 import { screensSlice } from '../redux/reducers/screensReducer';
-import { getGuess, setGuess } from '../util/detectiveSheet';
+import { getGuess, setGuess, updateNotes } from '../util/detectiveSheet';
 import { TextInput } from 'react-native-gesture-handler';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import Colors from '../constants/Colors';
 import { auth } from '../app/_layout';
+import DefaultButton from './DefaultButton';
 
 function RowItem({item, index}:{item: cardType, index: number}) {
   const gameState = useSelector((state: RootState) => state.gameState);
   const [itemGuess, setItemGuess] = useState<undefined | guessType>(undefined);
   useEffect(() => {
-    setItemGuess(getGuess(item, index))
+    const result = getGuess(item, index)
+    if (item === "Hamlet" && index === 0) {
+      console.log("GET RESULT", result)
+    }
+    setItemGuess(result)
   }, [gameState])
   return (
     <Pressable style={{height: 30, width: 30}} onPress={() => {setGuess(item, index)}}>
-      {itemGuess === undefined ?
-        <View>
-          <Text>No Guess</Text>
-        </View>:null
+      {(itemGuess === undefined) ?
+        <View style={{width: 30, height: 30, backgroundColor: 'blue'}}/>:
+        <>
+          {itemGuess.level === "guess" ?
+            <View style={{width: 30, height: 30, backgroundColor: 'red'}}/>:null
+          }
+          {itemGuess.level === "likely" ?
+            <View style={{width: 30, height: 30, backgroundColor: 'orange'}}/>:null
+          }
+          {itemGuess.level === "known" ?
+            <View style={{width: 30, height: 30, backgroundColor: "green"}}/>:null
+          }
+        </>
       }
     </Pressable>
   )
@@ -39,6 +53,40 @@ function Row({item, name}:{item: cardType, name?: string}) {
       <RowItem item={item} index={1}/>
       <RowItem item={item} index={2}/>
       <RowItem item={item} index={3}/>
+    </View>
+  )
+}
+
+function Players() {
+  const { width, height } = useSelector((state: RootState) => state.dimentions);
+  const [userId, setUserId] = useState<string>("");
+  const gameState = useSelector((state: RootState) => state.gameState);
+
+  function checkIfUserMaster() {
+    const uid = auth.currentUser?.uid
+    if (uid !== undefined) {
+      setUserId(uid)
+    }
+  }
+
+  useEffect(() => {
+    checkIfUserMaster()
+  }, [gameState.master])
+
+  return (
+    <View>
+      <View style={{borderRadius: 15, borderWidth: 2, borderColor: 'black', width: width * 0.6, marginLeft: 'auto', marginRight: 'auto'}}>
+        <Text style={{width: 10}}>{gameState.hamlet.user.username}</Text>
+      </View>
+      <View style={{borderRadius: 15, borderWidth: 2, borderColor: 'black', width: width * 0.6, marginLeft: 'auto', marginRight: 'auto'}}>
+        <Text style={{width: 10}}>{gameState.claudius.user.username}</Text>
+      </View>
+      <View style={{borderRadius: 15, borderWidth: 2, borderColor: 'black', width: width * 0.6, marginLeft: 'auto', marginRight: 'auto'}}>
+        <Text style={{width: 10}}>{gameState.polonius.user.username}</Text>
+      </View>
+      <View style={{borderRadius: 15, borderWidth: 2, borderColor: 'black', width: width * 0.6, marginLeft: 'auto', marginRight: 'auto'}}>
+        <Text style={{width: 10}}>{gameState.gertrude.user.username}</Text>
+      </View>
     </View>
   )
 }
@@ -120,10 +168,14 @@ export default function DetectiveSheet({role, onClose}:{role: "main", onClose?: 
           <Row item={'Throne_Room'} name='Throne Room'/>
           <Row item={'Stair_Well'} name='Stair Well'/>
           <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: 15, marginTop: 15, marginBottom: 15}}>Notes</Text>
-          <TextInput value={notes} onChangeText={setNotes} />
-          <Pressable>
-            <Text>Update Notes</Text>
-          </Pressable>
+          <TextInput numberOfLines={10} style={{marginLeft: "auto", marginRight: "auto", width: width * 0.75, marginBottom: 10, padding: 8, borderWidth: 2, borderColor: "black", borderRadius: 15}} multiline value={notes} onChangeText={setNotes} />
+          <DefaultButton onPress={() => {
+            updateNotes(notes)
+          }} style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto', marginBottom: 15}} text='Update Notes'/>
+          <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: 15, marginTop: 15, marginBottom: 15}}>Players</Text>
+          <View>
+            <Text></Text>
+          </View>
         </ScrollView>
       </View>
     </>

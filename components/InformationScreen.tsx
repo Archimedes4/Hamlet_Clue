@@ -9,6 +9,8 @@ import { gameStateSlice } from '../redux/reducers/gameStateReducer';
 import DefaultButton from './DefaultButton';
 import DetectiveSheet from './DetectiveSheet';
 import { screensSlice } from '../redux/reducers/screensReducer';
+import CardView from './CardView';
+import Colors from '../constants/Colors';
 
 function getUserCards(): cardType[] {
   const uid = auth.currentUser?.uid
@@ -30,7 +32,7 @@ function getUserCards(): cardType[] {
   return []
 }
 
-export function PickUserCard() {
+export function PickUserCard({setIsShowingDetective}:{setIsShowingDetective: (item: boolean) => void}) {
   const { width, height } = useSelector((state: RootState) => state.dimentions);
   const prompt = useSelector((state: RootState) => state.gameState.promt);
   const cards = getUserCards();
@@ -63,6 +65,57 @@ export function PickUserCard() {
         return e
       }
     })
+
+    const uid = auth.currentUser?.uid
+    if (uid) {
+      const gameState = store.getState().gameState;
+      if (uid === gameState.hamlet.user.id) {
+        const newUser: playerInfo = {
+          user: gameState.hamlet.user,
+          pos: gameState.hamlet.pos,
+          cards: gameState.hamlet.cards,
+          guesses: gameState.hamlet.guesses,
+          accused: gameState.hamlet.accused,
+          notes: gameState.hamlet.notes,
+          lastDismissed: prompt.time
+        }
+        store.dispatch(gameStateSlice.actions.setHamlet(newUser))
+      } else if (uid === gameState.claudius.user.id) {
+        const newUser: playerInfo = {
+          user: gameState.claudius.user,
+          pos: gameState.claudius.pos,
+          cards: gameState.claudius.cards,
+          guesses: gameState.claudius.guesses,
+          accused: gameState.claudius.accused,
+          notes: gameState.claudius.notes,
+          lastDismissed: prompt.time
+        }
+        store.dispatch(gameStateSlice.actions.setClaudius(newUser))
+      } else if (uid === gameState.polonius.user.id) {
+        const newUser: playerInfo = {
+          user: gameState.polonius.user,
+          pos: gameState.polonius.pos,
+          cards: gameState.polonius.cards,
+          guesses: gameState.polonius.guesses,
+          accused: gameState.polonius.accused,
+          notes: gameState.polonius.notes,
+          lastDismissed: prompt.time
+        }
+        store.dispatch(gameStateSlice.actions.setPolonius(newUser))
+      } else if (uid === gameState.gertrude.user.id) {
+        const newUser: playerInfo = {
+          user: gameState.gertrude.user,
+          pos: gameState.gertrude.pos,
+          cards: gameState.gertrude.cards,
+          guesses: gameState.gertrude.guesses,
+          accused: gameState.gertrude.accused,
+          notes: gameState.gertrude.notes,
+          lastDismissed: prompt.time
+        }
+        store.dispatch(gameStateSlice.actions.setGertude(newUser))
+      }
+    }
+
     const index = orderOfPlay.indexOf(prompt.intiator) 
     if ((index + 1) >= orderOfPlay.length) {
       store.dispatch(gameStateSlice.actions.setPromtAndTurn({prompt: newPromt, turn: orderOfPlay[0]}))
@@ -75,27 +128,39 @@ export function PickUserCard() {
     <>
       <View style={{width, height, position: 'absolute', backgroundColor: '#a2a3a2', opacity: 0.3}} />
       <View style={{width: width * 0.8, height: height * 0.8, margin: 'auto', backgroundColor: 'white', borderRadius: 30, borderWidth: 2, borderColor: 'black'}}>
-        {cards.includes(prompt.weapon) ?
-          <Pressable onPress={() => {
-            pickPromt(prompt.weapon)
-          }}>
-            <Text>{prompt.weapon}</Text>
-          </Pressable>:null
-        }
-        {cards.includes(prompt.player) ?
-          <Pressable onPress={() => {
-            pickPromt(prompt.player)
-          }}>
-            <Text>{prompt.player}</Text>
-          </Pressable>:null
-        }
-        {cards.includes(prompt.room) ?
-          <Pressable onPress={() => {
-            pickPromt(prompt.room)
-          }}>
-            <Text>{prompt.room}</Text>
-          </Pressable>:null
-        }
+        <View style={{flexDirection: 'row', marginTop: 20, flexWrap: 'wrap', width: width * 0.6, marginLeft: width * 0.1, marginBottom: 20}}>
+          <Text style={{fontFamily: 'Rubik-SemiBold', fontSize: 15}}>{prompt.intiator}</Text><Text style={{fontFamily: 'Rubik-SemiBold', marginTop: 'auto'}}> has </Text>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{fontFamily: 'RubikBubbles-Regular', marginTop: 'auto', color: Colors.royalRed}}>suggested</Text>
+            <Text style={{fontFamily: 'Rubik-SemiBold', marginTop: 'auto'}}>, </Text>
+          </View>
+          <Text style={{fontFamily: 'Rubik-SemiBold', marginTop: 'auto'}}>that {prompt.player} killed Ophelia in the {prompt.room.replace("_", " ")} with {prompt.weapon.replace("_", " ")}.</Text>
+        </View>
+        <Text style={{fontFamily: 'RubikBubbles-Regular', fontSize: 25, color: Colors.royalRed, marginLeft: 'auto', marginRight: 'auto', marginBottom: 10}}>Choose Card To Show {prompt.intiator}</Text>
+        <View style={{flexDirection: 'row'}}>
+          {cards.includes(prompt.weapon) ?
+            <Pressable onPress={() => {
+              pickPromt(prompt.weapon)
+            }} style={{borderRadius: 15, borderWidth: 2, borderColor: 'black', marginLeft: 'auto', marginRight: 'auto', overflow: 'hidden'}}>
+              <CardView card={prompt.weapon} width={width * 0.25} height={height * 0.25}/>
+            </Pressable>:null
+          }
+          {cards.includes(prompt.player) ?
+            <Pressable onPress={() => {
+              pickPromt(prompt.player)
+            }} style={{borderRadius: 15, borderWidth: 2, borderColor: 'black', marginLeft: 'auto', marginRight: 'auto', overflow: 'hidden'}}>
+              <CardView card={prompt.player} width={width * 0.25} height={height * 0.25}/>
+            </Pressable>:null
+          }
+          {cards.includes(prompt.room) ?
+            <Pressable onPress={() => {
+              pickPromt(prompt.room)
+            }} style={{borderRadius: 15, borderWidth: 2, borderColor: 'black', marginLeft: 'auto', marginRight: 'auto', overflow: 'hidden'}}>
+              <CardView card={prompt.room} width={width * 0.255} height={height * 0.25}/>
+            </Pressable>:null
+          }
+        </View>
+        <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto', marginTop: 25}} onPress={() => {setIsShowingDetective(true)}} text='Show Detective Sheet'/>
       </View>
     </>
   )
@@ -128,7 +193,7 @@ export default function InformationScreen() {
   useEffect(() => {
     // Exit early if countdown is finished
     if (seconds <= 0) {
-      if (!isShowingDetective) {
+      if (!isShowingDetective && !getInformation(state)) {
         store.dispatch(screensSlice.actions.setInformationScreen(false))
       }
       return;
@@ -156,7 +221,7 @@ export default function InformationScreen() {
   if (isShowingDetective) {
     return (
       <DetectiveSheet role='window' onClose={() => {
-        if (seconds > 0) {
+        if (seconds > 0 || getInformation(state)) {
           setIsShowingDetective(false)
         } else {
           store.dispatch(screensSlice.actions.setInformationScreen(false))
@@ -166,7 +231,7 @@ export default function InformationScreen() {
   }
   if (getInformation(state)) {
     return (
-      <PickUserCard />
+      <PickUserCard setIsShowingDetective={setIsShowingDetective}/>
     )
   }
 
@@ -180,13 +245,16 @@ export default function InformationScreen() {
         }
         <View>
           <View>
-            <Text>Players</Text>
+            <Text>Player</Text>
+            <CardView card={state.promt.player} width={width * 0.1} height={height * 0.1}/>
           </View>
           <View>
             <Text>Weapon</Text>
+            <CardView card={state.promt.weapon} width={width * 0.1} height={height * 0.1}/>
           </View>
           <View>
             <Text>Rooms</Text>
+            <CardView card={state.promt.room} width={width * 0.1} height={height * 0.1}/>
           </View>
         </View>
         <DefaultButton onPress={() => {setIsShowingDetective(true)}} text='Show Detective Sheet'/>

@@ -14,6 +14,7 @@ import { accusationsSlice } from '../redux/reducers/accusationSelectionReducer';
 import DetectiveSheet from './DetectiveSheet';
 import { makeAccusation, makeSuggestion } from '../util/onRoom';
 import { screensSlice } from '../redux/reducers/screensReducer';
+import CardView from './CardView';
 
 declare global {
   type weaponBlockProps = {
@@ -57,7 +58,7 @@ function MadeSuggestion() {
 
     if (seconds <= 0) {
       if (!isShowingDetective) {
-        store.dispatch(screensSlice.actions.setInformationScreen(false))
+        store.dispatch(screensSlice.actions.setRoomScreen(false))
       }
       return;
     }
@@ -71,18 +72,32 @@ function MadeSuggestion() {
     return () => clearInterval(timer);
   }, [seconds, handled]);
 
+  if (isShowingDetective) {
+    return <DetectiveSheet role="window" onClose={() => {
+      setIsShowingDetective(false)
+      if (seconds <= 0) {
+        store.dispatch(screensSlice.actions.setRoomScreen(false))
+      }
+    }}/>
+  }
+
   if (handled) {
-    <>
-      <View style={{width, height, position: 'absolute', backgroundColor: '#a2a3a2', opacity: 0.3}} />
-      <View style={{width: width * 0.8, height: height * 0.8, margin: 'auto', backgroundColor: 'white', borderRadius: 30, borderWidth: 2, borderColor: 'black'}}>
-        <Text style={{fontFamily: 'RubikBubbles-Regular', color: Colors.royalRed, marginLeft: 'auto', marginRight: 'auto'}}>{gameState.promt.suggester} showed you,</Text>
-        <View>
-          
+    return (
+      <>
+        <View style={{width, height, position: 'absolute', backgroundColor: '#a2a3a2', opacity: 0.3}} />
+        <View style={{width: width * 0.8, height: height * 0.8, margin: 'auto', backgroundColor: 'white', borderRadius: 30, borderWidth: 2, borderColor: 'black'}}>
+          <Text style={{fontFamily: 'RubikBubbles-Regular', color: Colors.royalRed, marginLeft: 'auto', marginRight: 'auto', marginBottom: 10, fontSize: 20, marginTop: 15}}>{gameState.promt.suggester} showed you,</Text>
+          <View style={{marginLeft: 'auto', marginRight: 'auto', borderWidth: 2, borderRadius: 30, borderColor: 'black', overflow: 'hidden', marginBottom: 10}}>
+            { gameState.promt.handledCard !== "" ?
+              <CardView card={gameState.promt.handledCard} width={width * 0.3} height={height * 0.3}/>:null
+            }
+          </View>
+          <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto', marginBottom: 10}} onPress={() => {setIsShowingDetective(true)}} text='Show Detective Sheet'/>
+          <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto'}} onPress={() => {store.dispatch(screensSlice.actions.setRoomScreen(false))}} text='Dismiss'/>
+          <Text style={{fontFamily: 'Rubik-SemiBold', marginTop: 10, marginLeft: 'auto', marginRight: 'auto'}}>This message will self destruct in {seconds}</Text>
         </View>
-        <DefaultButton onPress={() => {setIsShowingDetective(true)}} text='Show Detective Sheet'/>
-        <DefaultButton onPress={() => {store.dispatch(screensSlice.actions.setInformationScreen(false))}} text='Dismiss'/>
-      </View>
-    </>
+      </>
+    )
   }
 
   return (
@@ -155,7 +170,9 @@ function SuggestScreen({onBack}:{onBack: () => void}) {
   }
 
   if (madeSuggestion) {
-    <MadeSuggestion />
+    return (
+      <MadeSuggestion />
+    )
   }
 
   return (

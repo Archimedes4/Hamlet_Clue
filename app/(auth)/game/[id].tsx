@@ -93,7 +93,9 @@ declare global {
     answer: answerType;
     promt: informationPromt;
     gameOver: boolean;
-    winner: players | ""
+    winner: players | "";
+    bannedPlayers: string[];
+    changeKey: string
   };
   interface squarePieceProps {
     id: position;

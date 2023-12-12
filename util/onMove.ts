@@ -28,7 +28,9 @@ export default function onMove(id: position) {
     answer: state.answer,
     promt: state.promt,
     gameOver: state.gameOver,
-    winner: state.winner
+    winner: state.winner,
+    bannedPlayers: state.bannedPlayers,
+    changeKey: state.changeKey
   }
   if (room) {
     newGameState.dieOne = roleDie()

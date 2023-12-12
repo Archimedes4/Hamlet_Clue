@@ -24,7 +24,9 @@ export default function setPlayerSelection(selection: players) {
       answer: state.answer,
       promt: state.promt,
       gameOver: state.gameOver,
-      winner: state.winner
+      winner: state.winner,
+      bannedPlayers: state.bannedPlayers,
+      changeKey: state.changeKey
     }
     if (selection === "Hamlet" && (state.hamlet.user.id === "" || state.hamlet.user.id === uid)) {
       newGameState.hamlet = {
