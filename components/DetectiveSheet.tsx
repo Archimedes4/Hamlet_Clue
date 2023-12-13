@@ -2,7 +2,7 @@ import { View, Text, Pressable, ScrollView } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import store, { RootState } from '../redux/store';
-import { CloseIcon } from './Icons';
+import { Axe, Claudius, CloseIcon, Dagger, Gertrude, Hamlet, HemlockPoison, Polonius, SharpenedRapier } from './Icons';
 import { screensSlice } from '../redux/reducers/screensReducer';
 import { getGuess, setGuess, updateNotes } from '../util/detectiveSheet';
 import { TextInput } from 'react-native-gesture-handler';
@@ -11,21 +11,21 @@ import * as SplashScreen from 'expo-splash-screen';
 import Colors from '../constants/Colors';
 import { auth } from '../app/_layout';
 import DefaultButton from './DefaultButton';
+import { banPlayer, kickPlayer } from '../util/dismissPlayer';
+import CardView from './CardView';
 
 function RowItem({item, index}:{item: cardType, index: number}) {
   const gameState = useSelector((state: RootState) => state.gameState);
   const [itemGuess, setItemGuess] = useState<undefined | guessType>(undefined);
+  const { width } = useSelector((state: RootState) => state.dimentions);
   useEffect(() => {
     const result = getGuess(item, index)
-    if (item === "Hamlet" && index === 0) {
-      console.log("GET RESULT", result)
-    }
     setItemGuess(result)
   }, [gameState])
   return (
-    <Pressable style={{height: 30, width: 30}} onPress={() => {setGuess(item, index)}}>
+    <Pressable style={{height: 29, width: width * 0.15, overflow: 'hidden'}} onPress={() => {setGuess(item, index)}}>
       {(itemGuess === undefined) ?
-        <View style={{width: 30, height: 30, backgroundColor: 'blue'}}/>:
+        <View style={{width: (width * 0.2), height: 30, backgroundColor: 'blue'}}/>:
         <>
           {itemGuess.level === "guess" ?
             <View style={{width: 30, height: 30, backgroundColor: 'red'}}/>:null
@@ -42,12 +42,59 @@ function RowItem({item, index}:{item: cardType, index: number}) {
   )
 }
 
-function Row({item, name}:{item: cardType, name?: string}) {
+function RowImage({item}:{item: cardType}) {
+  if (item === "Hamlet") {
+    return (
+      <Hamlet width={25} height={25} />
+    )
+  }
+  if (item === "Claudius") {
+    return (
+      <Claudius width={25} height={25} />
+    )
+  }
+  if (item === "Polonius") {
+    return (
+      <Polonius width={25} height={25} />
+    )
+  }
+  if (item === "Gertrude") {
+    return (
+      <Gertrude width={25} height={25} />
+    )
+  }
+  if (item === "Hemlock_Poison") {
+    return (
+      <HemlockPoison width={25} height={25} />
+    )
+  }
+  if (item === "Sharpened_Rapier") {
+    return (
+      <SharpenedRapier width={25} height={25} />
+    )
+  }
+  if (item === "Dagger") {
+    return (
+      <Dagger width={25} height={25} />
+    )
+  }
+  if (item === "Axe") {
+    return (
+      <Axe width={25} height={25} />
+    )
+  }
+  return null
+}
+
+function Row({item, name, end}:{item: cardType, name?: string, end?: 'top' | 'bottom'}) {
   const { width, height } = useSelector((state: RootState) => state.dimentions);
   return (
-    <View style={{height: 30, width: (width * 0.8)-4, borderTopWidth: 1, borderBottomWidth: 1, flexDirection: 'row'}}>
-      <View style={{width: width * 0.2, borderRightWidth: 2, borderColor: 'black', height: 30}}>
-        <Text selectable={false}>{name ? name:item}</Text>
+    <View style={{height: 30, width: (width * 0.8)-4, borderTopWidth: (end === 'top') ? 2:1, borderBottomWidth: (end === 'bottom') ? 2:1, flexDirection: 'row', overflow: 'hidden'}}>
+      <View style={{width: width * 0.2, borderRightWidth: 2, borderColor: 'black', height: 29, flexDirection: 'row'}}>
+        <View style={{marginTop: 'auto', marginBottom: 'auto', marginLeft: 5}}>
+          <RowImage item={item} />
+        </View>
+        <Text adjustsFontSizeToFit numberOfLines={1} selectable={false} style={{fontFamily: 'Rubik-SemiBold', marginTop: 'auto', marginBottom: 'auto', marginLeft: 3}}>{name ? name:item}</Text>
       </View>
       <RowItem item={item} index={0}/>
       <RowItem item={item} index={1}/>
@@ -62,7 +109,7 @@ function Players() {
   const [userId, setUserId] = useState<string>("");
   const gameState = useSelector((state: RootState) => state.gameState);
 
-  function checkIfUserMaster() {
+  function getUserId() {
     const uid = auth.currentUser?.uid
     if (uid !== undefined) {
       setUserId(uid)
@@ -70,25 +117,134 @@ function Players() {
   }
 
   useEffect(() => {
-    checkIfUserMaster()
+    getUserId();
   }, [gameState.master])
 
   return (
     <View>
-      <View style={{borderRadius: 15, borderWidth: 2, borderColor: 'black', width: width * 0.6, marginLeft: 'auto', marginRight: 'auto'}}>
-        <Text style={{width: 10}}>{gameState.hamlet.user.username}</Text>
+      <View style={{backgroundColor: (userId === gameState.hamlet.user.id) ? '#dce0dd':"white", borderRadius: 15, borderWidth: 2, borderColor: 'black', width: width * 0.8 - 30, marginLeft: 'auto', marginRight: 'auto', marginBottom: 10}}>
+        <View style={{margin: 15, flexDirection: 'row'}}>
+          <View style={{width: 40}}>
+            <Hamlet width={16.4} height={16.4} style={{margin: 'auto'}}/>
+            <Text style={{fontSize: 8, marginLeft: 'auto', marginRight: 'auto'}}>Hamlet</Text>
+          </View>
+          <Text style={{marginTop: 'auto', marginBottom: 'auto', fontFamily: 'Rubik-SemiBold', marginLeft: 5}}>{gameState.hamlet.user.username}</Text>
+          <View style={{flexDirection: 'row', marginLeft: 'auto'}}>
+            { gameState.hamlet.user.id === gameState.master ?
+              <View style={{borderRadius: 15, backgroundColor: 'blue'}}>
+                <Text style={{margin: 5, color: 'white'}}>Master</Text>
+              </View>:null
+            }
+            { (userId === gameState.master && userId !== gameState.hamlet.user.id) ?
+              <Pressable onPress={() => kickPlayer(gameState.claudius.user.id, gameState.gameId)} style={{borderRadius: 15, backgroundColor: 'red'}}>
+                <Text style={{margin: 5, color: 'white'}}>Kick</Text>
+              </Pressable>:null
+            }
+            { (userId === gameState.master && userId !== gameState.hamlet.user.id) ?
+              <Pressable onPress={() => banPlayer(gameState.claudius.user.id, gameState.gameId)} style={{borderRadius: 15, backgroundColor: 'red'}}>
+                <Text style={{margin: 5, color: 'white'}}>Ban</Text>
+              </Pressable>:null
+            }
+          </View>
+        </View>
       </View>
-      <View style={{borderRadius: 15, borderWidth: 2, borderColor: 'black', width: width * 0.6, marginLeft: 'auto', marginRight: 'auto'}}>
-        <Text style={{width: 10}}>{gameState.claudius.user.username}</Text>
+      <View style={{backgroundColor: (userId === gameState.claudius.user.id) ? '#dce0dd':"white",borderRadius: 15, borderWidth: 2, borderColor: 'black', width: width * 0.8 - 30, marginLeft: 'auto', marginRight: 'auto', marginBottom: 10}}>
+        <View style={{margin: 15, flexDirection: 'row'}}>
+          <View style={{width: 40}}>
+            <Claudius width={16.4} height={16.4} style={{margin: 'auto'}}/>
+            <Text style={{fontSize: 8, marginLeft: 'auto', marginRight: 'auto'}}>Claudius</Text>
+          </View>
+          <Text style={{marginTop: 'auto', marginBottom: 'auto', fontFamily: 'Rubik-SemiBold', marginLeft: 5}}>{gameState.claudius.user.username}</Text>
+          <View style={{flexDirection: 'row', marginLeft: 'auto'}}>
+            { gameState.claudius.user.id === gameState.master ?
+              <View style={{borderRadius: 15, backgroundColor: 'blue'}}>
+                <Text selectable={false} style={{margin: 5, color: 'white'}}>Master</Text>
+              </View>:null
+            }
+            { (userId === gameState.master && userId !== gameState.claudius.user.id) ?
+              <Pressable onPress={() => kickPlayer(gameState.claudius.user.id, gameState.gameId)} style={{borderRadius: 15, backgroundColor: 'red', marginRight: 5}}>
+                <Text selectable={false} style={{margin: 5, color: 'white'}}>Kick</Text>
+              </Pressable>:null
+            }
+            { (userId === gameState.master && userId !== gameState.claudius.user.id) ?
+              <Pressable onPress={() => banPlayer(gameState.claudius.user.id, gameState.gameId)} style={{borderRadius: 15, backgroundColor: 'red'}}>
+                <Text selectable={false} style={{margin: 5, color: 'white'}}>Ban</Text>
+              </Pressable>:null
+            }
+          </View>
+        </View>
       </View>
-      <View style={{borderRadius: 15, borderWidth: 2, borderColor: 'black', width: width * 0.6, marginLeft: 'auto', marginRight: 'auto'}}>
-        <Text style={{width: 10}}>{gameState.polonius.user.username}</Text>
+      <View style={{backgroundColor: (userId === gameState.polonius.user.id) ? '#dce0dd':"white",borderRadius: 15, borderWidth: 2, borderColor: 'black', width: width * 0.8 - 30, marginLeft: 'auto', marginRight: 'auto', marginBottom: 10}}>
+        <View style={{margin: 15, flexDirection: 'row'}}>
+          <View style={{width: 40}}>
+            <Polonius width={16.4} height={16.4} style={{margin: 'auto'}}/>
+            <Text style={{fontSize: 8, marginLeft: 'auto', marginRight: 'auto'}}>Polonius</Text>
+          </View>
+          <Text style={{marginTop: 'auto', marginBottom: 'auto', fontFamily: 'Rubik-SemiBold', marginLeft: 5}}>{gameState.polonius.user.username}</Text>
+          <View style={{flexDirection: 'row', marginLeft: 'auto'}}>
+            { gameState.polonius.user.id === gameState.master ?
+              <View style={{borderRadius: 15, backgroundColor: 'blue'}}>
+                <Text selectable={false} style={{margin: 5, color: 'white'}}>Master</Text>
+              </View>:null
+            }
+            { (userId === gameState.master && userId !== gameState.polonius.user.id) ?
+              <Pressable onPress={() => kickPlayer(gameState.claudius.user.id, gameState.gameId)} style={{borderRadius: 15, backgroundColor: 'red', marginRight: 5}}>
+                <Text selectable={false} style={{margin: 5, color: 'white'}}>Kick</Text>
+              </Pressable>:null
+            }
+            { (userId === gameState.master && userId !== gameState.polonius.user.id) ?
+              <Pressable onPress={() => banPlayer(gameState.claudius.user.id, gameState.gameId)} style={{borderRadius: 15, backgroundColor: 'red'}}>
+                <Text selectable={false} style={{margin: 5, color: 'white'}}>Ban</Text>
+              </Pressable>:null
+            }
+          </View>
+        </View>
       </View>
-      <View style={{borderRadius: 15, borderWidth: 2, borderColor: 'black', width: width * 0.6, marginLeft: 'auto', marginRight: 'auto'}}>
-        <Text style={{width: 10}}>{gameState.gertrude.user.username}</Text>
+      <View style={{backgroundColor: (userId === gameState.gertrude.user.id) ? '#dce0dd':"white",borderRadius: 15, borderWidth: 2, borderColor: 'black', width: width * 0.8 - 30, marginLeft: 'auto', marginRight: 'auto', marginBottom: 10}}>
+        <View style={{margin: 15, flexDirection: 'row'}}>
+          <View style={{width: 40}}>
+            <Gertrude width={16.4} height={16.4} style={{margin: 'auto'}}/>
+            <Text style={{fontSize: 8, marginLeft: 'auto', marginRight: 'auto'}}>Gertrude</Text>
+          </View>
+          <Text style={{marginTop: 'auto', marginBottom: 'auto', fontFamily: 'Rubik-SemiBold', marginLeft: 5}}>{gameState.gertrude.user.username}</Text>
+          <View style={{flexDirection: 'row', marginLeft: 'auto'}}>
+            { gameState.gertrude.user.id === gameState.master ?
+              <View style={{borderRadius: 15, backgroundColor: 'blue'}}>
+                <Text selectable={false} style={{margin: 5, color: 'white'}}>Master</Text>
+              </View>:null
+            }
+            { (userId === gameState.master && userId !== gameState.gertrude.user.id) ?
+              <Pressable onPress={() => kickPlayer(gameState.claudius.user.id, gameState.gameId)} style={{borderRadius: 15, backgroundColor: 'red', marginRight: 5}}>
+                <Text selectable={false} style={{margin: 5, color: 'white'}}>Kick</Text>
+              </Pressable>:null
+            }
+            { (userId === gameState.master && userId !== gameState.gertrude.user.id) ?
+              <Pressable onPress={() => banPlayer(gameState.claudius.user.id, gameState.gameId)} style={{borderRadius: 15, backgroundColor: 'red'}}>
+                <Text selectable={false} style={{margin: 5, color: 'white'}}>Ban</Text>
+              </Pressable>:null
+            }
+          </View>
+        </View>
       </View>
     </View>
   )
+}
+
+function getUserCards() {
+  const uid = auth.currentUser?.uid
+  if (uid) {
+    const state = store.getState().gameState
+    if (state.hamlet.user.id === uid) {
+      return state.hamlet.cards
+    } else if (state.claudius.user.id === uid) {
+      return state.claudius.cards
+    } else if (state.polonius.user.id === uid) {
+      return state.polonius.cards
+    } else if (state.gertrude.user.id === uid) {
+      return state.gertrude.cards
+    }
+  }
+  return []
 }
 
 //Main only part. Window part of room or info sheet
@@ -149,24 +305,32 @@ export default function DetectiveSheet({role, onClose}:{role: "main", onClose?: 
             </Pressable>
           </View>
           <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: 15, marginTop: 15, marginBottom: 15}}>Characters</Text>
-          <Row item={'Hamlet'}/>
+          <Row item={'Hamlet'} end='top'/>
           <Row item={'Claudius'}/>
           <Row item={'Polonius'}/>
-          <Row item={'Gertrude'}/>
+          <Row item={'Gertrude'} end='bottom'/>
           <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: 15, marginTop: 15, marginBottom: 15}}>Weapons</Text>
-          <Row item={'Hemlock_Poison'} name='Hemlock Poison'/>
+          <Row item={'Hemlock_Poison'} name='Hemlock Poison' end='top'/>
           <Row item={'Sharpened_Rapier'} name='Sharpened Rapier'/>
           <Row item={'Axe'}/>
-          <Row item={'Dagger'}/>
+          <Row item={'Dagger'} end='bottom'/>
           <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: 15, marginTop: 15, marginBottom: 15}}>Rooms</Text>
-          <Row item={'Gun_Platform'} name='Gun Platform'/>
+          <Row item={'Gun_Platform'} name='Gun Platform' end='top'/>
           <Row item={'Great_Hall'} name='Great Hall'/>
           <Row item={'Fencing_Room'} name='Fencing Room'/>
           <Row item={'Court_Yard'} name='Court Yard'/>
           <Row item={'Royal_Bedroom'} name='Royal Bedroom'/>
           <Row item={'Chapel'}/>
           <Row item={'Throne_Room'} name='Throne Room'/>
-          <Row item={'Stair_Well'} name='Stair Well'/>
+          <Row item={'Stair_Well'} name='Stair Well' end='bottom'/>
+          <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: 15, marginTop: 15, marginBottom: 15}}>Your Cards</Text>
+          <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+            { getUserCards().map((e) => (
+              <View key={e} style={{marginBottom: 10, marginLeft: 'auto', marginRight: 'auto', overflow: 'hidden', borderRadius: 15, borderWidth: 2, borderColor: 'black'}}>
+                <CardView card={e} width={width * 0.2} height={height * 0.2}/>
+              </View>
+            ))}
+          </View>
           <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: 15, marginTop: 15, marginBottom: 15}}>Notes</Text>
           <TextInput numberOfLines={10} style={{marginLeft: "auto", marginRight: "auto", width: width * 0.75, marginBottom: 10, padding: 8, borderWidth: 2, borderColor: "black", borderRadius: 15}} multiline value={notes} onChangeText={setNotes} />
           <DefaultButton onPress={() => {

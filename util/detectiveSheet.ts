@@ -101,7 +101,7 @@ export function setGuess(card: cardType, index: number) {
     let userGuesses = getUsersGuesses()
     if (userGuesses) {
       const gameState = store.getState().gameState
-      userGuesses = userGuesses.filter((e) => {return e.card !== card && e.player !== player})
+      userGuesses = userGuesses.filter((e) => {return e.card !== card || e.player !== player})
       if (guessType === undefined) {
         userGuesses.push({
           level: "known",

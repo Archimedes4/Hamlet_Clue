@@ -1,6 +1,6 @@
 import { View, Text, Pressable, NativeSyntheticEvent, TextInputKeyPressEventData, ActivityIndicator } from 'react-native'
 import React, { useCallback, useRef, useState } from 'react'
-import { TextInput } from 'react-native-gesture-handler'
+import { ScrollView, TextInput } from 'react-native-gesture-handler'
 import { router } from 'expo-router';
 import { logOut } from '../../util/authentication';
 import { loadingStateEnum } from '../../constants/PiecesLocations';
@@ -127,7 +127,7 @@ export default function index() {
   }
 
   return (
-    <View style={{width, height, backgroundColor: Colors.main}} onLayout={onLayoutRootView}>
+    <ScrollView style={{width, height, backgroundColor: Colors.main}} onLayout={onLayoutRootView}>
       <TextInput ref={textRef} onKeyPress={(e) => {console.log(e); handleKeyPress(e)}} style={{position: 'absolute', opacity: 0}}/>
       <View style={{flexDirection: 'row'}}>
         <Text style={{fontFamily: 'RubikBubbles-Regular', color: "#AB2330", fontSize: height * 0.1, marginTop: 20, marginLeft: 20}}>Hamlet Clue</Text>
@@ -164,6 +164,6 @@ export default function index() {
       <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => router.push('/account')} text='View Account and Game History'/>
       <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => signOut()} text='Sign Out'/>
       <Text style={{color: 'white', position: 'absolute', bottom: 0, fontSize: 11}}>2023 Andrew Mainella Diego Bueti</Text>
-    </View>
+    </ScrollView>
   )
 }

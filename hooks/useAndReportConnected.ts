@@ -11,7 +11,7 @@ import { auth, database } from '../app/_layout';
 import { Timestamp } from 'firebase/firestore';
 import { onDisconnect, ref, set } from 'firebase/database';
 
-export default function useIsConnected(isAuth: boolean) {
+export default function useIsConnected() {
   const [isConnected, setIsConnected] = useState<boolean>(true);
   async function checkIfConnected() {
     const result = await Network.getNetworkStateAsync();
@@ -35,21 +35,19 @@ export default function useIsConnected(isAuth: boolean) {
   }, []);
 
   useEffect(() => {
-    if (isAuth) {
-      const uid = auth.currentUser?.uid
-      if (uid) {
-        const onlineRef = ref(database, `/status/${uid}`) 
-        set(onlineRef, {
-          online: true,
-          lastSeen: Timestamp.now()
-        });
-        onDisconnect(onlineRef).set({
-          online: false,
-          lastSeen: Timestamp.now()
-        });
-      }
+    const uid = auth.currentUser?.uid
+    if (uid) {
+      const onlineRef = ref(database, `/status/${uid}`) 
+      set(onlineRef, {
+        online: true,
+        lastSeen: Timestamp.now()
+      });
+      onDisconnect(onlineRef).set({
+        online: false,
+        lastSeen: Timestamp.now()
+      });
     }
-  }, [])
+  }, [auth.currentUser])
 
   return isConnected
 }

@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Modal } from 'react-native'
+import { View, Text, Pressable, Modal, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import store, { RootState } from '../../../redux/store';
@@ -189,25 +189,25 @@ function GamePiece({id, color, role, roomWidth, roomHeight, xPos, yPos}:(roomPie
       }} id={id} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, backgroundColor: color, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
         <Text>{id}</Text>
         { (id === hamlet.pos) ?
-        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
-          <Hamlet width={getSize(width, height)} height={getSize(width, height)}/>
-        </View>:null
-      }
-      { (id === claudius.pos) ?
-        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
-          <Claudius width={getSize(width, height)} height={getSize(width, height)}/>
-        </View>:null
-      }
-      { (id === polonius.pos) ?
-        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
-          <Polonius width={getSize(width, height)} height={getSize(width, height)}/>
-        </View>:null
-      }
-      { (id === gertrude.pos) ?
-        <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
-          <Gertrude width={getSize(width, height)} height={getSize(width, height)}/>
-        </View>:null
-      }
+          <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+            <Hamlet width={getSize(width, height)} height={getSize(width, height)}/>
+          </View>:null
+        }
+        { (id === claudius.pos) ?
+          <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+            <Claudius width={getSize(width, height)} height={getSize(width, height)}/>
+          </View>:null
+        }
+        { (id === polonius.pos) ?
+          <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+            <Polonius width={getSize(width, height)} height={getSize(width, height)}/>
+          </View>:null
+        }
+        { (id === gertrude.pos) ?
+          <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+            <Gertrude width={getSize(width, height)} height={getSize(width, height)}/>
+          </View>:null
+        }
       </Pressable>
     )
   }
@@ -215,7 +215,29 @@ function GamePiece({id, color, role, roomWidth, roomHeight, xPos, yPos}:(roomPie
   if (role === "room") {
     return (
       <View id={id} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, backgroundColor: color, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
-        <Text>{id}</Text>
+        { (id === "Throne_Room") ?
+          <Image source={require('../../../assets/rooms/Throne_Room.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:<Text>{id}</Text>
+        }
+        { (id === hamlet.pos) ?
+          <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+            <Hamlet width={getSize(width, height)} height={getSize(width, height)}/>
+          </View>:null
+        }
+        { (id === claudius.pos) ?
+          <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+            <Claudius width={getSize(width, height)} height={getSize(width, height)}/>
+          </View>:null
+        }
+        { (id === polonius.pos) ?
+          <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+            <Polonius width={getSize(width, height)} height={getSize(width, height)}/>
+          </View>:null
+        }
+        { (id === gertrude.pos) ?
+          <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+            <Gertrude width={getSize(width, height)} height={getSize(width, height)}/>
+          </View>:null
+        }
       </View>
     )
   }
@@ -442,10 +464,10 @@ export default function index() {
         <GamePiece id="SquareX16Y17" moveIds={["SquareX15Y17", "SquareX17Y17", "SquareX16Y18"]} color='black' xPos={16} yPos={17} role='square'/>
         <GamePiece id="SquareX17Y17" moveIds={["SquareX16Y17", "SquareX18Y17", "SquareX17Y18"]} color='white' xPos={17} yPos={17} role='square'/>
         <GamePiece id="SquareX18Y17" moveIds={["SquareX18Y16", "SquareX17Y17", "SquareX19Y17", "SquareX18Y18"]} color='black' xPos={18} yPos={17} role='square'/>
-        <GamePiece id="SquareX19Y17" moveIds={["SquareX19Y16", "SquareX18Y17", "SquareX20Y17", "SquareX19Y18"]} color='white' xPos={19} yPos={17} role='square'/>
-        <GamePiece id="SquareX20Y17" moveIds={["SquareX19Y17", "SquareX20Y18"]} color='black' xPos={20} yPos={17} role='square'/>
+        <GamePiece id="SquareX19Y17" color='white' xPos={19} yPos={17} role='square'/>
+        <GamePiece id="SquareX20Y17" color='black' xPos={20} yPos={17} role='square'/>
 
-        <GamePiece id="SquareX7Y18" moveIds={["SquareX7Y17", "SquareX8Y18"]} color='black' xPos={7} yPos={18} role='square'/>
+        <GamePiece id="SquareX7Y18" color='black' xPos={7} yPos={18} role='square'/>
         <GamePiece id="SquareX8Y18" moveIds={["SquareX8Y17", "SquareX7Y18", "SquareX9Y18", "SquareX8Y19"]} color='white' xPos={8} yPos={18} role='square'/>
         <GamePiece id="SquareX9Y18" moveIds={["SquareX9Y17", "SquareX8Y18", "SquareX10Y18", "SquareX9Y19"]} color='black' xPos={9} yPos={18} role='square'/>
         <GamePiece id="SquareX10Y18" moveIds={["SquareX10Y17", "SquareX9Y18", "SquareX11Y18", "SquareX10Y19"]} color='white' xPos={10} yPos={18} role='square'/>

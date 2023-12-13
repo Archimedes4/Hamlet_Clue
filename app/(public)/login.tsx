@@ -32,7 +32,6 @@ export default function login() {
   const { width, height } = useSelector((state: RootState) => state.dimentions);
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
-  const [googleHover, setGoogleHover] = useState<boolean>(false)
   const [loginState, setLoginState] = useState<loadingStateEnum>(loadingStateEnum.notStarted);
   const isLoading = useGoogleRedirect();
   

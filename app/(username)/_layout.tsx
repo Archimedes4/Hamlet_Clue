@@ -6,10 +6,22 @@ import { authState, loadingStateEnum } from '../../constants/PiecesLocations';
 import Colors from '../../constants/Colors';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
+import useAndReportConnected from '../../hooks/useAndReportConnected';
+import { OfflineIcon } from '../../components/Icons';
 
 export default function AuthHolder() {
   const { width, height } = useSelector((state: RootState) => state.dimentions);
   const isAuth = useIsAuthenticated()
+  const isConnected = useAndReportConnected();
+
+  if (!isConnected) {
+    return (
+      <View style={{width: width, height: height, backgroundColor: Colors.main}}>
+        <OfflineIcon width={16} height={16}/>
+      </View>
+    )
+  }
+
   if (isAuth === authState.authenticatedWithAccount) {
     return <Redirect href={"/"}/>
   }

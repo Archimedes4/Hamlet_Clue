@@ -5,6 +5,7 @@ import { Dimensions, View, useColorScheme } from 'react-native';
 import { Provider } from 'react-redux';
 import store from '../redux/store';
 import { dimentionsSlice } from '../redux/reducers/dimentionsReducer';
+import Head from "expo-router/head"
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
@@ -18,7 +19,6 @@ export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: "(auth)/index",
 };
-
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -44,23 +44,7 @@ export const database = getDatabase();
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 
-export default function Root() {
-  const [mounted, setMounted] = useState<boolean>(false);
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-  if (Dimensions.get('window').width === 0 || !mounted) {
-    return null
-  }
-  return (
-    <Provider store={store}>
-      <RootLayout />
-    </Provider>
-  );
-}
-
 function RootLayout() {
-
   useEffect(() => {
     const subscription = Dimensions.addEventListener(
       'change',
@@ -80,5 +64,25 @@ function RootLayout() {
     <View style={{overflow: 'hidden'}}>
       <Slot />
     </View>
+  );
+}
+
+export default function Root() {
+  const [mounted, setMounted] = useState<boolean>(false);
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+  if (Dimensions.get('window').width === 0 || !mounted) {
+    return null
+  }
+  return (
+    <>
+      <Head>
+        <title>Hamlet Clue</title>
+      </Head>
+      <Provider store={store}>
+        <RootLayout />
+      </Provider>
+    </>
   );
 }

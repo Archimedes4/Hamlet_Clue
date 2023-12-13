@@ -243,17 +243,17 @@ export default function InformationScreen() {
           <Text>{state.promt.intiator}, made an accusation. Unfortunatly for {state.promt.intiator}, {state.promt.intiator === "Gertrude" ? "she":"he"} was wrong. They accusestion they chose are as follows.</Text>:
           <Text>{state.promt.intiator}, made a {(state.promt.accusation ? "accusation":"suggestion")}</Text>
         }
-        <View>
-          <View>
-            <Text>Player</Text>
+        <View style={{flexDirection: 'row'}}>
+          <View style={{borderRadius: 15, borderWidth: 2, borderColor: 'black'}}>
+            <Text style={{marginLeft: 'auto', marginRight: 'auto', fontFamily: 'RubikBubbles-Regular'}}>Player</Text>
             <CardView card={state.promt.player} width={width * 0.1} height={height * 0.1}/>
           </View>
-          <View>
-            <Text>Weapon</Text>
+          <View style={{borderRadius: 15, borderWidth: 2, borderColor: 'black'}}>
+            <Text style={{marginLeft: 'auto', marginRight: 'auto', fontFamily: 'RubikBubbles-Regular'}}>Weapon</Text>
             <CardView card={state.promt.weapon} width={width * 0.1} height={height * 0.1}/>
           </View>
-          <View>
-            <Text>Rooms</Text>
+          <View style={{borderRadius: 15, borderWidth: 2, borderColor: 'black'}}>
+            <Text style={{marginLeft: 'auto', marginRight: 'auto', fontFamily: 'RubikBubbles-Regular'}}>Rooms</Text>
             <CardView card={state.promt.room} width={width * 0.1} height={height * 0.1}/>
           </View>
         </View>

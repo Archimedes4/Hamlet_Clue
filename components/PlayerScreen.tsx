@@ -15,6 +15,11 @@ import { auth } from '../app/_layout';
 import * as Clipboard from 'expo-clipboard';
 import leaveGame from '../util/leaveGame';
 import { loadingStateEnum } from '../constants/PiecesLocations';
+import { kickPlayer } from '../util/dismissPlayer';
+
+function BannedPlayers() {
+  
+}
 
 //Get with and height for icon
 function getPlayerDimensions(width: number, height: number): number {
@@ -92,6 +97,7 @@ function UserBlock({index}:{index: number}) {
   const { width, height } = useSelector((state: RootState) => state.dimentions);
   const players = useSelector((state: RootState) => state.gameState.players);
   const master = useSelector((state: RootState) => state.gameState.master);
+  const gameId = useSelector((state: RootState) => state.gameState.gameId);
   const [userId, setUserId] = useState<string>("");
 
   function checkIfUserMaster() {
@@ -110,7 +116,7 @@ function UserBlock({index}:{index: number}) {
       <View style={{width: (width * 0.8) - ((((width * 0.8) - (getPlayerDimensions(width, height) * 2))/8) * 2), borderWidth: 2, borderColor: 'black', borderRadius: 15, marginLeft: 'auto', marginRight: 'auto', flexDirection: 'row', marginBottom: 10}}>
         <Text style={{padding: 20, fontFamily: 'Rubik-SemiBold'}}>{players[index].username}</Text>
         { (userId === master && players[index].id !== userId) ? 
-          <Pressable style={{borderRadius: 15, backgroundColor: 'red', marginTop: 'auto', marginBottom: 'auto', marginLeft: 'auto', marginRight: 20}}>
+          <Pressable onPress={() => {kickPlayer(players[index].id, gameId)}} style={{borderRadius: 15, backgroundColor: 'red', marginTop: 'auto', marginBottom: 'auto', marginLeft: 'auto', marginRight: 20}}>
             <Text style={{margin: 10, color: 'white'}}>Kick</Text>
           </Pressable>:null
         }
