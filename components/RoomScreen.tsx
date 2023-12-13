@@ -15,6 +15,7 @@ import DetectiveSheet from './DetectiveSheet';
 import { makeAccusation, makeSuggestion } from '../util/onRoom';
 import { screensSlice } from '../redux/reducers/screensReducer';
 import CardView from './CardView';
+import { router } from 'expo-router';
 
 declare global {
   type weaponBlockProps = {
@@ -283,11 +284,14 @@ function AccuseScreen({onBack}:{onBack: () => void}) {
         <View style={{width, height, position: 'absolute', backgroundColor: '#a2a3a2', opacity: 0.3}} />
         <View style={{width: width * 0.8, height: height * 0.8, margin: 'auto', backgroundColor: 'white', borderRadius: 30, borderWidth: 2, borderColor: 'black', overflow: 'hidden'}} onLayout={onLayoutRootView}>
           {(gameState.winner === "") ?
-            <View>
-              <Text>You LOST the game. You are now a spectator.</Text>
+            <View style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto'}}>
+              <Text style={{fontFamily: 'RubikBubbles-Regular', color: Colors.royalRed, flexWrap: 'wrap'}}>You LOST the game. You are now a spectator.</Text>
+              <DefaultButton onPress={() => {store.dispatch(screensSlice.actions.hideAllScreens())}} text='Okay'/>
             </View>:
-            <View>
-              <Text>You WON the game congrats</Text>
+            <View style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto'}}>
+              <Text style={{fontFamily: 'RubikBubbles-Regular', color: Colors.royalRed, flexWrap: 'wrap'}}>You WON the game congrats</Text>
+              <DefaultButton onPress={() => {store.dispatch(screensSlice.actions.hideAllScreens())}} text='Okay'/>
+              <DefaultButton onPress={() => {router.push('/')}} text='Back To Home'/>
             </View>
           }
         </View>

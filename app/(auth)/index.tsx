@@ -55,6 +55,7 @@ export default function index() {
   const [createGameState, setCreateGameState] = useState<loadingStateEnum>(loadingStateEnum.notStarted)
   const [joinState, setJoinState] = useState<joinStateType>(joinStateType.invalid);
   const textRef = useRef<TextInput>(null);
+  const [isOverflow, setIsOverflow] = useState<boolean>(false);
 
   async function updateJoinStatus(id: string) {
     if (id.length === 6) {
@@ -127,43 +128,58 @@ export default function index() {
   }
 
   return (
-    <ScrollView style={{width, height, backgroundColor: Colors.main}} onLayout={onLayoutRootView}>
-      <TextInput ref={textRef} onKeyPress={(e) => {console.log(e); handleKeyPress(e)}} style={{position: 'absolute', opacity: 0}}/>
-      <View style={{flexDirection: 'row'}}>
-        <Text style={{fontFamily: 'RubikBubbles-Regular', color: "#AB2330", fontSize: height * 0.1, marginTop: 20, marginLeft: 20}}>Hamlet Clue</Text>
-        <MagnifyingGlass height={height * 0.1} width={height * 0.1} style={{marginTop: 25, marginLeft: 20}}/>
-      </View>
-      <View style={{flexDirection: 'row', width: width * 0.9, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.025}}>
-        <Pressable onPress={() => {textRef.current?.focus()}} style={{width: width * 0.125, height: height * 0.215, borderWidth: 2, borderColor: 'black', borderRadius: 15, backgroundColor: "white", marginLeft: 'auto', marginRight: 'auto'}}>
-          <Text style={{margin: 'auto', fontSize: height * 0.15}}>{gameId[0]}</Text>
-        </Pressable>
-        <Pressable onPress={() => {textRef.current?.focus()}} style={{width: width * 0.125, height: height * 0.215, borderWidth: 2, borderColor: 'black', borderRadius: 15, backgroundColor: "white", marginLeft: 'auto', marginRight: 'auto'}}>
-          <Text style={{margin: 'auto', fontSize: height * 0.15}}>{gameId[1]}</Text> 
-        </Pressable>
-        <Pressable onPress={() => {textRef.current?.focus()}} style={{width: width * 0.125, height: height * 0.215, borderWidth: 2, borderColor: 'black', borderRadius: 15, backgroundColor: "white", marginLeft: 'auto', marginRight: 'auto'}}>
-          <Text style={{margin: 'auto', fontSize: height * 0.15}}>{gameId[2]}</Text> 
-        </Pressable>
-        <Pressable onPress={() => {textRef.current?.focus()}} style={{width: width * 0.125, height: height * 0.215, borderWidth: 2, borderColor: 'black', borderRadius: 15, backgroundColor: "white", marginLeft: 'auto', marginRight: 'auto'}}>
-          <Text style={{margin: 'auto', fontSize: height * 0.15}}>{gameId[3]}</Text> 
-        </Pressable>
-        <Pressable onPress={() => {textRef.current?.focus()}} style={{width: width * 0.125, height: height * 0.215, borderWidth: 2, borderColor: 'black', borderRadius: 15, backgroundColor: "white", marginLeft: 'auto', marginRight: 'auto'}}>
-          <Text style={{margin: 'auto', fontSize: height * 0.15}}>{gameId[4]}</Text> 
-        </Pressable>
-        <Pressable onPress={() => {textRef.current?.focus()}} style={{width: width * 0.125, height: height * 0.215, borderWidth: 2, borderColor: 'black', borderRadius: 15, backgroundColor: "white", marginLeft: 'auto', marginRight: 'auto'}}>
-          <Text style={{margin: 'auto', fontSize: height * 0.15}}>{gameId[5]}</Text>
-        </Pressable>
-      </View>
-      <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => {
-        if (joinState === joinStateType.exists || joinState == joinStateType.rejoin) {joinGame(gameId)} 
-      }} text={getJoinText(joinState)}>
-         { (joinState === joinStateType.loading) ?
-          <ActivityIndicator color={'white'} style={{marginTop: 'auto', marginBottom: 'auto'}}/>:null
-        }
-      </DefaultButton>
-      <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => loadCreateGame()} text='Create Game'/>
-      <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => router.push('/account')} text='View Account and Game History'/>
-      <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => signOut()} text='Sign Out'/>
-      <Text style={{color: 'white', position: 'absolute', bottom: 0, fontSize: 11}}>2023 Andrew Mainella Diego Bueti</Text>
-    </ScrollView>
+    <>
+      <ScrollView onLayout={onLayoutRootView} style={{width, height, backgroundColor: Colors.main}}>
+        <View onLayout={(e) => {
+          if (e.nativeEvent.layout.height >= height * 0.95) {
+            setIsOverflow(true)
+          } else {
+            setIsOverflow(false)
+          }
+        }}>
+          <TextInput ref={textRef} onKeyPress={(e) => {console.log(e); handleKeyPress(e)}} style={{position: 'absolute', opacity: 0}}/>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{fontFamily: 'RubikBubbles-Regular', color: "#AB2330", fontSize: height * 0.1, marginTop: 20, marginLeft: 20}}>Hamlet Clue</Text>
+            <MagnifyingGlass height={height * 0.1} width={height * 0.1} style={{marginTop: 25, marginLeft: 20}}/>
+          </View>
+          <View style={{flexDirection: 'row', width: width * 0.9, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.025}}>
+            <Pressable onPress={() => {textRef.current?.focus()}} style={{width: width * 0.125, height: height * 0.215, borderWidth: 2, borderColor: 'black', borderRadius: 15, backgroundColor: "white", marginLeft: 'auto', marginRight: 'auto'}}>
+              <Text style={{margin: 'auto', fontSize: height * 0.15}}>{gameId[0]}</Text>
+            </Pressable>
+            <Pressable onPress={() => {textRef.current?.focus()}} style={{width: width * 0.125, height: height * 0.215, borderWidth: 2, borderColor: 'black', borderRadius: 15, backgroundColor: "white", marginLeft: 'auto', marginRight: 'auto'}}>
+              <Text style={{margin: 'auto', fontSize: height * 0.15}}>{gameId[1]}</Text> 
+            </Pressable>
+            <Pressable onPress={() => {textRef.current?.focus()}} style={{width: width * 0.125, height: height * 0.215, borderWidth: 2, borderColor: 'black', borderRadius: 15, backgroundColor: "white", marginLeft: 'auto', marginRight: 'auto'}}>
+              <Text style={{margin: 'auto', fontSize: height * 0.15}}>{gameId[2]}</Text> 
+            </Pressable>
+            <Pressable onPress={() => {textRef.current?.focus()}} style={{width: width * 0.125, height: height * 0.215, borderWidth: 2, borderColor: 'black', borderRadius: 15, backgroundColor: "white", marginLeft: 'auto', marginRight: 'auto'}}>
+              <Text style={{margin: 'auto', fontSize: height * 0.15}}>{gameId[3]}</Text> 
+            </Pressable>
+            <Pressable onPress={() => {textRef.current?.focus()}} style={{width: width * 0.125, height: height * 0.215, borderWidth: 2, borderColor: 'black', borderRadius: 15, backgroundColor: "white", marginLeft: 'auto', marginRight: 'auto'}}>
+              <Text style={{margin: 'auto', fontSize: height * 0.15}}>{gameId[4]}</Text> 
+            </Pressable>
+            <Pressable onPress={() => {textRef.current?.focus()}} style={{width: width * 0.125, height: height * 0.215, borderWidth: 2, borderColor: 'black', borderRadius: 15, backgroundColor: "white", marginLeft: 'auto', marginRight: 'auto'}}>
+              <Text style={{margin: 'auto', fontSize: height * 0.15}}>{gameId[5]}</Text>
+            </Pressable>
+          </View>
+          <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => {
+            if (joinState === joinStateType.exists || joinState == joinStateType.rejoin) {joinGame(gameId)} 
+          }} text={getJoinText(joinState)}>
+            { (joinState === joinStateType.loading) ?
+              <ActivityIndicator color={'white'} style={{marginTop: 'auto', marginBottom: 'auto'}}/>:null
+            }
+          </DefaultButton>
+          <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => loadCreateGame()} text='Create Game'/>
+          <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => router.push('/account')} text='View Account and Game History'/>
+          <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => signOut()} text='Sign Out'/>
+          { isOverflow ?
+            <Text style={{color: 'white', fontSize: 11, marginTop: 5}}>2023 Andrew Mainella Diego Bueti</Text>:null
+          }
+        </View>
+      </ScrollView>
+      {!isOverflow ?
+        <Text style={{color: 'white', position: 'absolute', bottom: 0, fontSize: 11}}>2023 Andrew Mainella Diego Bueti</Text>:null
+      }
+    </>
   )
 }

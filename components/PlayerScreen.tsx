@@ -18,7 +18,7 @@ import { loadingStateEnum } from '../constants/PiecesLocations';
 import { kickPlayer } from '../util/dismissPlayer';
 
 function BannedPlayers() {
-  
+
 }
 
 //Get with and height for icon
@@ -125,7 +125,7 @@ function UserBlock({index}:{index: number}) {
   }
   return (
     <View style={{width: (width * 0.8) - ((((width * 0.8) - (getPlayerDimensions(width, height) * 2))/8) * 2), borderWidth: 2, borderColor: 'black', borderRadius: 15, marginLeft: 'auto', marginRight: 'auto', marginBottom: 10}}>
-      <Text style={{padding: 20, fontFamily: 'Rubik-SemiBold'}}>NO USER WAITING</Text>
+      <Text style={{padding: 20, fontFamily: 'Rubik-SemiBold'}}>WAITING FOR USER TO JOIN</Text>
     </View>
   )
 }
