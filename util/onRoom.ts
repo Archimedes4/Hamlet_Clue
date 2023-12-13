@@ -147,7 +147,55 @@ export function makeSuggestion() {
       handledCard: "",
       suggester: ""
     }
+    
     const gameState = store.getState().gameState
+
+    if (player === "Hamlet" && !gameState.hamlet.accused && gameState.hamlet.user.id !== uid) {
+      const newUser: playerInfo = {
+        user: gameState.hamlet.user,
+        pos: room,
+        cards: gameState.hamlet.cards,
+        guesses: gameState.hamlet.guesses,
+        accused: gameState.hamlet.accused,
+        notes: gameState.hamlet.notes,
+        lastDismissed: result.time
+      }
+      store.dispatch(gameStateSlice.actions.setHamlet(newUser))
+    } else if (player === "Claudius" && !gameState.claudius.accused && gameState.claudius.user.id !== uid) {
+      const newUser: playerInfo = {
+        user: gameState.claudius.user,
+        pos: room,
+        cards: gameState.claudius.cards,
+        guesses: gameState.claudius.guesses,
+        accused: gameState.claudius.accused,
+        notes: gameState.claudius.notes,
+        lastDismissed: result.time
+      }
+      store.dispatch(gameStateSlice.actions.setClaudius(newUser))
+    } else if (player === "Polonius" && !gameState.polonius.accused && gameState.polonius.user.id !== uid) {
+      const newUser: playerInfo = {
+        user: gameState.polonius.user,
+        pos: room,
+        cards: gameState.polonius.cards,
+        guesses: gameState.polonius.guesses,
+        accused: gameState.polonius.accused,
+        notes: gameState.polonius.notes,
+        lastDismissed: result.time
+      }
+      store.dispatch(gameStateSlice.actions.setPolonius(newUser))
+    } else if (player === "Gertrude" && !gameState.gertrude.accused && gameState.gertrude.user.id !== uid) {
+      const newUser: playerInfo = {
+        user: gameState.gertrude.user,
+        pos: room,
+        cards: gameState.gertrude.cards,
+        guesses: gameState.gertrude.guesses,
+        accused: gameState.gertrude.accused,
+        notes: gameState.gertrude.notes,
+        lastDismissed: result.time
+      }
+      store.dispatch(gameStateSlice.actions.setGertude(newUser))
+    }
+
     if (gameState.hamlet.user.id === uid) {
       result.intiator = "Hamlet"
     } else if (gameState.claudius.user.id === uid) {
@@ -229,7 +277,7 @@ export function makeSuggestion() {
       if (uid === gameState.hamlet.user.id) {
         const newUser: playerInfo = {
           user: gameState.hamlet.user,
-          pos: gameState.hamlet.pos,
+          pos: (player === "Hamlet" && !gameState.hamlet.accused) ? room:gameState.hamlet.pos,
           cards: gameState.hamlet.cards,
           guesses: gameState.hamlet.guesses,
           accused: gameState.hamlet.accused,
@@ -240,7 +288,7 @@ export function makeSuggestion() {
       } else if (uid === gameState.claudius.user.id) {
         const newUser: playerInfo = {
           user: gameState.claudius.user,
-          pos: gameState.claudius.pos,
+          pos: (player === "Claudius" && !gameState.claudius.accused) ? room:gameState.claudius.pos,
           cards: gameState.claudius.cards,
           guesses: gameState.claudius.guesses,
           accused: gameState.claudius.accused,
@@ -251,7 +299,7 @@ export function makeSuggestion() {
       } else if (uid === gameState.polonius.user.id) {
         const newUser: playerInfo = {
           user: gameState.polonius.user,
-          pos: gameState.polonius.pos,
+          pos: (player === "Polonius" && !gameState.polonius.accused) ? room:gameState.polonius.pos,
           cards: gameState.polonius.cards,
           guesses: gameState.polonius.guesses,
           accused: gameState.polonius.accused,
@@ -262,7 +310,7 @@ export function makeSuggestion() {
       } else if (uid === gameState.gertrude.user.id) {
         const newUser: playerInfo = {
           user: gameState.gertrude.user,
-          pos: gameState.gertrude.pos,
+          pos: (player === "Gertrude" && !gameState.gertrude.accused) ? room:gameState.gertrude.pos,
           cards: gameState.gertrude.cards,
           guesses: gameState.gertrude.guesses,
           accused: gameState.gertrude.accused,
