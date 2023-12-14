@@ -16,7 +16,7 @@ export default function AuthHolder() {
 
   if (!isConnected) {
     return (
-      <View style={{width: width, height: height, backgroundColor: Colors.main}}>
+      <View style={{width: width, height: height, backgroundColor: Colors.main, justifyContent: 'center', alignContent: 'center', alignItems: 'center'}}>
         <OfflineIcon width={16} height={16}/>
       </View>
     )

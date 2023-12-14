@@ -1,5 +1,5 @@
 import { View, Text, Pressable, Modal, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import store, { RootState } from '../../../redux/store';
 import Options from '../../../components/Options';
@@ -16,6 +16,11 @@ import useGameSubscribe from '../../../hooks/useGameSubscribe';
 import useGameReady from '../../../hooks/useGameReady';
 import InformationScreen from '../../../components/InformationScreen';
 import { Claudius, Gertrude, Hamlet, Polonius } from '../../../components/Icons';
+import Svg, { Path } from 'react-native-svg';
+import useQuote from '../../../hooks/useQuote';
+import { convertRoomIdToText } from '../../../util/getCurrentRoom';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 
 //26 by 26 grid
 
@@ -149,6 +154,8 @@ function GamePiece({id, color, role, roomWidth, roomHeight, xPos, yPos}:(roomPie
   const turn = useSelector((state: RootState) => state.gameState.turn);
   const history = useSelector((state: RootState) => state.gameState.history);
   const [movableSquares, setMoveableSquares] = useState<position[]>([]);
+  const [bubbleHeight, setBubbleHeight] = useState<number>(0);
+  const quote = useQuote(id)
 
   useEffect(() => {
     if (turn === 'Hamlet') {
@@ -174,6 +181,21 @@ function GamePiece({id, color, role, roomWidth, roomHeight, xPos, yPos}:(roomPie
     }
   }, [hamlet.pos, claudius.pos, polonius.pos, gertrude.pos, turn])
 
+  const [fontsLoaded, fontError] = useFonts({
+    'Rubik-SemiBold': require("../../../assets/fonts/Rubik-SemiBold.ttf"),
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded || fontError) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
+
+
   if (role === "options") {
     return (
       <View id={id} style={{width: getSize(width, height) * 7, height: getSize(width, height) * 9, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
@@ -186,58 +208,112 @@ function GamePiece({id, color, role, roomWidth, roomHeight, xPos, yPos}:(roomPie
     return (
       <Pressable onPress={() => {
         onMove(id)
-      }} id={id} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, backgroundColor: color, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
-        <Text>{id}</Text>
-        { (id === hamlet.pos) ?
-          <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
-            <Hamlet width={getSize(width, height)} height={getSize(width, height)}/>
-          </View>:null
+      }} onLayout={onLayoutRootView} id={id} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, backgroundColor: color, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
+        { (id === "Gun_Platform") ?
+          <Image source={require('../../../assets/rooms/Gun_Platform.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:null
         }
-        { (id === claudius.pos) ?
-          <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
-            <Claudius width={getSize(width, height)} height={getSize(width, height)}/>
-          </View>:null
+        { (id === "Great_Hall") ?
+          <Image source={require('../../../assets/rooms/Great_Hall.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:null
         }
-        { (id === polonius.pos) ?
-          <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
-            <Polonius width={getSize(width, height)} height={getSize(width, height)}/>
-          </View>:null
+        { (id === "Fencing_Room") ?
+          <Image source={require('../../../assets/rooms/Fencing_Room.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:null
         }
-        { (id === gertrude.pos) ?
-          <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
-            <Gertrude width={getSize(width, height)} height={getSize(width, height)}/>
-          </View>:null
+        { (id === "Court_Yard") ?
+          <Image source={require('../../../assets/rooms/Court_Yard.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:null
         }
+        { (id === "Royal_Bedroom") ?
+          <Image source={require('../../../assets/rooms/Royal_Bedroom.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:null
+        }
+        { (id === "Chapel") ?
+          <Image source={require('../../../assets/rooms/Chapel.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:null
+        }
+        { (id === "Throne_Room") ?
+          <Image source={require('../../../assets/rooms/Throne_Room.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:null
+        }
+        { (id === "Stair_Well") ?
+          <Image source={require('../../../assets/rooms/Stair_Well.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:null
+        }
+        <View style={{position: 'absolute', left: 'auto', right: 'auto', top: 'auto', bottom: 'auto'}}>
+          { (id === hamlet.pos) ?
+            <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+              <Hamlet width={getSize(width, height)} height={getSize(width, height)}/>
+            </View>:null
+          }
+          { (id === claudius.pos) ?
+            <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+              <Claudius width={getSize(width, height)} height={getSize(width, height)}/>
+            </View>:null
+          }
+          { (id === polonius.pos) ?
+            <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+              <Polonius width={getSize(width, height)} height={getSize(width, height)}/>
+            </View>:null
+          }
+          { (id === gertrude.pos) ?
+            <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+              <Gertrude width={getSize(width, height)} height={getSize(width, height)}/>
+            </View>:null
+          }
+        </View>
+        <View style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, position: 'absolute'}}>
+          <Text style={{margin: 'auto', fontFamily: 'Rubik-SemiBold', color: 'white'}}>{convertRoomIdToText(id)}</Text>
+        </View>
       </Pressable>
     )
   }
 
   if (role === "room") {
     return (
-      <View id={id} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, backgroundColor: color, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
+      <View onLayout={onLayoutRootView} id={id} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, backgroundColor: color, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
+        { (id === "Gun_Platform") ?
+          <Image source={require('../../../assets/rooms/Gun_Platform.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:null
+        }
+        { (id === "Great_Hall") ?
+          <Image source={require('../../../assets/rooms/Great_Hall.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:null
+        }
+        { (id === "Fencing_Room") ?
+          <Image source={require('../../../assets/rooms/Fencing_Room.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:null
+        }
+        { (id === "Court_Yard") ?
+          <Image source={require('../../../assets/rooms/Court_Yard.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:null
+        }
+        { (id === "Royal_Bedroom") ?
+          <Image source={require('../../../assets/rooms/Royal_Bedroom.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:null
+        }
+        { (id === "Chapel") ?
+          <Image source={require('../../../assets/rooms/Chapel.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:null
+        }
         { (id === "Throne_Room") ?
-          <Image source={require('../../../assets/rooms/Throne_Room.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:<Text>{id}</Text>
+          <Image source={require('../../../assets/rooms/Throne_Room.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:null
         }
-        { (id === hamlet.pos) ?
-          <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
-            <Hamlet width={getSize(width, height)} height={getSize(width, height)}/>
-          </View>:null
+        { (id === "Stair_Well") ?
+          <Image source={require('../../../assets/rooms/Stair_Well.png')} style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, overflow: 'hidden'}}/>:null
         }
-        { (id === claudius.pos) ?
-          <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
-            <Claudius width={getSize(width, height)} height={getSize(width, height)}/>
-          </View>:null
-        }
-        { (id === polonius.pos) ?
-          <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
-            <Polonius width={getSize(width, height)} height={getSize(width, height)}/>
-          </View>:null
-        }
-        { (id === gertrude.pos) ?
-          <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
-            <Gertrude width={getSize(width, height)} height={getSize(width, height)}/>
-          </View>:null
-        }
+        <View style={{position: 'absolute', left: 'auto', right: 'auto', top: 'auto', bottom: 'auto'}}>
+          { (id === hamlet.pos) ?
+            <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+              <Hamlet width={getSize(width, height)} height={getSize(width, height)}/>
+            </View>:null
+          }
+          { (id === claudius.pos) ?
+            <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+              <Claudius width={getSize(width, height)} height={getSize(width, height)}/>
+            </View>:null
+          }
+          { (id === polonius.pos) ?
+            <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+              <Polonius width={getSize(width, height)} height={getSize(width, height)}/>
+            </View>:null
+          }
+          { (id === gertrude.pos) ?
+            <View style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: Colors.main, borderRadius: getSize(width, height)/2, overflow: 'hidden'}}>
+              <Gertrude width={getSize(width, height)} height={getSize(width, height)}/>
+            </View>:null
+          }
+        </View>
+        <View style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, position: 'absolute'}}>
+          <Text style={{margin: 'auto', fontFamily: 'Rubik-SemiBold', color: 'white'}}>{convertRoomIdToText(id)}</Text>
+        </View>
       </View>
     )
   }
@@ -256,7 +332,7 @@ function GamePiece({id, color, role, roomWidth, roomHeight, xPos, yPos}:(roomPie
     return (
       <Pressable onPress={() => {
         onMove(id)
-      }} id={id} style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: movableSquares.includes(id) ? "red":color, position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
+      }} id={id} style={{width: getSize(width, height), height: getSize(width, height), backgroundColor: "#d3d3d3", position: 'absolute', left: getSize(width, height) * xPos, top: getSize(width, height) * yPos}}>
       </Pressable>
     )
   }
@@ -284,7 +360,35 @@ function GamePiece({id, color, role, roomWidth, roomHeight, xPos, yPos}:(roomPie
           <Gertrude width={getSize(width, height)} height={getSize(width, height)}/>
         </View>:null
       }
-    </View>
+      { (quote !== "") ?
+        <View onLayout={(e) => setBubbleHeight(e.nativeEvent.layout.height)} style={{backgroundColor: 'white', borderRadius: 20, width: getSize(width, height) * 6, position: 'absolute', top: -bubbleHeight, left: getSize(width, height)/2}}>
+          <Text style={{paddingTop: 5, color: 'black', margin: 5}}>{quote}</Text>
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: -1,
+              flex: 1,
+              justifyContent: 'flex-end',
+              alignItems: 'flex-start'
+            }}
+          >
+          
+            <Svg width={10} height={10} viewBox="32.484 17.5 15.515 17.5"  enable-background="new 32.485 17.5 15.515 17.5">
+              <Path
+                d="M38.484,17.5c0,8.75,1,13.5-6,17.5C51.484,35,52.484,17.5,38.484,17.5z"
+                fill="white"
+                x="0"
+                y="0"
+              />
+            </Svg>
+          </View>
+        </View>:null   
+      }
+    </View> 
   )
 }
 
@@ -307,14 +411,14 @@ export default function index() {
         <GamePiece id='' xPos={0} yPos={10} roomWidth={10} roomHeight={10} role='options'/>
 
         {/* Rooms */}
-        <GamePiece id="Gun_Platform" color='yellow' xPos={0} yPos={0} roomWidth={6} roomHeight={8} role='room'/>
-        <GamePiece id="Great_Hall" color='red' xPos={8} yPos={0} roomWidth={8} roomHeight={8} role='room'/>
-        <GamePiece id="Fencing_Room" color='orange' xPos={18} yPos={0} roomWidth={8} roomHeight={6} role='room'/>
-        <GamePiece id="Court_Yard" color='blue' xPos={9} yPos={10} roomWidth={9} roomHeight={7} role='room'/>
-        <GamePiece id="Royal_Bedroom" color='purple' xPos={20} yPos={9} roomWidth={6} roomHeight={9} role='room'/>
-        <GamePiece id="Chapel" color='yellow' xPos={0} yPos={19} roomWidth={8} roomHeight={7} role='room'/>
-        <GamePiece id="Throne_Room" color='white' xPos={10} yPos={20} roomWidth={10} roomHeight={6} role='room'/>
-        <GamePiece id="Stair_Well" color='orange' xPos={22} yPos={19} roomWidth={4} roomHeight={7} role='room'/>
+        <GamePiece id="Gun_Platform" color={Colors.main} xPos={0} yPos={0} roomWidth={6} roomHeight={8} role='room'/>
+        <GamePiece id="Great_Hall" color={Colors.main} xPos={8} yPos={0} roomWidth={8} roomHeight={8} role='room'/>
+        <GamePiece id="Fencing_Room" color={Colors.main} xPos={18} yPos={0} roomWidth={8} roomHeight={6} role='room'/>
+        <GamePiece id="Court_Yard" color={Colors.main} xPos={9} yPos={10} roomWidth={9} roomHeight={7} role='room'/>
+        <GamePiece id="Royal_Bedroom" color={Colors.main} xPos={20} yPos={9} roomWidth={6} roomHeight={9} role='room'/>
+        <GamePiece id="Chapel" color={Colors.main} xPos={0} yPos={19} roomWidth={8} roomHeight={7} role='room'/>
+        <GamePiece id="Throne_Room" color={Colors.main} xPos={10} yPos={20} roomWidth={10} roomHeight={6} role='room'/>
+        <GamePiece id="Stair_Well" color={Colors.main} xPos={22} yPos={19} roomWidth={4} roomHeight={7} role='room'/>
 
         {/* Squares */}
         <GamePiece id="SquareX7Y0" color='blue' xPos={7} yPos={0} role='spawnSquare'/>
@@ -369,9 +473,9 @@ export default function index() {
         <GamePiece id="SquareX22Y7" color='black' xPos={22} yPos={7} role='square'/>
         <GamePiece id="SquareX23Y7" color='white' xPos={23} yPos={7} role='square'/>
         <GamePiece id="SquareX24Y7" color='black' xPos={24} yPos={7} role='square'/>
-        <GamePiece id="SquareX25Y7" color='red' xPos={25} yPos={7} role='spawnSquare'/>
+        <GamePiece id="SquareX25Y7" color='blue' xPos={25} yPos={7} role='spawnSquare'/>
 
-        <GamePiece id="SquareX0Y8" color='pink' xPos={0} yPos={8} role='spawnSquare'/>
+        <GamePiece id="SquareX0Y8" color='blue' xPos={0} yPos={8} role='spawnSquare'/>
         <GamePiece id="SquareX1Y8" moveIds={["SquareX2Y8", "SquareX1Y9"]} color='black' xPos={1} yPos={8} role='square'/>
         <GamePiece id="SquareX2Y8" color='white' xPos={2} yPos={8} role='square'/>
         <GamePiece id="SquareX3Y8" color='black' xPos={3} yPos={8} role='square'/>
@@ -529,7 +633,7 @@ export default function index() {
         <GamePiece id="SquareX21Y24" color='black' xPos={21} yPos={24} role='square'/>
 
         <GamePiece id="SquareX9Y25" color='blue' xPos={9} yPos={25} role='spawnSquare'/>
-        <GamePiece id="SquareX20Y25" color='red' xPos={20} yPos={25} role='spawnSquare'/>
+        <GamePiece id="SquareX20Y25" color='blue' xPos={20} yPos={25} role='spawnSquare'/>
       </View>
       <Modal
         animationType="slide"

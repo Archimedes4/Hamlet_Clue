@@ -76,7 +76,8 @@ export async function getPlayerGames() {
   if (uid) {
     const data = await getDoc(doc(db, "Users", uid));
     if (data.exists()) {
-      return data.data().games
+      const games: string[] = [...data.data().games];
+      return games.reverse();
     }
   }
   return []

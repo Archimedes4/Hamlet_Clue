@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Image } from "react-native";
 import { Axe, Claudius, Dagger, Gertrude, Hamlet, HemlockPoison, Polonius, SharpenedRapier } from "./Icons";
 import Colors from "../constants/Colors";
 import { useFonts } from 'expo-font';
@@ -47,30 +47,30 @@ export default function CardView({card, width, height}:{card: cardType, width: n
         <Dagger width={width} height={height * 0.8}/>:null
       }
       { (card === "Gun_Platform") ?
-        <Hamlet width={width} height={height * 0.8}/>:null
+        <Image source={require('../assets/roomIcons/Gun_Platform.jpg')} style={{width, height: height * 0.8 + 4, position: 'absolute', top: -2}}/>:null
       }
       { (card === "Great_Hall") ?
-        <Hamlet width={width} height={height * 0.8}/>:null
+        <Image source={require('../assets/roomIcons/Great_Hall.png')} style={{width, height: height * 0.8 + 4, position: 'absolute', top: -2}}/>:null
       }
       { (card === "Fencing_Room") ?
-        <Hamlet width={width} height={height * 0.8}/>:null
+        <Image source={require('../assets/roomIcons/Fencing_Room.png')} style={{width, height: height * 0.8 + 4, position: 'absolute', top: -2}}/>:null
       }
       { (card === "Court_Yard") ?
-        <Hamlet width={width} height={height * 0.8}/>:null
+        <Image source={require('../assets/roomIcons/Court_Yard.png')} style={{width, height: height * 0.8+ 4, position: 'absolute', top: -2}}/>:null
       }
       { (card === "Royal_Bedroom") ?
-        <Hamlet width={width} height={height * 0.8}/>:null
+        <Image source={require('../assets/roomIcons/Royal_Bedroom.png')} style={{width, height: height * 0.8 + 4, position: 'absolute', top: -2}}/>:null
       }
       { (card === "Chapel") ?
-        <Hamlet width={width} height={height * 0.8}/>:null
+        <Image source={require('../assets/roomIcons/Chapel.png')} style={{width, height: height * 0.8 + 4, position: 'absolute', top: -2}}/>:null
       }
       { (card === "Throne_Room") ?
-        <Hamlet width={width} height={height * 0.8}/>:null
+        <Image source={require('../assets/roomIcons/Throne_Room.jpg')} style={{width, height: height * 0.8 + 2}}/>:null
       }
       { (card === "Stair_Well") ?
-        <Hamlet width={width} height={height * 0.8}/>:null
+        <Image source={require('../assets/roomIcons/Stair_Well.png')} style={{width, height: height * 0.8 + 2}}/>:null
       }
-      <View style={{width: width, height: height * 0.2 - 2, backgroundColor: Colors.main}}>
+      <View style={{width: width, height: height * 0.2 - 2, backgroundColor: Colors.main, position: 'absolute', top: height * 0.8 + 2}}>
         <Text style={{margin: 'auto', color: 'white', fontFamily: 'RubikBubbles-Regular'}}>{card.replace("_", " ")}</Text>
       </View>
     </View>

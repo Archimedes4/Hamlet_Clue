@@ -12,7 +12,7 @@ export enum loadingStateEnum {
   success,
 }
 
-export const rooms: rooms[] = ["Gun_Platform", "Great_Hall", "Fencing_Room", "Court_Yard", "Royal_Bedroom", "Chapel", "Throne_Room", "Stair_Well"]
+export const rooms: string[] = ["Gun_Platform", "Great_Hall", "Fencing_Room", "Court_Yard", "Royal_Bedroom", "Chapel", "Throne_Room", "Stair_Well"]
 
 const squares: positionType[] = [
   {

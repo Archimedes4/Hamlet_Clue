@@ -1,7 +1,7 @@
-import { View, Text, TextInput, ActivityIndicator, FlatList } from 'react-native'
+import { View, Text, TextInput, ActivityIndicator, FlatList, Pressable, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import store, { RootState } from '../../redux/store';
 import Colors from '../../constants/Colors';
 import DefaultButton from '../../components/DefaultButton';
 import { router } from 'expo-router';
@@ -10,12 +10,16 @@ import { logOut } from '../../util/authentication';
 import { checkIfUsernameAvaliable, getPlayerGames, updateUserInfo } from '../../util/userInformation';
 import { MagnifyingGlass } from '../../components/Icons';
 import { auth } from '../_layout';
+import joinGame from '../../util/joinGame';
+
 enum usernameValidation {
   toShort,
   exists,
   loading,
   good,
-  failed
+  failed,
+  success,
+  original
 }
 
 function getUsernameButtonText(state: usernameValidation) {
@@ -34,11 +38,17 @@ function getUsernameButtonText(state: usernameValidation) {
   if (state === usernameValidation.failed) {
     return "Something Went Wrong. ):"
   }
+  if (state === usernameValidation.success) {
+    return "Username Changed!"
+  }
+  if (state === usernameValidation.original) {
+    return "Username Unchanged."
+  }
 }
 
 export default function Account() {
   const { width, height } = useSelector((state: RootState) => state.dimentions);
-  const [username, setUsername] = useState<string>("");
+  const [username, setUsername] = useState<string>(store.getState().username);
   const [usernameStatus, setUsernameStatus] = useState<usernameValidation>(usernameValidation.toShort);
   const [signOutState, setSignOutState] = useState<loadingStateEnum>(loadingStateEnum.notStarted);
   const [data, setData] = useState<string[]>([]);
@@ -54,7 +64,7 @@ export default function Account() {
       setUsernameStatus(usernameValidation.loading)
       const result = await updateUserInfo(uid, username)
       if (result === loadingStateEnum.success) {
-        router.push('/')
+        setUsernameStatus(usernameValidation.success)
       } else {
         setUsernameStatus(usernameValidation.failed)
       }
@@ -69,7 +79,11 @@ export default function Account() {
       if (result) {
         setUsernameStatus(usernameValidation.good)
       } else {
-        setUsernameStatus(usernameValidation.exists)
+        if (username === store.getState().username) {
+          setUsernameStatus(usernameValidation.original)
+        } else {
+          setUsernameStatus(usernameValidation.exists)
+        }
       }
     }
   }
@@ -88,7 +102,7 @@ export default function Account() {
   }, [username])
 
   return (
-    <View style={{width: width, height: height, backgroundColor: Colors.main}}>
+    <ScrollView style={{width: width, height: height, backgroundColor: Colors.main}}>
       <View style={{flexDirection: 'row', marginTop: 20, marginLeft: 20}}>
         <Text style={{fontFamily: 'RubikBubbles-Regular', color: Colors.royalRed, fontSize: height * 0.1}}>Hamlet Clue</Text>
         <MagnifyingGlass width={height * 0.1} height={height * 0.1} style={{marginLeft: 20, marginTop: 10}}/>
@@ -100,13 +114,19 @@ export default function Account() {
           <ActivityIndicator  style={{margin: 20}}/>:null
         }
       </DefaultButton>
-      <FlatList data={data} renderItem={(e) => (
-        <View style={{borderWidth: 2, borderColor: 'black', borderRadius: 25}}>
-          <Text style={{margin: 10}}>{e.item}</Text>
-        </View>
-      )}/>
+      <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: width * 0.11, marginTop: 15, marginBottom: 15, color: 'white'}}>Past Games</Text>
+      { (data.length === 0) ? 
+        <View style={{height: height * 0.3, width}}>
+          <Text style={{margin: 'auto', fontFamily: 'RubikBubbles-Regular'}}>Your past games will appear here.</Text>
+        </View>:
+        <FlatList style={{height: height * 0.3}} data={data} renderItem={(e) => (
+          <Pressable onPress={() => joinGame(e.item)} style={{borderWidth: 2, borderColor: 'black', borderRadius: 25, marginLeft: 'auto', marginRight: 'auto', width: width * 0.8, backgroundColor: 'white', marginBottom: 5}}>
+            <Text style={{margin: 10}}>{e.item}</Text>
+          </Pressable>
+        )}/>
+      }
       <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => signOut()} text='Sign Out'/>
-      <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => router.push('/')} text='Back'/>
-    </View>
+      <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04, marginBottom: 5}} onPress={() => router.push('/')} text='Back'/>
+    </ScrollView>
   )
 }

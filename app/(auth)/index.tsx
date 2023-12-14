@@ -171,6 +171,7 @@ export default function index() {
           </DefaultButton>
           <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => loadCreateGame()} text='Create Game'/>
           <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => router.push('/account')} text='View Account and Game History'/>
+          <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => router.push('/rules')} text='Rules'/>
           <DefaultButton style={{width: width * 0.8, marginLeft: 'auto', marginRight: 'auto', marginTop: height * 0.04}} onPress={() => signOut()} text='Sign Out'/>
           { isOverflow ?
             <Text style={{color: 'white', fontSize: 11, marginTop: 5}}>2023 Andrew Mainella Diego Bueti</Text>:null
