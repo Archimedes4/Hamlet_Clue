@@ -100,7 +100,6 @@ declare global {
     gameOver: boolean;
     winner: players | "";
     bannedPlayers: string[];
-    changeKey: string
   };
   interface squarePieceProps {
     id: position;

@@ -1,6 +1,7 @@
 
 import { gameStateSlice } from "../redux/reducers/gameStateReducer";
 import store from "../redux/store";
+import updateGame from "./updateGame";
 import { roleDie } from "./util";
 
 export default function onBlank() {
@@ -24,8 +25,7 @@ export default function onBlank() {
     promt: state.promt,
     gameOver: state.gameOver,
     winner: state.winner,
-    bannedPlayers: state.bannedPlayers,
-    changeKey: state.changeKey
+    bannedPlayers: state.bannedPlayers
   }
   //Made all moves next player
   newGameState.dieOne = roleDie()
@@ -75,5 +75,5 @@ export default function onBlank() {
       newGameState.turn = orderOfPlay[gertrudeIndex + 1]
     }
   }
-  store.dispatch(gameStateSlice.actions.setGameState(newGameState))
+  updateGame(newGameState)
 }

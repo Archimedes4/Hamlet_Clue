@@ -1,6 +1,7 @@
 import { auth } from "../app/_layout";
 import { gameStateSlice } from "../redux/reducers/gameStateReducer";
 import store from "../redux/store";
+import updateGame from "./updateGame";
 
 export default function setPlayerSelection(selection: players) {
   const uid = auth.currentUser?.uid
@@ -25,8 +26,7 @@ export default function setPlayerSelection(selection: players) {
       promt: state.promt,
       gameOver: state.gameOver,
       winner: state.winner,
-      bannedPlayers: state.bannedPlayers,
-      changeKey: state.changeKey
+      bannedPlayers: state.bannedPlayers
     }
     if (selection === "Hamlet" && (state.hamlet.user.id === "" || state.hamlet.user.id === uid)) {
       newGameState.hamlet = {
@@ -249,6 +249,6 @@ export default function setPlayerSelection(selection: players) {
         lastDismissed: state.gertrude.lastDismissed
       }
     }
-    store.dispatch(gameStateSlice.actions.setGameState(newGameState))
+    updateGame(newGameState)
   }
 }

@@ -14,16 +14,16 @@ import onBlank from '../util/onBlank';
 function isShowingBlankTurn(state: gameState) {
   const uid = auth.currentUser?.uid
   if (uid && state.dieCount === 0) {
-    if (uid === state.hamlet.user.id && rooms.includes(state.hamlet.pos)) {
+    if (uid === state.hamlet.user.id && rooms.includes(state.hamlet.pos) && state.turn === 'Hamlet') {
       return true
     }
-    if (uid === state.claudius.user.id && rooms.includes(state.claudius.pos)) {
+    if (uid === state.claudius.user.id && rooms.includes(state.claudius.pos) && state.turn === 'Claudius') {
       return true
     }
-    if (uid === state.polonius.user.id && rooms.includes(state.polonius.pos)) {
+    if (uid === state.polonius.user.id && rooms.includes(state.polonius.pos) && state.turn === 'Polonius') {
       return true
     }
-    if (uid === state.gertrude.user.id && rooms.includes(state.gertrude.pos)) {
+    if (uid === state.gertrude.user.id && rooms.includes(state.gertrude.pos) && state.turn === 'Gertrude') {
       return true
     }
   }
@@ -44,7 +44,6 @@ function getUser() {
       return "Gertrude"
     }
   }
-  console.log(auth.currentUser)
   return "Something went wrong!"
 }
 

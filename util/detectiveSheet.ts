@@ -1,6 +1,7 @@
 import { auth } from "../app/_layout";
 import { gameStateSlice } from "../redux/reducers/gameStateReducer";
 import store from "../redux/store";
+import updateGame from "./updateGame";
 
 function getPlayer(index: number): players | undefined {
   const uid = auth.currentUser?.uid
@@ -122,45 +123,53 @@ export function setGuess(card: cardType, index: number) {
         })
       }
       if (gameState.hamlet.user.id === uid) {
-        store.dispatch(gameStateSlice.actions.setHamlet({
-          user: gameState.hamlet.user,
-          pos: gameState.hamlet.pos,
-          cards: gameState.hamlet.cards,
-          guesses: userGuesses,
-          accused: gameState.hamlet.accused,
-          notes: gameState.hamlet.notes,
-          lastDismissed: gameState.hamlet.lastDismissed
-        }))
+        updateGame({
+          hamlet: {
+            user: gameState.hamlet.user,
+            pos: gameState.hamlet.pos,
+            cards: gameState.hamlet.cards,
+            guesses: userGuesses,
+            accused: gameState.hamlet.accused,
+            notes: gameState.hamlet.notes,
+            lastDismissed: gameState.hamlet.lastDismissed
+          }
+        })
       } else if (gameState.claudius.user.id === uid) {
-        store.dispatch(gameStateSlice.actions.setClaudius({
-          user: gameState.claudius.user,
-          pos: gameState.claudius.pos,
-          cards: gameState.claudius.cards,
-          guesses: userGuesses,
-          accused: gameState.claudius.accused,
-          notes: gameState.claudius.notes,
-          lastDismissed: gameState.claudius.lastDismissed
-        }))
+        updateGame({
+          claudius: {
+            user: gameState.claudius.user,
+            pos: gameState.claudius.pos,
+            cards: gameState.claudius.cards,
+            guesses: userGuesses,
+            accused: gameState.claudius.accused,
+            notes: gameState.claudius.notes,
+            lastDismissed: gameState.claudius.lastDismissed
+          }
+        })
       } else if (gameState.polonius.user.id === uid) {
-        store.dispatch(gameStateSlice.actions.setPolonius({
-          user: gameState.polonius.user,
-          pos: gameState.polonius.pos,
-          cards: gameState.polonius.cards,
-          guesses: userGuesses,
-          accused: gameState.polonius.accused,
-          notes: gameState.polonius.notes,
-          lastDismissed: gameState.polonius.lastDismissed
-        }))
+        updateGame({
+          polonius: {
+            user: gameState.polonius.user,
+            pos: gameState.polonius.pos,
+            cards: gameState.polonius.cards,
+            guesses: userGuesses,
+            accused: gameState.polonius.accused,
+            notes: gameState.polonius.notes,
+            lastDismissed: gameState.polonius.lastDismissed
+          }
+        })
       } else if (gameState.gertrude.user.id === uid) {
-        store.dispatch(gameStateSlice.actions.setGertude({
-          user: gameState.gertrude.user,
-          pos: gameState.gertrude.pos,
-          cards: gameState.gertrude.cards,
-          guesses: userGuesses,
-          accused: gameState.gertrude.accused,
-          notes: gameState.gertrude.notes,
-          lastDismissed: gameState.gertrude.lastDismissed
-        }))
+        updateGame({
+          gertude: {
+            user: gameState.gertrude.user,
+            pos: gameState.gertrude.pos,
+            cards: gameState.gertrude.cards,
+            guesses: userGuesses,
+            accused: gameState.gertrude.accused,
+            notes: gameState.gertrude.notes,
+            lastDismissed: gameState.gertrude.lastDismissed
+          }
+        })
       }
     }
   }
@@ -179,52 +188,56 @@ export function updateNotes(notes: string) {
   if (uid) {
     if (uid === state.hamlet.user.id) {
       //hamlet
-      const newPlayer: playerInfo = {
-        user: state.hamlet.user,
-        pos: state.hamlet.pos,
-        cards: state.hamlet.cards,
-        guesses: state.hamlet.guesses,
-        accused: state.hamlet.accused,
-        notes: notes,
-        lastDismissed: state.hamlet.lastDismissed
-      }
-      store.dispatch(gameStateSlice.actions.setHamlet(newPlayer))
+      updateGame({
+        hamlet: {
+          user: state.hamlet.user,
+          pos: state.hamlet.pos,
+          cards: state.hamlet.cards,
+          guesses: state.hamlet.guesses,
+          accused: state.hamlet.accused,
+          notes: notes,
+          lastDismissed: state.hamlet.lastDismissed
+        }
+      })
     } else if (uid === state.claudius.user.id) {
       //Claudius
-      const newPlayer: playerInfo = {
-        user: state.claudius.user,
-        pos: state.claudius.pos,
-        cards: state.claudius.cards,
-        guesses: state.claudius.guesses,
-        accused: state.claudius.accused,
-        notes: notes,
-        lastDismissed: state.claudius.lastDismissed
-      }
-      store.dispatch(gameStateSlice.actions.setClaudius(newPlayer))
+      updateGame({
+        claudius: {
+          user: state.claudius.user,
+          pos: state.claudius.pos,
+          cards: state.claudius.cards,
+          guesses: state.claudius.guesses,
+          accused: state.claudius.accused,
+          notes: notes,
+          lastDismissed: state.claudius.lastDismissed
+        }
+      })
     } else if (uid === state.polonius.user.id) {
       //Polonius 
-      const newPlayer: playerInfo = {
-        user: state.polonius.user,
-        pos: state.polonius.pos,
-        cards: state.polonius.cards,
-        guesses: state.polonius.guesses,
-        accused: state.polonius.accused,
-        notes: notes,
-        lastDismissed: state.polonius.lastDismissed
-      }
-      store.dispatch(gameStateSlice.actions.setPolonius(newPlayer))
+      updateGame({
+        polonius: {
+          user: state.polonius.user,
+          pos: state.polonius.pos,
+          cards: state.polonius.cards,
+          guesses: state.polonius.guesses,
+          accused: state.polonius.accused,
+          notes: notes,
+          lastDismissed: state.polonius.lastDismissed
+        }
+      })
     } else if (uid === state.gertrude.user.id) {
       //Gertrude
-      const newPlayer: playerInfo = {
-        user: state.gertrude.user,
-        pos: state.gertrude.pos,
-        cards: state.gertrude.cards,
-        guesses: state.gertrude.guesses,
-        accused: state.gertrude.accused,
-        notes: notes,
-        lastDismissed: state.gertrude.lastDismissed
-      }
-      store.dispatch(gameStateSlice.actions.setGertude(newPlayer))
+      updateGame({
+        gertrude: {
+          user: state.gertrude.user,
+          pos: state.gertrude.pos,
+          cards: state.gertrude.cards,
+          guesses: state.gertrude.guesses,
+          accused: state.gertrude.accused,
+          notes: notes,
+          lastDismissed: state.gertrude.lastDismissed
+        }
+      })
     }
   }
 }

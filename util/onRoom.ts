@@ -1,6 +1,6 @@
 import { auth } from "../app/_layout"
-import { gameStateSlice } from "../redux/reducers/gameStateReducer"
 import store from "../redux/store"
+import updateGame from "./updateGame"
 
 export function makeAccusation() {
   const { player, weapon, room } = store.getState().accusationsSelection
@@ -23,8 +23,7 @@ export function makeAccusation() {
     promt: state.promt,
     gameOver: state.gameOver,
     winner: state.winner,
-    bannedPlayers: state.bannedPlayers,
-    changeKey: state.changeKey
+    bannedPlayers: state.bannedPlayers
   }
   const uid = auth.currentUser?.uid
   if (uid) {
@@ -51,10 +50,8 @@ export function makeAccusation() {
       result.intiator = "Gertrude"
     }
 
-    console.log(result.intiator)
     if (gameState.answer.room === room && gameState.answer.murderWeapon === weapon && gameState.answer.player) {
       //Game over
-      console.log("game over")
       newGameState.gameOver = true
       newGameState.winner = result.intiator
     } else {
@@ -126,15 +123,42 @@ export function makeAccusation() {
       const index = orderOfPlay.indexOf(result.intiator)
       newGameState.turn = orderOfPlay[(index < orderOfPlay.length) ? index+1:0]
     }
-    console.log(newGameState)
-    store.dispatch(gameStateSlice.actions.setGameState(newGameState))
+    updateGame(newGameState)
   }
 }
 
+function isRoom(pet: position | rooms): pet is rooms {
+  return (pet as rooms) !== undefined;
+}
+
 export function makeSuggestion() {
-  const { player, weapon, room } = store.getState().accusationsSelection
+  const { player, weapon } = store.getState().suggestionsSelection
   const uid = auth.currentUser?.uid
   if (uid) {
+    let room: rooms = "Chapel";
+    const gameState = store.getState().gameState
+    if (uid === gameState.hamlet.user.id) {
+      const pos = gameState.hamlet.pos
+      if (isRoom(pos)) {
+        room = pos;
+      }
+    } else if (uid === gameState.claudius.user.id) {
+      const pos = gameState.claudius.pos
+      if (isRoom(pos)) {
+        room = pos;
+      }
+    } else if (uid === gameState.polonius.user.id) {
+      const pos = gameState.polonius.pos
+      if (isRoom(pos)) {
+        room = pos;
+      }
+    } else if (uid === gameState.gertrude.user.id) {
+      const pos = gameState.gertrude.pos
+      if (isRoom(pos)) {
+        room = pos;
+      }
+    }
+    
     //Find who has next turn
     let result: informationPromt = {
       room: room,
@@ -148,7 +172,6 @@ export function makeSuggestion() {
       suggester: ""
     }
     
-    const gameState = store.getState().gameState
 
     if (player === "Hamlet" && !gameState.hamlet.accused && gameState.hamlet.user.id !== uid) {
       const newUser: playerInfo = {
@@ -160,7 +183,9 @@ export function makeSuggestion() {
         notes: gameState.hamlet.notes,
         lastDismissed: result.time
       }
-      store.dispatch(gameStateSlice.actions.setHamlet(newUser))
+      updateGame({
+        hamlet: newUser
+      })
     } else if (player === "Claudius" && !gameState.claudius.accused && gameState.claudius.user.id !== uid) {
       const newUser: playerInfo = {
         user: gameState.claudius.user,
@@ -171,7 +196,9 @@ export function makeSuggestion() {
         notes: gameState.claudius.notes,
         lastDismissed: result.time
       }
-      store.dispatch(gameStateSlice.actions.setClaudius(newUser))
+      updateGame({
+        claudius: newUser
+      })
     } else if (player === "Polonius" && !gameState.polonius.accused && gameState.polonius.user.id !== uid) {
       const newUser: playerInfo = {
         user: gameState.polonius.user,
@@ -182,7 +209,9 @@ export function makeSuggestion() {
         notes: gameState.polonius.notes,
         lastDismissed: result.time
       }
-      store.dispatch(gameStateSlice.actions.setPolonius(newUser))
+      updateGame({
+        polonius: newUser
+      })
     } else if (player === "Gertrude" && !gameState.gertrude.accused && gameState.gertrude.user.id !== uid) {
       const newUser: playerInfo = {
         user: gameState.gertrude.user,
@@ -193,7 +222,9 @@ export function makeSuggestion() {
         notes: gameState.gertrude.notes,
         lastDismissed: result.time
       }
-      store.dispatch(gameStateSlice.actions.setGertude(newUser))
+      updateGame({
+        gertrude: newUser
+      })
     }
 
     if (gameState.hamlet.user.id === uid) {
@@ -207,12 +238,13 @@ export function makeSuggestion() {
     }
     
     let orderOfPlay = [...gameState.orderOfPlay];
-    //Finding next turn
+    //Finding next tur
+
+    orderOfPlay = orderOfPlay.filter((e) => {return e !== result.intiator})
+    console.log(orderOfPlay)
     let nextTurn: turnType = orderOfPlay[0]
 
-    orderOfPlay.filter((e) => {return e !== result.intiator})
-
-    if (orderOfPlay.length === 4) {
+    if (orderOfPlay.length === 3) {
       //This should always be true
       if (orderOfPlay[0] === "Hamlet" && (gameState.hamlet.cards.includes(weapon) || gameState.hamlet.cards.includes(room) || gameState.hamlet.cards.includes(player))) {
         nextTurn = "HamletSugget"
@@ -274,6 +306,8 @@ export function makeSuggestion() {
           nextTurn = orderOfPlay[hamletIndex + 1]
         }
       }
+      console.log("This is next turn", nextTurn)
+      console.log("This is result", result)
       if (uid === gameState.hamlet.user.id) {
         const newUser: playerInfo = {
           user: gameState.hamlet.user,
@@ -284,7 +318,11 @@ export function makeSuggestion() {
           notes: gameState.hamlet.notes,
           lastDismissed: result.time
         }
-        store.dispatch(gameStateSlice.actions.setHamlet(newUser))
+        updateGame({
+          hamlet: newUser,
+          turn: nextTurn,
+          promt: result
+        })
       } else if (uid === gameState.claudius.user.id) {
         const newUser: playerInfo = {
           user: gameState.claudius.user,
@@ -295,7 +333,11 @@ export function makeSuggestion() {
           notes: gameState.claudius.notes,
           lastDismissed: result.time
         }
-        store.dispatch(gameStateSlice.actions.setClaudius(newUser))
+        updateGame({
+          claudius: newUser,
+          turn: nextTurn,
+          promt: result
+        })
       } else if (uid === gameState.polonius.user.id) {
         const newUser: playerInfo = {
           user: gameState.polonius.user,
@@ -306,7 +348,11 @@ export function makeSuggestion() {
           notes: gameState.polonius.notes,
           lastDismissed: result.time
         }
-        store.dispatch(gameStateSlice.actions.setPolonius(newUser))
+        updateGame({
+          polonius: newUser,
+          turn: nextTurn,
+          promt: result
+        })
       } else if (uid === gameState.gertrude.user.id) {
         const newUser: playerInfo = {
           user: gameState.gertrude.user,
@@ -317,9 +363,12 @@ export function makeSuggestion() {
           notes: gameState.gertrude.notes,
           lastDismissed: result.time
         }
-        store.dispatch(gameStateSlice.actions.setGertude(newUser))
+        updateGame({
+          gertrude: newUser,
+          turn: nextTurn,
+          promt: result
+        })
       }
-      store.dispatch(gameStateSlice.actions.setPromtAndTurn({turn: nextTurn, prompt: result}))
     }
     //TODO game very broke
   }

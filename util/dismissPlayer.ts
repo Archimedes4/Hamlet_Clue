@@ -3,7 +3,7 @@ import { auth, db } from "../app/_layout"
 import { loadingStateEnum } from "../constants/PiecesLocations"
 import store from "../redux/store"
 import { gameStateSlice } from "../redux/reducers/gameStateReducer"
-import { createUUID } from "./util"
+import updateGame from "./updateGame"
 
 export async function kickPlayer(playerId: string, gameId: string) {
   try {
@@ -38,12 +38,12 @@ export async function banPlayer(playerId: string, gameId: string) {
       let players: userType[] = game.data().players
       players = players.filter((e) => {return e.id !== playerId})
       userGames = userGames.filter((e) => {return e !== gameId})
-      
-      const changeKey = createUUID()
 
       let newBandedPlayers = [...store.getState().gameState.bannedPlayers]
       newBandedPlayers = newBandedPlayers.filter((e) => {return e !== playerId});
-      store.dispatch(gameStateSlice.actions.setBannedPlayers({ban: newBandedPlayers, key: changeKey}))
+      updateGame({
+        bannedPlayers: newBandedPlayers
+      })
 
       //updateGame
       await updateDoc(doc(db, "Games", gameId), {
@@ -51,8 +51,7 @@ export async function banPlayer(playerId: string, gameId: string) {
       })
       await updateDoc(doc(db, "Users", playerId), {
         games: userGames,
-        bannedPlayers: newBandedPlayers,
-        changeKey: changeKey
+        bannedPlayers: newBandedPlayers
       })
       return loadingStateEnum.success
     } else {
@@ -66,5 +65,7 @@ export async function banPlayer(playerId: string, gameId: string) {
 export async function unBanPlayer(playerId: string) {
   let newBandedPlayers = [...store.getState().gameState.bannedPlayers]
   newBandedPlayers = newBandedPlayers.filter((e) => {return e !== playerId});
-  store.dispatch(gameStateSlice.actions.setBannedPlayers({ban: newBandedPlayers, key: createUUID()}))
+  updateGame({
+    bannedPlayers: newBandedPlayers
+  })
 }

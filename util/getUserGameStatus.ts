@@ -25,16 +25,12 @@ export default function getUserGameStatus() {
       } else if (gameState.turn === "GertrudeSuggest" && gameState.gertrude.user.id === user) {
         store.dispatch(screensSlice.actions.setInformationScreen(true))
       } else if (gameState.hamlet.lastDismissed !== gameState.promt.time && gameState.hamlet.user.id === user) {
-        console.log("This is promt ham", gameState.promt.time)
         store.dispatch(screensSlice.actions.setInformationScreen(true))
       } else if (gameState.claudius.lastDismissed !== gameState.promt.time && gameState.claudius.user.id === user) {
-        console.log("This is promt claud", gameState.promt.time)
         store.dispatch(screensSlice.actions.setInformationScreen(true))
       } else if (gameState.polonius.lastDismissed !== gameState.promt.time && gameState.polonius.user.id === user) {
-        console.log("This is promt polo", gameState.promt.time, gameState.polonius.lastDismissed)
         store.dispatch(screensSlice.actions.setInformationScreen(true))
       } else if (gameState.gertrude.lastDismissed !== gameState.promt.time && gameState.gertrude.user.id === user) {
-        console.log("This is promt gert", gameState.promt.time)
         store.dispatch(screensSlice.actions.setInformationScreen(true))
       }
     } else {

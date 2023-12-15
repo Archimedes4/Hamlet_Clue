@@ -10,7 +10,6 @@ export async function signUp(email: string, password: string): Promise<loadingSt
     await createUserWithEmailAndPassword(auth, email, password)
     return loadingStateEnum.success
   } catch (e) {
-    console.log(e)
     return loadingStateEnum.failed
   }
 }

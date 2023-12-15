@@ -1,9 +1,10 @@
+import { set } from 'firebase/database';
 import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { auth, db } from "../app/_layout";
 import store, { RootState } from "../redux/store";
 import { gameStateSlice } from "../redux/reducers/gameStateReducer";
-import getGame, { updateGame } from "../util/getGame";
+import getGame from "../util/getGame";
 import { useSelector } from "react-redux";
 
 export default function useGameSubscribe(id: string) {
@@ -36,24 +37,24 @@ export default function useGameSubscribe(id: string) {
             promt: doc.data().promt,
             gameOver: doc.data().gameOver,
             winner: doc.data().winner,
-            changeKey: '',
             bannedPlayers: doc.data().bannedPlayers
           }
+          console.log(gameState)
           store.dispatch(gameStateSlice.actions.updateGameState(gameState)) 
-          setUpdating(new Date())
         }
       });
       return unsub
     }
   }, [id])
-  useEffect(() => {
-    if (mounted) {
-      if ((new Date().getTime() - updating.getTime()) >= 100) {
-        updateGame() 
-      }
-    } else {
-      setMounted(true)
-    }
-  }, [gameState])
+  // useEffect(() => {
+  //   console.log(gameState)
+  //   if (mounted) {
+  //     if ((new Date().getTime() - updating.getTime()) >= 300) {
+  //       updateGame()
+  //     }
+  //   } else {
+  //     setMounted(true)
+  //   }
+  // }, [gameState])
   return null
 }

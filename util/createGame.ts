@@ -1,7 +1,7 @@
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
 import { db } from "../app/_layout"
 import { loadingStateEnum } from "../constants/PiecesLocations"
-import {createUUID, roleDie, shuffle} from "./util"
+import {roleDie, shuffle} from "./util"
 import store from "../redux/store"
 
 export default async function createGame(uid: string): Promise<{ result: loadingStateEnum.success; game: gameState } | { result: loadingStateEnum.failed }> {
@@ -128,8 +128,7 @@ export default async function createGame(uid: string): Promise<{ result: loading
     },
     gameOver: false,
     winner: "",
-    bannedPlayers: [],
-    changeKey: createUUID()
+    bannedPlayers: []
   }
   
   try {

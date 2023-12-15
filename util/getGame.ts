@@ -3,7 +3,7 @@ import store from "../redux/store";
 import { auth, db } from "../app/_layout";
 import { gameStateSlice } from "../redux/reducers/gameStateReducer";
 
-export default async function getGame(id: string): Promise<string> {
+export default async function getGame(id: string) {
   const game = await getDoc(doc(db, "Games", id))
   if (game.exists()) {
     const gameState: gameState = {
@@ -25,13 +25,9 @@ export default async function getGame(id: string): Promise<string> {
       gameOver: game.data().gameOver,
       winner: game.data().winner,
       bannedPlayers: game.data().bannedPlayers,
-      changeKey: game.data().changeKey
     }
-    if (store.getState().gameState.changeKey !== game.data().changeKey) {
-      store.dispatch(gameStateSlice.actions.setGameState(gameState)) 
-    }
+    store.dispatch(gameStateSlice.actions.updateGameState(gameState)) 
   }
-  return store.getState().gameState.changeKey
 }
 
 export async function checkIfGameExists(id: string): Promise<boolean> {
@@ -63,10 +59,6 @@ export async function checkIfGameFull(id: string): Promise<boolean> {
   } else {
     return true
   }
-}
-
-export async function updateGame() {
-  await updateDoc(doc(db, "Games", store.getState().gameState.gameId), store.getState().gameState);
 }
 
 export async function checkIfBanned(id: string) {

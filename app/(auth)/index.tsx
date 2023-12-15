@@ -100,7 +100,6 @@ export default function index() {
   }
 
   function handleKeyPress(e: NativeSyntheticEvent<TextInputKeyPressEventData>) {
-    console.log(e.nativeEvent)
     if (e.nativeEvent.key === "0" || e.nativeEvent.key === "1" || e.nativeEvent.key === "2" || e.nativeEvent.key === "3" || e.nativeEvent.key === "4" || e.nativeEvent.key === "5" || e.nativeEvent.key === "6" || e.nativeEvent.key === "7" || e.nativeEvent.key === "8" || e.nativeEvent.key === "9") {
       if ((gameId + ' ').length > 6) {
         setGameId(gameId.substring(1) + e.nativeEvent.key)
@@ -132,7 +131,6 @@ export default function index() {
     if (uid) {
       const game = await createGame(uid)
       if (game.result === loadingStateEnum.success) {
-        store.dispatch(gameStateSlice.actions.setGameState(game.game))
         setCreateGameState(loadingStateEnum.success)
         router.push(`/game/${game.game.gameId}`)
       } else {
@@ -167,7 +165,7 @@ export default function index() {
             setIsOverflow(false)
           }
         }}>
-          <TextInput ref={textRef} onKeyPress={(e) => {console.log(e); handleKeyPress(e)}} style={{position: 'absolute', opacity: 0}}/>
+          <TextInput ref={textRef} onKeyPress={(e) => {handleKeyPress(e)}} style={{position: 'absolute', opacity: 0}}/>
           <View style={{flexDirection: 'row'}}>
             <Text style={{fontFamily: 'RubikBubbles-Regular', color: "#AB2330", fontSize: height * 0.1, marginTop: 20, marginLeft: 20}}>Hamlet Clue</Text>
             <MagnifyingGlass height={height * 0.1} width={height * 0.1} style={{marginTop: 25, marginLeft: 20}}/>

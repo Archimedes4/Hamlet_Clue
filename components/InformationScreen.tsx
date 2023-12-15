@@ -12,6 +12,7 @@ import { screensSlice } from '../redux/reducers/screensReducer';
 import CardView from './CardView';
 import Colors from '../constants/Colors';
 import updateLastHandled from '../util/updateLastHandled';
+import updateGame from '../util/updateGame';
 
 function getUserCards(): cardType[] {
   const uid = auth.currentUser?.uid
@@ -80,7 +81,20 @@ export function PickUserCard({setIsShowingDetective}:{setIsShowingDetective: (it
           notes: gameState.hamlet.notes,
           lastDismissed: prompt.time
         }
-        store.dispatch(gameStateSlice.actions.setHamlet(newUser))
+        const index = orderOfPlay.indexOf(prompt.intiator) 
+        if ((index + 1) >= orderOfPlay.length) {
+          updateGame({
+            hamlet: newUser,
+            promt: newPromt,
+            turn: orderOfPlay[0]
+          })
+        } else {
+          updateGame({
+            hamlet: newUser,
+            promt: newPromt,
+            turn: orderOfPlay[index + 1]
+          })
+        }
       } else if (uid === gameState.claudius.user.id) {
         const newUser: playerInfo = {
           user: gameState.claudius.user,
@@ -91,7 +105,20 @@ export function PickUserCard({setIsShowingDetective}:{setIsShowingDetective: (it
           notes: gameState.claudius.notes,
           lastDismissed: prompt.time
         }
-        store.dispatch(gameStateSlice.actions.setClaudius(newUser))
+        const index = orderOfPlay.indexOf(prompt.intiator) 
+        if ((index + 1) >= orderOfPlay.length) {
+          updateGame({
+            claudius: newUser,
+            promt: newPromt,
+            turn: orderOfPlay[0]
+          })
+        } else {
+          updateGame({
+            claudius: newUser,
+            promt: newPromt,
+            turn: orderOfPlay[index + 1]
+          })
+        }
       } else if (uid === gameState.polonius.user.id) {
         const newUser: playerInfo = {
           user: gameState.polonius.user,
@@ -102,7 +129,20 @@ export function PickUserCard({setIsShowingDetective}:{setIsShowingDetective: (it
           notes: gameState.polonius.notes,
           lastDismissed: prompt.time
         }
-        store.dispatch(gameStateSlice.actions.setPolonius(newUser))
+        const index = orderOfPlay.indexOf(prompt.intiator) 
+        if ((index + 1) >= orderOfPlay.length) {
+          updateGame({
+            polonius: newUser,
+            promt: newPromt,
+            turn: orderOfPlay[0]
+          })
+        } else {
+          updateGame({
+            polonius: newUser,
+            promt: newPromt,
+            turn: orderOfPlay[index + 1]
+          })
+        }
       } else if (uid === gameState.gertrude.user.id) {
         const newUser: playerInfo = {
           user: gameState.gertrude.user,
@@ -113,16 +153,21 @@ export function PickUserCard({setIsShowingDetective}:{setIsShowingDetective: (it
           notes: gameState.gertrude.notes,
           lastDismissed: prompt.time
         }
-        store.dispatch(gameStateSlice.actions.setGertude(newUser))
+        const index = orderOfPlay.indexOf(prompt.intiator) 
+        if ((index + 1) >= orderOfPlay.length) {
+          updateGame({
+            gertude: newUser,
+            promt: newPromt,
+            turn: orderOfPlay[0]
+          })
+        } else {
+          updateGame({
+            gertrude: newUser,
+            promt: newPromt,
+            turn: orderOfPlay[index + 1]
+          })
+        }
       }
-    }
-
-    const index = orderOfPlay.indexOf(prompt.intiator) 
-    if ((index + 1) >= orderOfPlay.length) {
-      store.dispatch(gameStateSlice.actions.setPromtAndTurn({prompt: newPromt, turn: orderOfPlay[0]}))
-    } else {
-      console.log(orderOfPlay[index + 1])
-      store.dispatch(gameStateSlice.actions.setPromtAndTurn({prompt: newPromt, turn: orderOfPlay[index + 1]}))
     }
   }
   return (

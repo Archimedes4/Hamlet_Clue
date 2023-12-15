@@ -2,6 +2,7 @@ import { rooms } from "../constants/PiecesLocations";
 import { gameStateSlice } from "../redux/reducers/gameStateReducer";
 import { screensSlice } from "../redux/reducers/screensReducer";
 import store from "../redux/store";
+import updateGame from "./updateGame";
 import { roleDie } from "./util";
 
 export default function onMove(id: position) {
@@ -29,8 +30,7 @@ export default function onMove(id: position) {
     promt: state.promt,
     gameOver: state.gameOver,
     winner: state.winner,
-    bannedPlayers: state.bannedPlayers,
-    changeKey: state.changeKey
+    bannedPlayers: state.bannedPlayers
   }
   if (room) {
     newGameState.dieOne = roleDie()
@@ -216,5 +216,5 @@ export default function onMove(id: position) {
       }
     }
   }
-  store.dispatch(gameStateSlice.actions.setGameState(newGameState))
+  updateGame(newGameState)
 }
