@@ -44,6 +44,7 @@ function getUser() {
       return "Gertrude"
     }
   }
+  console.log(auth.currentUser)
   return "Something went wrong!"
 }
 

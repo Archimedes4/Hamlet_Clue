@@ -11,6 +11,7 @@ import DetectiveSheet from './DetectiveSheet';
 import { screensSlice } from '../redux/reducers/screensReducer';
 import CardView from './CardView';
 import Colors from '../constants/Colors';
+import updateLastHandled from '../util/updateLastHandled';
 
 function getUserCards(): cardType[] {
   const uid = auth.currentUser?.uid
@@ -137,7 +138,7 @@ export function PickUserCard({setIsShowingDetective}:{setIsShowingDetective: (it
           <Text style={{fontFamily: 'Rubik-SemiBold', marginTop: 'auto'}}>that {prompt.player} killed Ophelia in the {prompt.room.replace("_", " ")} with {prompt.weapon.replace("_", " ")}.</Text>
         </View>
         <Text style={{fontFamily: 'RubikBubbles-Regular', fontSize: 25, color: Colors.royalRed, marginLeft: 'auto', marginRight: 'auto', marginBottom: 10}}>Choose Card To Show {prompt.intiator}</Text>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{flexDirection: 'row', width: width * 0.8, marginTop: 10, marginBottom: 10}}>
           {cards.includes(prompt.weapon) ?
             <Pressable onPress={() => {
               pickPromt(prompt.weapon)
@@ -194,6 +195,7 @@ export default function InformationScreen() {
     // Exit early if countdown is finished
     if (seconds <= 0) {
       if (!isShowingDetective && !getInformation(state)) {
+        updateLastHandled()
         store.dispatch(screensSlice.actions.setInformationScreen(false))
       }
       return;
@@ -224,6 +226,7 @@ export default function InformationScreen() {
         if (seconds > 0 || getInformation(state)) {
           setIsShowingDetective(false)
         } else {
+          updateLastHandled()
           store.dispatch(screensSlice.actions.setInformationScreen(false))
         }
       }}/>
@@ -239,26 +242,29 @@ export default function InformationScreen() {
     <>
       <View style={{width, height, position: 'absolute', backgroundColor: '#a2a3a2', opacity: 0.3}} />
       <View onLayout={onLayoutRootView} style={{width: width * 0.8, height: height * 0.8, margin: 'auto', backgroundColor: 'white', borderRadius: 30, borderWidth: 2, borderColor: 'black'}}>
-        { state.promt.accusation ?
-          <Text>{state.promt.intiator}, made an accusation. Unfortunatly for {state.promt.intiator}, {state.promt.intiator === "Gertrude" ? "she":"he"} was wrong. They accusestion they chose are as follows.</Text>:
-          <Text>{state.promt.intiator}, made a {(state.promt.accusation ? "accusation":"suggestion")}</Text>
-        }
+        <View style={{marginLeft: 15, marginTop: 10, marginBottom: 10}}>
+          { state.promt.accusation ?
+            <Text style={{fontFamily: 'RubikBubbles-Regular'}}>{state.promt.intiator}, made an accusation. Unfortunatly for {state.promt.intiator}, {state.promt.intiator === "Gertrude" ? "she":"he"} was wrong. They accusestion they chose are as follows.</Text>:
+            <Text style={{fontFamily: 'RubikBubbles-Regular'}}>{state.promt.intiator}, made a {(state.promt.accusation ? "accusation":"suggestion")}</Text>
+          }
+        </View>
         <View style={{flexDirection: 'row'}}>
-          <View style={{borderRadius: 15, borderWidth: 2, borderColor: 'black'}}>
+          <View style={{borderRadius: 15, borderWidth: 2, borderColor: 'black', overflow: 'hidden', marginLeft: 'auto', marginRight: 'auto'}}>
             <Text style={{marginLeft: 'auto', marginRight: 'auto', fontFamily: 'RubikBubbles-Regular'}}>Player</Text>
-            <CardView card={state.promt.player} width={width * 0.1} height={height * 0.1}/>
+            <CardView card={state.promt.player} width={width * 0.2} height={height * 0.15}/>
           </View>
-          <View style={{borderRadius: 15, borderWidth: 2, borderColor: 'black'}}>
+          <View style={{borderRadius: 15, borderWidth: 2, borderColor: 'black', overflow: 'hidden', marginLeft: 'auto', marginRight: 'auto'}}>
             <Text style={{marginLeft: 'auto', marginRight: 'auto', fontFamily: 'RubikBubbles-Regular'}}>Weapon</Text>
-            <CardView card={state.promt.weapon} width={width * 0.1} height={height * 0.1}/>
+            <CardView card={state.promt.weapon} width={width * 0.2} height={height * 0.15}/>
           </View>
-          <View style={{borderRadius: 15, borderWidth: 2, borderColor: 'black'}}>
-            <Text style={{marginLeft: 'auto', marginRight: 'auto', fontFamily: 'RubikBubbles-Regular'}}>Rooms</Text>
-            <CardView card={state.promt.room} width={width * 0.1} height={height * 0.1}/>
+          <View style={{borderRadius: 15, borderWidth: 2, borderColor: 'black', overflow: 'hidden', marginLeft: 'auto', marginRight: 'auto'}}>
+            <Text style={{marginLeft: 'auto', marginRight: 'auto', fontFamily: 'RubikBubbles-Regular'}}>Room</Text>
+            <CardView card={state.promt.room} width={width * 0.2} height={height * 0.15}/>
           </View>
         </View>
-        <DefaultButton onPress={() => {setIsShowingDetective(true)}} text='Show Detective Sheet'/>
-        <DefaultButton onPress={() => {store.dispatch(screensSlice.actions.setInformationScreen(false))}} text='Dismiss'/>
+        <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto', marginTop: 10}} onPress={() => {setIsShowingDetective(true)}} text='Show Detective Sheet'/>
+        <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto', marginTop: 10}} onPress={() => {updateLastHandled(); store.dispatch(screensSlice.actions.setInformationScreen(false))}} text='Dismiss'/>
+        <Text style={{marginLeft: 'auto', marginRight: 'auto', marginTop: 10, fontFamily: 'Rubik-SemiBold', color: 'white'}}>Time's sonnet counts down, each moment a fleeting verse. {seconds}</Text>
       </View>
     </>
   )

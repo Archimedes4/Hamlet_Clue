@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 export default function useGameSubscribe(id: string) {
   const gameState = useSelector((state: RootState) => state.gameState);
   const [mounted, setMounted] = useState<boolean>(false)
+  const [updating, setUpdating] = useState<Date>(new Date())
   async function loadGetGame(id: string) {
     await getGame(id)
   }
@@ -39,7 +40,7 @@ export default function useGameSubscribe(id: string) {
             bannedPlayers: doc.data().bannedPlayers
           }
           store.dispatch(gameStateSlice.actions.updateGameState(gameState)) 
-      
+          setUpdating(new Date())
         }
       });
       return unsub
@@ -47,13 +48,9 @@ export default function useGameSubscribe(id: string) {
   }, [id])
   useEffect(() => {
     if (mounted) {
-      const uid = auth.currentUser?.uid
-      if (uid === gameState.master && gameState.turn === "Selecting") {
-        if (gameState.hamlet.pos !== "" && gameState.claudius.pos !== "" && gameState.polonius.pos !== "" && gameState.gertrude.pos !== "") {
-          store.dispatch(gameStateSlice.actions.setTurn(gameState.orderOfPlay[0]))
-        }
+      if ((new Date().getTime() - updating.getTime()) >= 100) {
+        updateGame() 
       }
-      updateGame() 
     } else {
       setMounted(true)
     }

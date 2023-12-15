@@ -1,3 +1,8 @@
+/*
+  Hamlet Clue
+  Andrew Mainella
+  
+*/
 import { View, Text, ScrollView } from 'react-native'
 import React, { useCallback } from 'react'
 import DefaultButton from '../../components/DefaultButton'

@@ -132,7 +132,7 @@ export function setGuess(card: cardType, index: number) {
           lastDismissed: gameState.hamlet.lastDismissed
         }))
       } else if (gameState.claudius.user.id === uid) {
-        store.dispatch(gameStateSlice.actions.setHamlet({
+        store.dispatch(gameStateSlice.actions.setClaudius({
           user: gameState.claudius.user,
           pos: gameState.claudius.pos,
           cards: gameState.claudius.cards,
@@ -142,7 +142,7 @@ export function setGuess(card: cardType, index: number) {
           lastDismissed: gameState.claudius.lastDismissed
         }))
       } else if (gameState.polonius.user.id === uid) {
-        store.dispatch(gameStateSlice.actions.setHamlet({
+        store.dispatch(gameStateSlice.actions.setPolonius({
           user: gameState.polonius.user,
           pos: gameState.polonius.pos,
           cards: gameState.polonius.cards,
@@ -152,7 +152,7 @@ export function setGuess(card: cardType, index: number) {
           lastDismissed: gameState.polonius.lastDismissed
         }))
       } else if (gameState.gertrude.user.id === uid) {
-        store.dispatch(gameStateSlice.actions.setHamlet({
+        store.dispatch(gameStateSlice.actions.setGertude({
           user: gameState.gertrude.user,
           pos: gameState.gertrude.pos,
           cards: gameState.gertrude.cards,

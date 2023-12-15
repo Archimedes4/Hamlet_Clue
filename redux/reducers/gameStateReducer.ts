@@ -443,6 +443,19 @@ export const gameStateSlice = createSlice({
       }
       return newGameState
     },
+    setPromptTurnUser: (state, action: PayloadAction<{turn: turnType, prompt: informationPromt, player: players}>) => {
+      if (action.payload.player === "Hamlet") {
+        state.hamlet.lastDismissed = action.payload.prompt.time
+      } else if (action.payload.player === "Claudius") {
+        state.claudius.lastDismissed = action.payload.prompt.time
+      } else if (action.payload.player === "Polonius") {
+        state.polonius.lastDismissed = action.payload.prompt.time
+      } else if (action.payload.player === "Gertrude") {
+        state.gertrude.lastDismissed = action.payload.prompt.time
+      }
+      state.turn = action.payload.turn
+      state.promt = action.payload.prompt
+    },
     setBannedPlayers: (state, action: PayloadAction<{ban: string[], key: string}>) => {
       let newGameState: gameState = {
         gameId: state.gameId,

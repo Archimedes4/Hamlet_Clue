@@ -109,7 +109,7 @@ const squares: positionType[] = [
   },
   {
     id:"SquareX6Y6",
-    moves:["SquareX6Y5", "SquareX7Y6", "SquareX6Y7"]
+    moves:["SquareX6Y5", "SquareX7Y6", "SquareX6Y7", "Gun_Platform"]
   },
   {
     id:"SquareX7Y6",
@@ -767,6 +767,38 @@ const squares: positionType[] = [
     id:"SquareX20Y25",
     moves: ["SquareX20Y24"]
   },
+  {
+    id: 'Gun_Platform',
+    moves: ["SquareX6Y6", "SquareX4Y8"]
+  },
+  {
+    id: "Great_Hall",
+    moves: ["SquareX9Y8", "SquareX14Y8"]
+  },
+  {
+    id: "Fencing_Room",
+    moves: ["SquareX20Y6", "SquareX23Y6"]
+  },
+  {
+    id: "Court_Yard",
+    moves: ["SquareX10Y9", "SquareX16Y9", "SquareX8Y11", "SquareX18Y11", "SquareX8Y15", "SquareX18Y15", "SquareX10Y17", "SquareX16Y17"]
+  },
+  {
+    id: "Royal_Bedroom",
+    moves: ["SquareX19Y11", "SquareX19Y16"]
+  },
+  {
+    id: 'Chapel',
+    moves: ["SquareX8Y20"]
+  },
+  {
+    id: "Throne_Room",
+    moves: ["SquareX11Y19", "SquareX18Y19", "SquareX9Y22"]
+  },
+  {
+    id: "Stair_Well",
+    moves: ["SquareX24Y18", "SquareX21Y21"]
+  }
 ]
 
 export default squares;

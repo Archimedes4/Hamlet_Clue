@@ -1,4 +1,4 @@
-import { doc, setDoc } from "firebase/firestore"
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
 import { db } from "../app/_layout"
 import { loadingStateEnum } from "../constants/PiecesLocations"
 import {createUUID, roleDie, shuffle} from "./util"
@@ -131,9 +131,19 @@ export default async function createGame(uid: string): Promise<{ result: loading
     bannedPlayers: [],
     changeKey: createUUID()
   }
+  
   try {
-    await setDoc(doc(db, "Games", gameId), game);
-    return {result: loadingStateEnum.success, game: game}
+    const docResult = await getDoc(doc(db, "Users", uid));
+    if (docResult.exists()) {
+      let games: string[] = docResult.data().games
+      games.push(uid)
+      updateDoc(doc(db, "Users", uid), {
+        games: games
+      })
+      await setDoc(doc(db, "Games", gameId), game);
+      return {result: loadingStateEnum.success, game: game}
+    }
+    return {result: loadingStateEnum.failed}
   } catch {
     return {result: loadingStateEnum.failed}
   }

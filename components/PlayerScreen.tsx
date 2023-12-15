@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from 'react-native'
+import { View, Text, Pressable, FlatList } from 'react-native'
 import React, { ReactNode, useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import store, { RootState } from '../redux/store';
@@ -120,6 +120,11 @@ function UserBlock({index}:{index: number}) {
             <Text style={{margin: 10, color: 'white'}}>Kick</Text>
           </Pressable>:null
         }
+        { (userId === master && players[index].id !== userId) ? 
+          <Pressable onPress={() => {kickPlayer(players[index].id, gameId)}} style={{borderRadius: 15, backgroundColor: 'red', marginTop: 'auto', marginBottom: 'auto', marginLeft: 'auto', marginRight: 20}}>
+            <Text style={{margin: 10, color: 'white'}}>Ban</Text>
+          </Pressable>:null
+        }
       </View>
     )
   }
@@ -135,6 +140,7 @@ export default function PlayerScreen() {
   const gameState = useSelector((state: RootState) => state.gameState);
   const [copied, setCopied] = useState<boolean>(false);
   const [leaveState, setLeaveState] = useState<loadingStateEnum>(loadingStateEnum.notStarted);
+  const [userId, setUserId] = useState<string>("");
 
   async function loadLeaveGame() {
     setLeaveState(loadingStateEnum.loading)
@@ -146,6 +152,13 @@ export default function PlayerScreen() {
     await Clipboard.setStringAsync(gameState.gameId);
     setCopied(true)
   };
+
+  useEffect(() => {
+    const uid = auth.currentUser?.uid
+    if (uid) {
+      setUserId(uid);
+    }
+  }, [])
 
   const [fontsLoaded, fontError] = useFonts({
     'RubikBubbles-Regular': require("../assets/fonts/RubikBubbles-Regular.ttf"),
@@ -209,6 +222,16 @@ export default function PlayerScreen() {
           </View>
           <DefaultButton style={{width: (width * 0.8) - ((((width * 0.8) - (getPlayerDimensions(width, height) * 2))/8) * 2), marginLeft: 'auto', marginRight: 'auto', marginBottom: 10}} onPress={() => {loadLeaveGame()}} text='Leave Game'/>
           <DefaultButton style={{width: (width * 0.8) - ((((width * 0.8) - (getPlayerDimensions(width, height) * 2))/8) * 2), marginLeft: 'auto', marginRight: 'auto', marginBottom: 10}}onPress={() => {router.push('/')}} text='Back'/>
+          { (userId === gameState.master && gameState.bannedPlayers.length >= 1) ? 
+            <View>
+              <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: 15, marginTop: 15, marginBottom: 15}}>Banned Players</Text>
+              <FlatList data={gameState.bannedPlayers} renderItem={(e) => (
+                <View>
+                  <Text>{e.item}</Text>
+                </View>
+              )}/>
+            </View>:null
+          }
         </ScrollView>
       </View>
     </>

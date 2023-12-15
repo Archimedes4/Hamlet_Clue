@@ -377,7 +377,7 @@ function GamePiece({id, color, role, roomWidth, roomHeight, xPos, yPos}:(roomPie
             }}
           >
           
-            <Svg width={10} height={10} viewBox="32.484 17.5 15.515 17.5"  enable-background="new 32.485 17.5 15.515 17.5">
+            <Svg width={10} height={10} viewBox="32.484 17.5 15.515 17.5">
               <Path
                 d="M38.484,17.5c0,8.75,1,13.5-6,17.5C51.484,35,52.484,17.5,38.484,17.5z"
                 fill="white"
@@ -450,8 +450,8 @@ export default function index() {
         <GamePiece id="SquareX17Y5" moveIds={["SquareX17Y4", "SquareX16Y5", "SquareX18Y5","SquareX17Y6"]} color='white' xPos={17} yPos={5} role='square'/>
         <GamePiece id="SquareX18Y5" moveIds={["SquareX17Y5", "SquareX18Y6"]} color='black' xPos={18} yPos={5} role='square'/>
 
-        <GamePiece id="SquareX6Y6" moveIds={["SquareX6Y5", "SquareX7Y6", "SquareX6Y7"]} color='white' xPos={6} yPos={6} role='square'/>
-        <GamePiece id="SquareX7Y6" moveIds={["SquareX7Y5", "SquareX6Y6", "SquareX7Y7"]} color='black' xPos={7} yPos={6} role='square'/>
+        <GamePiece id="SquareX6Y6" color='white' xPos={6} yPos={6} role='square'/>
+        <GamePiece id="SquareX7Y6" color='black' xPos={7} yPos={6} role='square'/>
         <GamePiece id="SquareX16Y6" moveIds={["SquareX16Y5", "SquareX17Y6", "SquareX16Y7"]} color='white' xPos={16} yPos={6} role='square'/>
         <GamePiece id="SquareX17Y6" moveIds={["SquareX17Y5", "SquareX16Y6", "SquareX18Y6", "SquareX17Y7"]} color='black' xPos={17} yPos={6} role='square'/>
         <GamePiece id="SquareX18Y6" moveIds={["SquareX18Y5", "SquareX17Y6", "SquareX19Y6", "SquareX18Y7"]} color='white' xPos={18} yPos={6} role='square'/>

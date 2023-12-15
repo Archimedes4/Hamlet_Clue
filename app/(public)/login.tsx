@@ -1,4 +1,4 @@
-import { View, Text, Pressable, ActivityIndicator } from 'react-native'
+import { View, Text, Pressable, ActivityIndicator, ScrollView } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { TextInput } from 'react-native-gesture-handler'
 import { GoogleIcon, MagnifyingGlass } from '../../components/Icons'
@@ -18,13 +18,13 @@ SplashScreen.preventAutoHideAsync();
 
 function getLoginText(state: loadingStateEnum): string | undefined {
   if (state  === loadingStateEnum.notStarted) {
-    return 'login'
+    return 'Login'
   } else if (state  === loadingStateEnum.failed) {
-    return 'failed'
+    return 'Failed'
   } else if (state  === loadingStateEnum.loading) {
     return undefined
   } else if (state  === loadingStateEnum.success) {
-    return 'success'
+    return 'Success'
   }
 }
 
@@ -69,7 +69,7 @@ export default function login() {
   }
 
   return (
-    <View style={{width: width, height: height, backgroundColor: Colors.main}} onLayout={onLayoutRootView}>
+    <ScrollView style={{width: width, height: height, backgroundColor: Colors.main}} onLayout={onLayoutRootView}>
       <View style={{flexDirection: 'row', marginTop: 20, marginLeft: 20}}>
         <Text style={{fontFamily: 'RubikBubbles-Regular', color: Colors.royalRed, fontSize: height * 0.1}}>Hamlet Clue</Text>
         <MagnifyingGlass width={height * 0.1} height={height * 0.1} style={{marginLeft: 20, marginTop: 10}}/>
@@ -88,6 +88,6 @@ export default function login() {
       <DefaultButton onPress={() => signInWithGoogle()} style={{marginLeft: 'auto', marginRight: 'auto', width: width * 0.8, marginTop: 20, flexDirection: 'row'}} text='Login With Google' textStyle={{marginRight: 'auto', marginLeft: 5}}>
         <GoogleIcon width={20} height={20} style={{marginLeft: 'auto', paddingTop: 18.2}}/>
       </DefaultButton>
-    </View>
+    </ScrollView>
   )
 }

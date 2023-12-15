@@ -46,7 +46,11 @@ export function setSpawnPosition(hamlet: playerInfo, claudius: playerInfo, polon
         notes: gertrude.notes,
         lastDismissed: gertrude.lastDismissed
       }))
-    } 
+    }
+    const gameState = store.getState().gameState
+    if (gameState.turn === "Selecting" && gameState.hamlet.pos !== "" && gameState.claudius.pos !== "" && gameState.polonius.pos !== "" && gameState.gertrude.pos !== "") {
+      store.dispatch(gameStateSlice.actions.setTurn(gameState.orderOfPlay[0]))
+    }
   }
   //TODO handle error
 }

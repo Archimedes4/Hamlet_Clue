@@ -1,3 +1,9 @@
+/*
+  Hamlet Clue
+  Andrew Mainella
+  account.tsx
+  Holds main account information with games played and the possiblity to update the users username.
+*/
 import { View, Text, TextInput, ActivityIndicator, FlatList, Pressable, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
@@ -117,7 +123,7 @@ export default function Account() {
       <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: width * 0.11, marginTop: 15, marginBottom: 15, color: 'white'}}>Past Games</Text>
       { (data.length === 0) ? 
         <View style={{height: height * 0.3, width}}>
-          <Text style={{margin: 'auto', fontFamily: 'RubikBubbles-Regular'}}>Your past games will appear here.</Text>
+          <Text style={{margin: 'auto', fontFamily: 'RubikBubbles-Regular', color: 'white'}}>Your past games will appear here.</Text>
         </View>:
         <FlatList style={{height: height * 0.3}} data={data} renderItem={(e) => (
           <Pressable onPress={() => joinGame(e.item)} style={{borderWidth: 2, borderColor: 'black', borderRadius: 25, marginLeft: 'auto', marginRight: 'auto', width: width * 0.8, backgroundColor: 'white', marginBottom: 5}}>

@@ -1,6 +1,5 @@
-import { rooms } from "../constants/PiecesLocations";
+
 import { gameStateSlice } from "../redux/reducers/gameStateReducer";
-import { screensSlice } from "../redux/reducers/screensReducer";
 import store from "../redux/store";
 import { roleDie } from "./util";
 
@@ -47,10 +46,7 @@ export default function onBlank() {
       return e
     }
   })
-  if (orderOfPlay.length <= 0) {
-    //Game Tie
-    newGameState.gameOver = true
-  } else if (state.turn === "Hamlet") { 
+  if (state.turn === "Hamlet") { 
     const hamletIndex = orderOfPlay.indexOf("Hamlet") 
     if ((hamletIndex + 1) > orderOfPlay.length) {
       newGameState.turn = orderOfPlay[0]

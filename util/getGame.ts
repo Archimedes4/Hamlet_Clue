@@ -68,3 +68,22 @@ export async function checkIfGameFull(id: string): Promise<boolean> {
 export async function updateGame() {
   await updateDoc(doc(db, "Games", store.getState().gameState.gameId), store.getState().gameState);
 }
+
+export async function checkIfBanned(id: string) {
+  const uid = auth.currentUser?.uid
+  if (uid) {
+    const game = await getDoc(doc(db, "Games", id))
+    if (game.exists()) {
+      let players: string[] = game.data().bannedPlayers
+      if (players.includes(id)) {
+        return true
+      } else {
+        return false
+      }
+    } else {
+      return true
+    }
+  } else {
+    return true
+  }
+}

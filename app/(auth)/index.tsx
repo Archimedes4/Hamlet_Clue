@@ -1,3 +1,10 @@
+/*
+  Hamlet Clue
+  Andrew Mainella
+  14 December 2023
+  index.tsx
+  Main page holding join game access to rules, account and sign out.
+*/
 import { View, Text, Pressable, NativeSyntheticEvent, TextInputKeyPressEventData, ActivityIndicator } from 'react-native'
 import React, { useCallback, useRef, useState } from 'react'
 import { ScrollView, TextInput } from 'react-native-gesture-handler'
@@ -14,8 +21,9 @@ import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { MagnifyingGlass } from '../../components/Icons';
 import DefaultButton from '../../components/DefaultButton';
-import { checkIfGameExists, checkIfGameFull } from '../../util/getGame';
+import { checkIfBanned, checkIfGameExists, checkIfGameFull } from '../../util/getGame';
 import joinGame from '../../util/joinGame';
+import * as Clipboard from 'expo-clipboard';
 
 export enum joinStateType {
   exists,
@@ -24,7 +32,8 @@ export enum joinStateType {
   notExist,
   gameFull,
   failed,
-  rejoin
+  rejoin,
+  banned
 }
 
 function getJoinText(state: joinStateType): string | undefined {
@@ -46,6 +55,9 @@ function getJoinText(state: joinStateType): string | undefined {
   if (state === joinStateType.failed) {
     return "Failed"
   }
+  if (state === joinStateType.banned) {
+    return "Banned"
+  }
 }
 
 export default function index() {
@@ -66,7 +78,12 @@ export default function index() {
         if (fullResult) {
           setJoinState(joinStateType.gameFull)
         } else {
-          setJoinState(joinStateType.exists)
+          const bannedResult = await checkIfBanned(id);
+          if (bannedResult) {
+            setJoinState(joinStateType.banned)
+          } else {
+            setJoinState(joinStateType.exists)
+          }
         }
       } else {
         setJoinState(joinStateType.notExist)
@@ -76,7 +93,14 @@ export default function index() {
     }
   }
 
+  async function getCopiedText() {
+    const text = await Clipboard.getStringAsync();
+    setGameId(text)
+    updateJoinStatus(text)
+  }
+
   function handleKeyPress(e: NativeSyntheticEvent<TextInputKeyPressEventData>) {
+    console.log(e.nativeEvent)
     if (e.nativeEvent.key === "0" || e.nativeEvent.key === "1" || e.nativeEvent.key === "2" || e.nativeEvent.key === "3" || e.nativeEvent.key === "4" || e.nativeEvent.key === "5" || e.nativeEvent.key === "6" || e.nativeEvent.key === "7" || e.nativeEvent.key === "8" || e.nativeEvent.key === "9") {
       if ((gameId + ' ').length > 6) {
         setGameId(gameId.substring(1) + e.nativeEvent.key)
@@ -87,6 +111,12 @@ export default function index() {
       }
     } else if (e.nativeEvent.key === "Backspace") {
       setGameId(gameId.slice(0, -1))
+    } else if (e.nativeEvent.key === "Enter") {
+      if (joinState === joinStateType.exists) {
+        joinGame(gameId);
+      }
+    } else if (e.nativeEvent.key === "v") {
+      getCopiedText()
     }
   }
 

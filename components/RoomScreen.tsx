@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from 'react-native'
+import { View, Text, Pressable, Image } from 'react-native'
 import React, { ReactNode, useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import store, { RootState } from '../redux/store';
@@ -95,7 +95,7 @@ function MadeSuggestion() {
           </View>
           <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto', marginBottom: 10}} onPress={() => {setIsShowingDetective(true)}} text='Show Detective Sheet'/>
           <DefaultButton style={{width: width * 0.6, marginLeft: 'auto', marginRight: 'auto'}} onPress={() => {store.dispatch(screensSlice.actions.setRoomScreen(false))}} text='Dismiss'/>
-          <Text style={{fontFamily: 'Rubik-SemiBold', marginTop: 10, marginLeft: 'auto', marginRight: 'auto'}}>This message will self destruct in {seconds}</Text>
+          <Text style={{fontFamily: 'Rubik-SemiBold', marginTop: 10, marginLeft: 'auto', marginRight: 'auto'}}>Time's sonnet counts down, each moment a fleeting verse. {seconds}</Text>
         </View>
       </>
     )
@@ -340,30 +340,30 @@ function AccuseScreen({onBack}:{onBack: () => void}) {
           <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: leftMargin, fontSize: 15, paddingBottom: 10}}>Rooms</Text>
           <View style={{flexDirection: 'row'}}>
             <AccuseBlock name='Gun Platform' item="Gun_Platform" role='rooms'>
-              <HemlockPoison width={75} height={75}/>
+              <Image source={require('../assets/roomIcons/Gun_Platform.jpg')} style={{width: 75, height: 75}}/>
             </AccuseBlock>
             <AccuseBlock name='Great Hall' item="Great_Hall" role='rooms'>
-              <SharpenedRapier width={75} height={75}/>
+              <Image source={require('../assets/roomIcons/Great_Hall.png')} style={{width: 75, height: 75}}/>
             </AccuseBlock>
             <AccuseBlock name='Fencing Room' item="Fencing_Room" role='rooms'>
-              <Axe width={75} height={75}/>
+              <Image source={require('../assets/roomIcons/Fencing_Room.png')} style={{width: 75, height: 75}}/>
             </AccuseBlock>
             <AccuseBlock name='Court Yard' item="Court_Yard" role='rooms'>
-              <Dagger width={75} height={75}/>
+              <Image source={require('../assets/roomIcons/Court_Yard.png')} style={{width: 75, height: 75}}/>
             </AccuseBlock>
           </View>
           <View style={{flexDirection: 'row', marginTop: 5}}>
             <AccuseBlock name='Royal Bedroom' item="Royal_Bedroom" role='rooms'>
-              <HemlockPoison width={75} height={75}/>
+            <Image source={require('../assets/roomIcons/Royal_Bedroom.png')} style={{width: 75, height: 75}}/>
             </AccuseBlock>
             <AccuseBlock name='Chapel' item="Chapel" role='rooms'>
-              <SharpenedRapier width={75} height={75}/>
+            <Image source={require('../assets/roomIcons/Chapel.png')} style={{width: 75, height: 75}}/>
             </AccuseBlock>
             <AccuseBlock name='Throne Room' item='Throne_Room' role='rooms'>
-              <Axe width={75} height={75}/>
+            <Image source={require('../assets/roomIcons/Throne_Room.jpg')} style={{width: 75, height: 75}}/>
             </AccuseBlock>
             <AccuseBlock name='Stair Well' item='Stair_Well' role='rooms'>
-              <Dagger width={75} height={75}/>
+            <Image source={require('../assets/roomIcons/Stair_Well.png')} style={{width: 75, height: 75}}/>
             </AccuseBlock>
           </View>
           <DefaultButton style={{marginLeft: leftMargin, marginRight: leftMargin, marginTop: 10}} onPress={() => {makeAccusation(); setAccusationMade(true)}} text='Accuse'/>
