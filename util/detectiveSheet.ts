@@ -12,28 +12,28 @@ function getPlayer(index: number): players | undefined {
       if (index === 0) {
         return "Hamlet"
       }
-      orderOfPlay.filter((e) => {return e !== "Hamlet"})
+      orderOfPlay = orderOfPlay.filter((e) => {return e !== "Hamlet"})
       return orderOfPlay[index]
     }
     if (gameState.claudius.user.id === uid) {
       if (index === 0) {
         return "Claudius"
       }
-      orderOfPlay.filter((e) => {return e !== "Claudius"})
+      orderOfPlay = orderOfPlay.filter((e) => {return e !== "Claudius"})
       return orderOfPlay[index]
     }
     if (gameState.polonius.user.id === uid) {
       if (index === 0) {
         return "Polonius"
       }
-      orderOfPlay.filter((e) => {return e !== "Polonius"})
+      orderOfPlay = orderOfPlay.filter((e) => {return e !== "Polonius"})
       return orderOfPlay[index]
     }
     if (gameState.gertrude.user.id === uid) {
       if (index === 0) {
         return "Gertrude"
       }
-      orderOfPlay.filter((e) => {return e !== "Gertrude"})
+      orderOfPlay = orderOfPlay.filter((e) => {return e !== "Gertrude"})
       return orderOfPlay[index]
     }
   }
@@ -171,8 +171,10 @@ export function setGuess(card: cardType, index: number) {
           }
         })
       }
+      console.log(userGuesses, )
     }
   }
+  console.log("Here")
 }
 
 export function getGuess(card: cardType, index: number): guessType | undefined {

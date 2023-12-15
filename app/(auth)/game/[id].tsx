@@ -255,7 +255,7 @@ function GamePiece({id, color, role, roomWidth, roomHeight, xPos, yPos}:(roomPie
           }
         </View>
         <View style={{width: getSize(width, height) * roomWidth, height: getSize(width, height) * roomHeight, position: 'absolute'}}>
-          <Text style={{margin: 'auto', fontFamily: 'Rubik-SemiBold', color: 'white'}}>{convertRoomIdToText(id)}</Text>
+          <Text selectable={false} style={{margin: 'auto', fontFamily: 'Rubik-SemiBold', color: 'white'}}>{convertRoomIdToText(id)}</Text>
         </View>
       </Pressable>
     )

@@ -14,6 +14,10 @@ import DefaultButton from './DefaultButton';
 import { banPlayer, kickPlayer } from '../util/dismissPlayer';
 import CardView from './CardView';
 
+function getName() {
+
+}
+
 function RowItem({item, index}:{item: cardType, index: number}) {
   const gameState = useSelector((state: RootState) => state.gameState);
   const [itemGuess, setItemGuess] = useState<undefined | guessType>(undefined);
@@ -87,7 +91,7 @@ function RowImage({item}:{item: cardType}) {
 }
 
 function Row({item, name, end}:{item: cardType, name?: string, end?: 'top' | 'bottom'}) {
-  const { width, height } = useSelector((state: RootState) => state.dimentions);
+  const width = useSelector((state: RootState) => state.dimentions.width);
   return (
     <View style={{height: 30, width: (width * 0.8)-4, borderTopWidth: (end === 'top') ? 2:1, borderBottomWidth: (end === 'bottom') ? 2:1, flexDirection: 'row', overflow: 'hidden'}}>
       <View style={{width: width * 0.2, borderRightWidth: 2, borderColor: 'black', height: 29, flexDirection: 'row'}}>
@@ -259,11 +263,11 @@ export default function DetectiveSheet({role, onClose}:{role: "main", onClose?: 
       if (state.hamlet.user.id === uid) {
         setNotes(state.hamlet.notes)
       } else if (state.claudius.user.id === uid) {
-        setNotes(state.hamlet.notes)
+        setNotes(state.claudius.notes)
       } else if (state.polonius.user.id === uid) {
-        setNotes(state.hamlet.notes)
+        setNotes(state.polonius.notes)
       } else if (state.gertrude.user.id === uid) {
-        setNotes(state.hamlet.notes)
+        setNotes(state.gertrude.notes)
       }
     }
   }
@@ -304,7 +308,10 @@ export default function DetectiveSheet({role, onClose}:{role: "main", onClose?: 
               <CloseIcon width={20} height={20}/>
             </Pressable>
           </View>
-          <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: 15, marginTop: 15, marginBottom: 15}}>Characters</Text>
+          <View>
+            <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: 15, marginTop: 15, marginBottom: 15}}>Characters</Text>
+
+          </View>
           <Row item={'Hamlet'} end='top'/>
           <Row item={'Claudius'}/>
           <Row item={'Polonius'}/>
