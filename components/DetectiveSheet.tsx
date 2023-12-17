@@ -14,8 +14,41 @@ import DefaultButton from './DefaultButton';
 import { banPlayer, kickPlayer } from '../util/dismissPlayer';
 import CardView from './CardView';
 
-function getName() {
-
+function getName(index: number) {
+  const uid = auth.currentUser?.uid
+  const state = store.getState().gameState
+  if (uid) {
+    if (index == 0) {
+      if (state.hamlet.user.id === uid) {
+        return "Hamlet"
+      } else if (state.claudius.user.id === uid) {
+        return "Claudius"
+      } else if (state.polonius.user.id === uid) {
+        return "Polonius"
+      } else if (state.gertrude.user.id === uid) {
+        return "Gertrude"
+      } 
+    } else {
+      let orderOfPlay = [...state.orderOfPlay]
+      orderOfPlay = orderOfPlay.filter((e, item) => {
+        if (e === "Hamlet" && state.hamlet.user.id !== uid) {
+          return e
+        }
+        if (e === "Claudius" && state.claudius.user.id !== uid) {
+          return e
+        }
+        if (e === "Polonius" && state.polonius.user.id !== uid) {
+          return e
+        }
+        if (e === "Gertrude" && state.gertrude.user.id !== uid) {
+  
+          return e
+        }
+      })
+      return orderOfPlay[index - 1]
+    }
+  }
+  return ""
 }
 
 function RowItem({item, index}:{item: cardType, index: number}) {
@@ -29,16 +62,16 @@ function RowItem({item, index}:{item: cardType, index: number}) {
   return (
     <Pressable style={{height: 29, width: width * 0.15, overflow: 'hidden'}} onPress={() => {setGuess(item, index)}}>
       {(itemGuess === undefined) ?
-        <View style={{width: (width * 0.2), height: 30, backgroundColor: 'blue'}}/>:
+        <View style={{width: (width * 0.15), height: 30, borderLeftWidth: (index !== 0) ? 1:0, borderRightWidth: 1, borderColor: Colors.main, backgroundColor: 'blue'}}/>:
         <>
           {itemGuess.level === "guess" ?
-            <View style={{width: 30, height: 30, backgroundColor: 'red'}}/>:null
+            <View style={{width: (width * 0.15), height: 30, borderLeftWidth: (index !== 0) ? 1:0, borderRightWidth: 1, borderColor: Colors.main, backgroundColor: 'red'}}/>:null
           }
           {itemGuess.level === "likely" ?
-            <View style={{width: 30, height: 30, backgroundColor: 'orange'}}/>:null
+            <View style={{width: (width * 0.15), height: 30, borderLeftWidth: (index !== 0) ? 1:0, borderRightWidth: 1, borderColor: Colors.main, backgroundColor: 'orange'}}/>:null
           }
           {itemGuess.level === "known" ?
-            <View style={{width: 30, height: 30, backgroundColor: "green"}}/>:null
+            <View style={{width: (width * 0.15), height: 30, borderLeftWidth: (index !== 0) ? 1:0, borderRightWidth: 1, borderColor: Colors.main, backgroundColor: "green"}}/>:null
           }
         </>
       }
@@ -308,9 +341,14 @@ export default function DetectiveSheet({role, onClose}:{role: "main", onClose?: 
               <CloseIcon width={20} height={20}/>
             </Pressable>
           </View>
-          <View>
+          <View style={{flexDirection: 'row'}}>
             <Text style={{fontFamily: 'Rubik-SemiBold', marginLeft: 15, marginTop: 15, marginBottom: 15}}>Characters</Text>
-
+            <View style={{marginBottom: 2, marginTop: 'auto', flexDirection: 'row', marginLeft: 'auto'}}>
+              <Text style={{width: width * 0.15, textAlign: 'center'}}>{getName(0)}</Text>
+              <Text style={{width: width * 0.15, textAlign: 'center'}}>{getName(1)}</Text>
+              <Text style={{width: width * 0.15, textAlign: 'center'}}>{getName(2)}</Text>
+              <Text style={{width: width * 0.15, textAlign: 'center'}}>{getName(3)}</Text>
+            </View>
           </View>
           <Row item={'Hamlet'} end='top'/>
           <Row item={'Claudius'}/>

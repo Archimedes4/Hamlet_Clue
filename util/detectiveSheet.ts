@@ -7,34 +7,34 @@ function getPlayer(index: number): players | undefined {
   const uid = auth.currentUser?.uid
   const gameState = store.getState().gameState
   if (uid) {
-    let orderOfPlay = gameState.orderOfPlay
+    let orderOfPlay = [...gameState.orderOfPlay]
     if (gameState.hamlet.user.id === uid) {
       if (index === 0) {
         return "Hamlet"
       }
       orderOfPlay = orderOfPlay.filter((e) => {return e !== "Hamlet"})
-      return orderOfPlay[index]
+      return orderOfPlay[index - 1]
     }
     if (gameState.claudius.user.id === uid) {
       if (index === 0) {
         return "Claudius"
       }
       orderOfPlay = orderOfPlay.filter((e) => {return e !== "Claudius"})
-      return orderOfPlay[index]
+      return orderOfPlay[index - 1]
     }
     if (gameState.polonius.user.id === uid) {
       if (index === 0) {
         return "Polonius"
       }
       orderOfPlay = orderOfPlay.filter((e) => {return e !== "Polonius"})
-      return orderOfPlay[index]
+      return orderOfPlay[index - 1]
     }
     if (gameState.gertrude.user.id === uid) {
       if (index === 0) {
         return "Gertrude"
       }
       orderOfPlay = orderOfPlay.filter((e) => {return e !== "Gertrude"})
-      return orderOfPlay[index]
+      return orderOfPlay[index - 1]
     }
   }
 }
@@ -160,7 +160,7 @@ export function setGuess(card: cardType, index: number) {
         })
       } else if (gameState.gertrude.user.id === uid) {
         updateGame({
-          gertude: {
+          gertrude: {
             user: gameState.gertrude.user,
             pos: gameState.gertrude.pos,
             cards: gameState.gertrude.cards,
@@ -171,10 +171,8 @@ export function setGuess(card: cardType, index: number) {
           }
         })
       }
-      console.log(userGuesses, )
     }
   }
-  console.log("Here")
 }
 
 export function getGuess(card: cardType, index: number): guessType | undefined {
